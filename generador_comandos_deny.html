@@ -57,7 +57,6 @@
       gap: 1.25rem;
     }
 
-    /* BARRA SUPERIOR LAUNCHER Y NAVEGACIÓN POR PESTAÑAS */
     .launcher-navbar {
       background: var(--mc-dirt-card);
       border: 3px solid #000000;
@@ -122,7 +121,6 @@
       box-shadow: inset 2px 2px 0 #70c474, inset -2px -2px 0 #1b4d1e;
     }
 
-    /* VISTAS PESTAÑA */
     .tab-content {
       display: none;
       flex-direction: column;
@@ -133,7 +131,6 @@
       display: flex;
     }
 
-    /* GRID GENERADOR */
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -184,7 +181,6 @@
       line-height: 1.4;
     }
 
-    /* COORDENADAS Y FORMULARIOS */
     .coord-section {
       background: var(--mc-dirt-panel);
       border: 2px solid #000000;
@@ -254,7 +250,6 @@
       border-color: var(--mc-green-border);
     }
 
-    /* SELECTOR DE BLOQUE */
     .block-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -296,7 +291,6 @@
       color: var(--mc-text-sub);
     }
 
-    /* CAPAS DE PROFUNDIDAD */
     .layer-selector {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -343,7 +337,6 @@
       color: var(--mc-yellow-gold);
     }
 
-    /* ESTADISTICAS Y RESULTADOS */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -409,7 +402,6 @@
       border-radius: 4px;
     }
 
-    /* SECCIÓN DE DOCUMENTACIÓN Y GUÍA */
     .doc-section {
       display: flex;
       flex-direction: column;
@@ -472,7 +464,6 @@
 <body>
 
 <div class="container">
-  <!-- BARRA SUPERIOR DE NAVEGACION POR PESTAÑAS -->
   <div class="launcher-navbar">
     <div class="launcher-brand">
       <span class="brand-tag">BEDROCK EDITION</span>
@@ -485,10 +476,8 @@
     </div>
   </div>
 
-  <!-- PESTAÑA 1: GENERADOR DE COMANDOS -->
   <div id="tab-generator" class="tab-content active">
     <div class="main-grid">
-      <!-- PANEL IZQUIERDO: FORMULARIO DE COORDENADAS -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">1. COORDENADAS DEL TERRENO</div>
@@ -496,7 +485,6 @@
         </div>
 
         <div class="coord-section">
-          <!-- ESQUINA 1 -->
           <div>
             <div class="coord-group-title">ESQUINA 1 (PUNTO A)</div>
             <div class="xz-grid">
@@ -511,7 +499,6 @@
             </div>
           </div>
 
-          <!-- ESQUINA 2 -->
           <div>
             <div class="coord-group-title">ESQUINA 2 (PUNTO B)</div>
             <div class="xz-grid">
@@ -526,14 +513,12 @@
             </div>
           </div>
 
-          <!-- ALTURA Y UNICA -->
           <div class="single-y-box">
             <div class="single-y-label">ALTURA DEL PISO (Y ÚNICA)</div>
             <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
           </div>
         </div>
 
-        <!-- SELECTOR DE BLOQUE -->
         <div class="card-header" style="padding-top: 0.5rem;">
           <div class="card-title">2. TIPO DE BLOQUE</div>
         </div>
@@ -548,7 +533,6 @@
           </div>
         </div>
 
-        <!-- SELECTOR DE PROFUNDIDAD -->
         <div class="card-header" style="padding-top: 0.5rem;">
           <div class="card-title">3. PROFUNDIDAD DEL PERÍMETRO</div>
         </div>
@@ -559,7 +543,6 @@
         </div>
       </div>
 
-      <!-- PANEL DERECHO: MAPA Y BOTON -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">PREVISUALIZACIÓN 2D</div>
@@ -587,7 +570,6 @@
       </div>
     </div>
 
-    <!-- COMANDO RESULTANTE -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">COMANDO GENERADO PARA MINECRAFT BEDROCK</div>
@@ -597,7 +579,6 @@
     </div>
   </div>
 
-  <!-- PESTAÑA 2: GUÍA DE COMANDOS Y DOCUMENTACIÓN -->
   <div id="tab-guide" class="tab-content">
     <div class="card">
       <div class="card-header">
@@ -662,7 +643,6 @@
     </div>
   </div>
 
-  <!-- PESTAÑA 3: PLAN DE SEGURIDAD NATIVO -->
   <div id="tab-security" class="tab-content">
     <div class="card">
       <div class="card-header">
