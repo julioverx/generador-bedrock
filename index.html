@@ -6,290 +6,216 @@
   <title>Documentación & Generador — Minecraft Bedrock</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* VERCEL / GOOGLE API MODERN DARK PALETTE */
-      --bg-main: #090d16;
-      --bg-card: #111827;
-      --bg-input: #0b0f19;
-      --bg-hover: #1f293d;
+      /* ULTRA MINIMALIST MONOCHROME PALETTE */
+      --bg: #09090b;
+      --surface: #121215;
+      --border: #27272a;
       
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-focus: #10b981;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
       
-      --accent-green: #10b981;
-      --accent-green-glow: rgba(16, 185, 129, 0.15);
-      --accent-cyan: #06b6d4;
-      --accent-red: #f43f5e;
-      --accent-yellow: #f59e0b;
-      
-      --text-primary: #f9fafb;
-      --text-secondary: #9ca3af;
-      --text-muted: #6b7280;
+      --accent: #ffffff;
+      --green: #10b981;
+      --red: #f43f5e;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
     }
 
     body {
-      background-color: var(--bg-main);
-      color: var(--text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.5rem 1rem;
-      line-height: 1.5;
+      padding: 2rem 1rem;
     }
 
     .container {
       width: 100%;
-      max-width: 1020px;
+      max-width: 800px;
       display: flex;
       flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* HEADER Y NAVEGACIÓN MINIMALISTA MONOCROMÁTICA */
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .header-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: -0.75rem;
+    }
+
+    .nav-tabs {
+      display: flex;
       gap: 1.5rem;
-    }
-
-    /* HEADER STYLE VERCEL / GOOGLE DOCS */
-    .docs-navbar {
-      background: rgba(17, 24, 39, 0.8);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 0.9rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .brand-badge {
-      background: var(--accent-green-glow);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.25rem 0.6rem;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .brand-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.3px;
-    }
-
-    /* PESTAÑAS TIPO VERCEL */
-    .tab-navigation {
-      display: flex;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 0.25rem;
-      gap: 0.25rem;
+      border-bottom: 1px solid transparent;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 0.2rem;
     }
 
     .nav-tab {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 0.45rem 0.9rem;
-      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-dim);
       cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
+      padding-bottom: 0.5rem;
+      transition: color 0.15s, border-color 0.15s;
+      border-bottom: 2px solid transparent;
     }
 
     .nav-tab:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
     }
 
     .nav-tab.active {
-      color: var(--text-primary);
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      color: var(--text);
+      border-bottom-color: var(--accent);
     }
 
-    /* VISTAS */
+    /* CONTENIDO DE PESTAÑAS */
     .tab-content {
       display: none;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 2rem;
     }
 
     .tab-content.active {
       display: flex;
     }
 
-    /* CARDS */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 1.5rem;
+    /* VISTA DE SECCIONES LIMPIAS (SIN CONTENEDORES PESADOS) */
+    .section-group {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      gap: 1rem;
     }
 
-    .card-header {
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
-    }
-
-    .card-title {
-      font-size: 1.15rem;
+    .section-title {
+      font-size: 1.1rem;
       font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.2px;
+      letter-spacing: -0.02em;
+      color: var(--text);
     }
 
-    .card-subtitle {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-top: 0.25rem;
+    .section-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
     }
 
-    /* FORMULARIO Y GRIDS */
-    .main-grid {
+    /* FORMULARIO DE ENTRADAS */
+    .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
-    @media (max-width: 768px) {
-      .main-grid {
+    @media (max-width: 640px) {
+      .grid-2 {
         grid-template-columns: 1fr;
       }
-      .docs-navbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .tab-navigation {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .nav-tab {
-        flex: 1;
-        text-align: center;
+      body {
+        padding: 1.25rem 0.75rem;
       }
     }
 
-    .coord-card-group {
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
+    .input-box {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.4rem;
     }
 
-    .coord-header {
-      font-size: 0.85rem;
+    .input-box label {
+      font-size: 0.8rem;
       font-weight: 600;
-      color: var(--accent-cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .xz-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-    }
-
-    .field-group label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-muted);
     }
 
     input[type="number"] {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-primary);
-      padding: 0.65rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.75rem 0.85rem;
       font-size: 0.95rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: inherit;
       width: 100%;
       outline: none;
-      transition: all 0.15s;
+      transition: border-color 0.15s;
     }
 
     input[type="number"]:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px var(--accent-green-glow);
+      border-color: var(--accent);
     }
 
-    /* BLOQUES Y CAPAS */
-    .block-selector {
+    /* SELECTOR DE BLOQUES Y CAPAS MINIMALISTAS */
+    .option-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
     }
 
-    .block-card {
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
+    .option-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.9rem;
+      padding: 0.85rem 1rem;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
-      transition: all 0.15s;
+      gap: 0.2rem;
+      transition: border-color 0.15s;
     }
 
-    .block-card:hover {
-      border-color: var(--text-muted);
-      background: var(--bg-hover);
+    .option-card:hover {
+      border-color: var(--text-dim);
     }
 
-    .block-card.active-claim {
-      border-color: var(--accent-green);
-      background: var(--accent-green-glow);
+    .option-card.active {
+      border-color: var(--accent);
+      background: #18181b;
     }
 
-    .block-card.active-deny {
-      border-color: var(--accent-red);
-      background: rgba(244, 63, 94, 0.12);
-    }
-
-    .block-name {
+    .option-title {
       font-size: 0.9rem;
       font-weight: 700;
+      color: var(--text);
     }
 
-    .block-desc {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+    .option-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     .layer-selector {
@@ -299,55 +225,54 @@
     }
 
     .layer-btn {
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-secondary);
-      padding: 0.6rem 0.4rem;
-      font-size: 0.78rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      padding: 0.65rem 0.4rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
       text-align: center;
       transition: all 0.15s;
     }
 
     .layer-btn.active {
-      background: var(--accent-green);
-      border-color: var(--accent-green);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000000;
+      font-weight: 700;
     }
 
-    /* BOTON DE ACCION TIPO VERCEL */
-    .btn-action {
-      background: var(--accent-green);
+    /* BOTÓN PRINCIPAL MONOCROMÁTICO */
+    .btn-main {
+      background: var(--accent);
       border: none;
       border-radius: 8px;
-      color: #ffffff;
-      padding: 0.85rem 1.25rem;
+      color: #000000;
+      padding: 0.9rem 1.25rem;
       font-size: 0.95rem;
       font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
       width: 100%;
       text-align: center;
-      transition: all 0.15s;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: opacity 0.15s;
     }
 
-    .btn-action:hover {
-      background: #059669;
-      transform: translateY(-1px);
+    .btn-main:hover {
+      opacity: 0.9;
     }
 
-    /* ESTADISTICAS */
+    /* FILA DE ESTADÍSTICAS MINIMALISTA */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 0.9rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
     }
 
     .stat-box {
@@ -355,49 +280,50 @@
     }
 
     .stat-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--accent-green);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
     }
 
     .stat-lbl {
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      font-size: 0.75rem;
+      color: var(--text-dim);
       text-transform: uppercase;
       font-weight: 600;
-      margin-top: 0.2rem;
+      margin-top: 0.1rem;
     }
 
-    /* CAJA DE CODIGO VERCEL / GOOGLE DOCS CON BOTON DE COPIAR INTEGRADO */
-    .code-container {
-      position: relative;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
+    /* FILAS DE CÓDIGO CON BOTÓN INTEGRADO (SIN MONOESPACIADO) */
+    .code-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1rem 1.2rem;
+      padding: 0.85rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      width: 100%;
+      word-break: break-all;
     }
 
     .code-text {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--accent-green);
-      font-size: 0.95rem;
-      word-break: break-all;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      font-family: inherit;
+      line-height: 1.4;
     }
 
     .btn-copy {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-color);
+      background: transparent;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      color: var(--text-primary);
-      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.45rem 0.8rem;
+      font-family: inherit;
+      padding: 0.4rem 0.75rem;
       cursor: pointer;
       transition: all 0.15s;
       white-space: nowrap;
@@ -405,160 +331,123 @@
     }
 
     .btn-copy:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--text-secondary);
+      color: var(--text);
+      border-color: var(--text-dim);
     }
 
     .btn-copy.copied {
-      background: var(--accent-green-glow);
-      border-color: var(--accent-green);
-      color: var(--accent-green);
+      border-color: var(--green);
+      color: var(--green);
     }
 
     canvas {
       width: 100%;
-      height: 160px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
+      height: 150px;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
     }
 
-    /* SECCION DE DOCUMENTACION FORMATO GOOGLE API */
-    .doc-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .doc-block {
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
+    /* TABLAS RESPONSIVAS SIN DESPLAZAMIENTO HORIZONTAL EN MÓVILES */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
     }
 
-    .doc-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .doc-desc {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* TABLA FORMATO VERCEL */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 0.5rem;
       font-size: 0.875rem;
-    }
-
-    th, td {
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.75rem 1rem;
       text-align: left;
     }
 
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
     th {
-      background: var(--bg-input);
-      color: var(--text-secondary);
+      background: var(--surface);
+      color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
     }
 
     td {
-      color: var(--text-primary);
+      color: var(--text);
     }
 
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
+    tr:last-child td {
+      border-bottom: none;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- BARRA SUPERIOR DE NAVEGACION ESTILO VERCEL -->
-  <header class="docs-navbar">
-    <div class="brand-section">
-      <span class="brand-badge">Minecraft Bedrock</span>
-      <span class="brand-title">Centro de Documentación & Protección</span>
-    </div>
-    <div class="tab-navigation">
+  <!-- ENCABEZADO MONOCROMÁTICO -->
+  <header>
+    <div class="header-title">Minecraft Bedrock</div>
+    <div class="header-sub">Documentación Oficial y Generador de Comandos</div>
+
+    <!-- PESTAÑAS MINIMALISTAS -->
+    <div class="nav-tabs">
       <div class="nav-tab active" onclick="switchTab('generator')">Generador /fill</div>
       <div class="nav-tab" onclick="switchTab('guide')">Guía de Comandos</div>
       <div class="nav-tab" onclick="switchTab('security')">Plan de Seguridad</div>
     </div>
   </header>
 
-  <!-- PESTAÑA 1: GENERADOR DE COMANDOS /FILL -->
+  <!-- PESTAÑA 1: GENERADOR DE COMANDOS -->
   <div id="tab-generator" class="tab-content active">
-    <div class="main-grid">
-      <!-- FORMULARIO DE ENTRADA -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Configuración de Coordenadas</div>
-          <div class="card-subtitle">Ingresa X y Z de cada esquina y la altura Y del suelo</div>
-        </div>
-
-        <div class="coord-card-group">
-          <div class="coord-header">Esquina 1 (Punto A)</div>
-          <div class="xz-grid">
-            <div class="field-group">
-              <label>Coordenada X1</label>
-              <input type="number" id="x1" value="100" placeholder="X1" oninput="calculate()">
-            </div>
-            <div class="field-group">
-              <label>Coordenada Z1</label>
-              <input type="number" id="z1" value="-200" placeholder="Z1" oninput="calculate()">
-            </div>
+    <div class="grid-2">
+      <!-- PANEL IZQUIERDO -->
+      <div class="section-group">
+        <div class="section-title">Coordenadas del Terreno</div>
+        
+        <div class="grid-2">
+          <div class="input-box">
+            <label>X1 (Esquina A)</label>
+            <input type="number" id="x1" value="100" placeholder="100" oninput="calculate()">
+          </div>
+          <div class="input-box">
+            <label>Z1 (Esquina A)</label>
+            <input type="number" id="z1" value="-200" placeholder="-200" oninput="calculate()">
           </div>
         </div>
 
-        <div class="coord-card-group">
-          <div class="coord-header">Esquina 2 (Punto B)</div>
-          <div class="xz-grid">
-            <div class="field-group">
-              <label>Coordenada X2</label>
-              <input type="number" id="x2" value="130" placeholder="X2" oninput="calculate()">
-            </div>
-            <div class="field-group">
-              <label>Coordenada Z2</label>
-              <input type="number" id="z2" value="-170" placeholder="Z2" oninput="calculate()">
-            </div>
+        <div class="grid-2">
+          <div class="input-box">
+            <label>X2 (Esquina B)</label>
+            <input type="number" id="x2" value="130" placeholder="130" oninput="calculate()">
+          </div>
+          <div class="input-box">
+            <label>Z2 (Esquina B)</label>
+            <input type="number" id="z2" value="-170" placeholder="-170" oninput="calculate()">
           </div>
         </div>
 
-        <div class="coord-card-group" style="border-color: rgba(16, 185, 129, 0.3);">
-          <div class="coord-header" style="color: var(--accent-green);">Altura del Suelo (Y Única)</div>
+        <div class="input-box">
+          <label>Altura del Suelo (Y Única)</label>
           <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
         </div>
 
-        <div class="card-header" style="padding-top: 0.5rem;">
-          <div class="card-title">Tipo de Bloque de Protección</div>
-        </div>
-        <div class="block-selector">
-          <div class="block-card active-claim" id="card-claim" onclick="setBlockType('claim')">
-            <div class="block-name" style="color: var(--accent-green);">Claim Marker</div>
-            <div class="block-desc">aal:claim_marker (Casas de Jugadores)</div>
+        <div class="section-title" style="margin-top: 0.5rem;">Tipo de Bloque</div>
+        <div class="option-grid">
+          <div class="option-card active" id="card-claim" onclick="setBlockType('claim')">
+            <div class="option-title">Claim Marker</div>
+            <div class="option-subtitle">Casas de Jugadores</div>
           </div>
-          <div class="block-card" id="card-deny" onclick="setBlockType('deny')">
-            <div class="block-name" style="color: var(--accent-red);">Deny Block</div>
-            <div class="block-desc">minecraft:deny (Spawn y Mercados)</div>
+          <div class="option-card" id="card-deny" onclick="setBlockType('deny')">
+            <div class="option-title">Deny Block</div>
+            <div class="option-subtitle">Spawn y Mercados</div>
           </div>
         </div>
 
-        <div class="card-header" style="padding-top: 0.5rem;">
-          <div class="card-title">Profundidad del Perímetro</div>
-        </div>
+        <div class="section-title" style="margin-top: 0.5rem;">Profundidad</div>
         <div class="layer-selector">
           <div class="layer-btn active" id="mode-under" onclick="setLayerMode('under')">Bajo suelo (Y-1)</div>
           <div class="layer-btn" id="mode-exact" onclick="setLayerMode('exact')">En superficie (Y)</div>
@@ -566,13 +455,9 @@
         </div>
       </div>
 
-      <!-- MAPA Y ESTADISTICAS -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Previsualización del Área</div>
-          <div class="card-subtitle">Representación 2D del terreno a proteger</div>
-        </div>
-
+      <!-- PANEL DERECHO -->
+      <div class="section-group">
+        <div class="section-title">Vista Previa y Resultados</div>
         <canvas id="mapCanvas"></canvas>
 
         <div class="stats-row">
@@ -590,180 +475,121 @@
           </div>
         </div>
 
-        <button class="btn-action" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
+        <button class="btn-main" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
       </div>
     </div>
 
-    <!-- RESULTADO -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Comando /fill Listo</div>
-        <div class="card-subtitle">Copia y pega directamente en la consola del servidor de Minecraft</div>
-      </div>
+    <!-- RESULTADO DEL COMANDO -->
+    <div class="section-group">
+      <div class="section-title">Comando /fill Listo</div>
       <div id="commands-container"></div>
     </div>
   </div>
 
   <!-- PESTAÑA 2: GUÍA DE COMANDOS -->
   <div id="tab-guide" class="tab-content">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Guía de Comandos de Administración</div>
-        <div class="card-subtitle">Comandos oficiales para obtener items de protección y gestionar el auditor</div>
+    <div class="section-group">
+      <div class="section-title">1. Obtención de Bloques y Brújula</div>
+      <div class="section-desc">Ejecuta estos comandos en el chat siendo Operador (OP):</div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-claim">/give @s aal:claim_marker 64</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-claim', this)">Copiar</button>
       </div>
 
-      <div class="doc-section">
-        <div class="doc-block">
-          <div class="doc-title">1. Comandos de Obtención de Items (/give)</div>
-          <div class="doc-desc">Ejecuta estos comandos en el chat del juego teniendo permisos de Operador (OP):</div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-deny">/give @s deny 64</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-deny', this)">Copiar</button>
+      </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-claim">/give @s aal:claim_marker 64</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-claim', this)">Copiar</button>
-          </div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-compass">/give @s recovery_compass 1</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-compass', this)">Copiar</button>
+      </div>
+    </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-deny">/give @s deny 64</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-deny', this)">Copiar</button>
-          </div>
+    <div class="section-group">
+      <div class="section-title">2. Asignar Bloques a Administradores</div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-compass">/give @s recovery_compass 1</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-compass', this)">Copiar</button>
-          </div>
-        </div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-teo">/give teoremasine aal:claim_marker 64</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-teo', this)">Copiar</button>
+      </div>
 
-        <div class="doc-block">
-          <div class="doc-title">2. Asignar Bloques a Administradores Autorizados</div>
-          
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-teo">/give teoremasine aal:claim_marker 64</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-teo', this)">Copiar</button>
-          </div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-julio">/give julioverx aal:claim_marker 64</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-julio', this)">Copiar</button>
+      </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-julio">/give julioverx aal:claim_marker 64</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-julio', this)">Copiar</button>
-          </div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-danix">/give danix2410 aal:claim_marker 64</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-danix', this)">Copiar</button>
+      </div>
+    </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-give-danix">/give danix2410 aal:claim_marker 64</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-give-danix', this)">Copiar</button>
-          </div>
-        </div>
+    <div class="section-group">
+      <div class="section-title">3. Comparativa de Bloques</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Bloque ID</th>
+              <th>Uso Recomendado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 600;">Indestructible</td>
+              <td>minecraft:deny</td>
+              <td>Spawn, Tiendas y Zonas Públicas.</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 600;">Monitoreada</td>
+              <td>aal:claim_marker</td>
+              <td>Casas de Jugadores y Parcelas Privadas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-        <div class="doc-block">
-          <div class="doc-title">3. Comparativa entre Tipos de Protección</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Tipo de Zona</th>
-                <th>Bloque Requerido</th>
-                <th>Comportamiento de Jugadores</th>
-                <th>Uso Recomendado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="color: var(--accent-red); font-weight: 600;">Indestructible</td>
-                <td><code style="color: var(--accent-cyan)">minecraft:deny</code></td>
-                <td>Ningún jugador sin OP puede colocar o romper bloques.</td>
-                <td>Spawn, Tiendas del Servidor, Monumentos.</td>
-              </tr>
-              <tr>
-                <td style="color: var(--accent-green); font-weight: 600;">Monitoreada</td>
-                <td><code style="color: var(--accent-cyan)">aal:claim_marker</code></td>
-                <td>Construcción libre, pero cada bloque roto genera un registro de auditoría.</td>
-                <td>Casas de jugadores, Parcelas privadas.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="doc-block">
-          <div class="doc-title">4. Uso de la Brújula de Auditoría para Inspección</div>
-          <div class="doc-desc">
-            1. Sostén la <strong>Brújula de Recuperación (recovery_compass)</strong> e interactúa en pantalla.<br>
-            2. Selecciona la <strong>Opción 8. Protected Area Block Break Logs</strong>.<br>
-            3. Revisa la lista con el nombre del jugador, bloque destruido, fecha y coordenadas.<br>
-            4. Usa el comando de teletransporte para la inspección in situ:
-          </div>
-          <div class="code-container">
-            <span class="code-text" id="cmd-tp-example">/tp @s X Y Z</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-tp-example', this)">Copiar</button>
-          </div>
-        </div>
+    <div class="section-group">
+      <div class="section-title">4. Auditoría e Inspección</div>
+      <div class="section-desc">
+        Sostén la Brújula de Recuperación y selecciona la Opción 8 (Protected Area Block Break Logs). Usa el comando de teletransporte para la inspección:
+      </div>
+      <div class="code-row">
+        <span class="code-text" id="cmd-tp">/tp @s X Y Z</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-tp', this)">Copiar</button>
       </div>
     </div>
   </div>
 
-  <!-- PESTAÑA 3: PLAN DE SEGURIDAD NATIVO -->
+  <!-- PESTAÑA 3: PLAN DE SEGURIDAD -->
   <div id="tab-security" class="tab-content">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Plan de Seguridad Anti-Griefing</div>
-        <div class="card-subtitle">Reglas de servidor para prevenir fuego, explosiones y destrucción</div>
+    <div class="section-group">
+      <div class="section-title">Reglas del Servidor (Gamerules)</div>
+      <div class="section-desc">Reglas nativas de protección anti-griefing:</div>
+
+      <div class="code-row">
+        <span class="code-text" id="gr-tnt">/gamerule tntexplodes false</span>
+        <button class="btn-copy" onclick="copySnippet('gr-tnt', this)">Copiar</button>
       </div>
 
-      <div class="doc-section">
-        <div class="doc-block">
-          <div class="doc-title">1. Reglas Globales del Servidor (Gamerules)</div>
+      <div class="code-row">
+        <span class="code-text" id="gr-mob">/gamerule mobgriefing false</span>
+        <button class="btn-copy" onclick="copySnippet('gr-mob', this)">Copiar</button>
+      </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-gr-tnt">/gamerule tntexplodes false</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-gr-tnt', this)">Copiar</button>
-          </div>
+      <div class="code-row">
+        <span class="code-text" id="gr-fire">/gamerule fireSpreads false</span>
+        <button class="btn-copy" onclick="copySnippet('gr-fire', this)">Copiar</button>
+      </div>
 
-          <div class="code-container">
-            <span class="code-text" id="cmd-gr-mob">/gamerule mobgriefing false</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-gr-mob', this)">Copiar</button>
-          </div>
-
-          <div class="code-container">
-            <span class="code-text" id="cmd-gr-fire">/gamerule fireSpreads false</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-gr-fire', this)">Copiar</button>
-          </div>
-
-          <div class="code-container">
-            <span class="code-text" id="cmd-gr-coords">/gamerule showcoordinates true</span>
-            <button class="btn-copy" onclick="copySnippet('cmd-gr-coords', this)">Copiar</button>
-          </div>
-        </div>
-
-        <div class="doc-block">
-          <div class="doc-title">2. Tabla Rápida de Referencia</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Función</th>
-                <th>Comando</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Brújula Auditora</td>
-                <td><code style="color: var(--accent-cyan)">/give @s recovery_compass 1</code></td>
-                <td><button class="btn-copy" onclick="copyDirect('/give @s recovery_compass 1', this)">Copiar</button></td>
-              </tr>
-              <tr>
-                <td>Marcador de Casas</td>
-                <td><code style="color: var(--accent-cyan)">/give @s aal:claim_marker 64</code></td>
-                <td><button class="btn-copy" onclick="copyDirect('/give @s aal:claim_marker 64', this)">Copiar</button></td>
-              </tr>
-              <tr>
-                <td>Bloque Deny</td>
-                <td><code style="color: var(--accent-cyan)">/give @s deny 64</code></td>
-                <td><button class="btn-copy" onclick="copyDirect('/give @s deny 64', this)">Copiar</button></td>
-              </tr>
-              <tr>
-                <td>Desactivar TNT</td>
-                <td><code style="color: var(--accent-cyan)">/gamerule tntexplodes false</code></td>
-                <td><button class="btn-copy" onclick="copyDirect('/gamerule tntexplodes false', this)">Copiar</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="code-row">
+        <span class="code-text" id="gr-coords">/gamerule showcoordinates true</span>
+        <button class="btn-copy" onclick="copySnippet('gr-coords', this)">Copiar</button>
       </div>
     </div>
   </div>
@@ -792,8 +618,8 @@
 
   function setBlockType(type) {
     selectedBlockType = type;
-    document.getElementById('card-claim').className = 'block-card' + (type === 'claim' ? ' active-claim' : '');
-    document.getElementById('card-deny').className = 'block-card' + (type === 'deny' ? ' active-deny' : '');
+    document.getElementById('card-claim').className = 'option-card' + (type === 'claim' ? ' active' : '');
+    document.getElementById('card-deny').className = 'option-card' + (type === 'deny' ? ' active' : '');
     calculate();
   }
 
@@ -860,7 +686,7 @@
 
     commands.forEach((cmd, idx) => {
       const box = document.createElement('div');
-      box.className = 'code-container';
+      box.className = 'code-row';
       box.innerHTML = `
         <span class="code-text" id="cmd-gen-${idx}">${cmd}</span>
         <button class="btn-copy" onclick="copySnippet('cmd-gen-${idx}', this)">Copiar</button>
@@ -874,18 +700,7 @@
   function copySnippet(elementId, btn) {
     const text = document.getElementById(elementId).innerText;
     navigator.clipboard.writeText(text).then(() => {
-      btn.innerText = '¡Copiado!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.innerText = 'Copiar';
-        btn.classList.remove('copied');
-      }, 2000);
-    });
-  }
-
-  function copyDirect(text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
-      btn.innerText = '¡Copiado!';
+      btn.innerText = 'Copiado';
       btn.classList.add('copied');
       setTimeout(() => {
         btn.innerText = 'Copiar';
@@ -910,7 +725,7 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    ctx.strokeStyle = '#1e293b';
+    ctx.strokeStyle = '#27272a';
     ctx.lineWidth = 1;
     for (let x = 0; x < w; x += 16) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -934,15 +749,15 @@
     const rectY = (h - rectH) / 2;
 
     const isClaim = (selectedBlockType === 'claim');
-    ctx.fillStyle = isClaim ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)';
-    ctx.strokeStyle = isClaim ? '#10b981' : '#f43f5e';
-    ctx.lineWidth = 2;
+    ctx.fillStyle = isClaim ? 'rgba(255, 255, 255, 0.1)' : 'rgba(244, 63, 94, 0.15)';
+    ctx.strokeStyle = isClaim ? '#ffffff' : '#f43f5e';
+    ctx.lineWidth = 1.5;
 
     ctx.fillRect(rectX, rectY, rectW, rectH);
     ctx.strokeRect(rectX, rectY, rectW, rectH);
 
-    ctx.fillStyle = isClaim ? '#10b981' : '#f43f5e';
-    ctx.font = '600 12px Inter, sans-serif';
+    ctx.fillStyle = isClaim ? '#ffffff' : '#f43f5e';
+    ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
     ctx.textAlign = 'center';
     const label = isClaim ? 'Zona Claim Marker' : 'Zona Deny Indestructible';
     ctx.fillText(`${label} (${(maxX-minX+1)}x${(maxZ-minZ+1)} m)`, w / 2, rectY - 8);
