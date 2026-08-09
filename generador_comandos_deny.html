@@ -52,6 +52,7 @@
       display: flex;
       flex-direction: column;
       gap: 2rem;
+      position: relative;
     }
 
     header {
@@ -160,6 +161,14 @@
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      position: relative;
+    }
+
+    .section-header-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
     }
 
     .section-title {
@@ -179,6 +188,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
+      position: relative;
     }
 
     .input-box label {
@@ -208,6 +218,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.85rem;
+      position: relative;
     }
 
     .option-card {
@@ -282,6 +293,7 @@
       width: 100%;
       text-align: center;
       transition: opacity 0.15s;
+      position: relative;
     }
 
     .btn-main:hover {
@@ -404,81 +416,101 @@
       border-bottom: none;
     }
 
-    .tutorial-modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      display: none;
+    .hotspot-beacon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #000000;
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      cursor: pointer;
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse-beacon 1.8s infinite;
+      z-index: 10;
     }
 
-    .tutorial-modal-overlay.active {
-      display: flex;
+    @keyframes pulse-beacon {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
-    .tutorial-modal {
+    .hotspot-target-highlight {
+      border-color: var(--green) !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+      z-index: 20;
+    }
+
+    .hotspot-popover {
+      position: absolute;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      max-width: 500px;
-      width: 100%;
-      display: flex;
+      border: 1px solid var(--green);
+      border-radius: 10px;
+      padding: 1.1rem;
+      width: 280px;
+      z-index: 99;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      display: none;
       flex-direction: column;
-      gap: 1.25rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      gap: 0.6rem;
     }
 
-    .tutorial-step-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
+    .hotspot-popover.active {
+      display: flex;
+    }
+
+    .hotspot-popover-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
       color: var(--green);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
-    .tutorial-modal-title {
-      font-size: 1.25rem;
+    .hotspot-popover-title {
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text);
     }
 
-    .tutorial-modal-body {
-      font-size: 0.92rem;
+    .hotspot-popover-body {
+      font-size: 0.82rem;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    .tutorial-modal-footer {
+    .hotspot-popover-footer {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 0.5rem;
+      justify-content: space-between;
+      margin-top: 0.4rem;
     }
 
-    .btn-tut-nav {
+    .btn-popover-nav {
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 4px;
       color: var(--text);
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      padding: 0.35rem 0.7rem;
       cursor: pointer;
     }
 
-    .btn-tut-next {
-      background: var(--accent);
+    .btn-popover-next {
+      background: var(--green);
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       color: #000;
-      padding: 0.5rem 1.2rem;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 700;
+      padding: 0.35rem 0.8rem;
       cursor: pointer;
     }
   </style>
@@ -492,8 +524,8 @@
         <div class="header-title">Minecraft Bedrock</div>
         <div class="header-sub">Documentación Oficial y Generador de Comandos</div>
       </div>
-      <button class="btn-tutorial" onclick="startTutorial()">
-        Ver Tutorial Interactivo
+      <button class="btn-tutorial" onclick="startHotspotTour()">
+        Ver Hotspots Interactivos
       </button>
     </div>
 
@@ -506,11 +538,14 @@
 
   <div id="tab-generator" class="tab-content active">
     <div class="grid-2">
-      <div class="section-group">
-        <div class="section-title">Coordenadas del Terreno</div>
-        
+      <div class="section-group" id="hs-target-1">
+        <div class="section-header-box">
+          <div class="section-title">Coordenadas del Terreno</div>
+          <div class="hotspot-beacon" onclick="triggerHotspot(0)">1</div>
+        </div>
+
         <div class="grid-2">
-          <div class="input-box" id="step-coords-1">
+          <div class="input-box">
             <label>X1 (Esquina A)</label>
             <input type="number" id="x1" value="100" placeholder="100" oninput="calculate()">
           </div>
@@ -531,20 +566,28 @@
           </div>
         </div>
 
-        <div class="input-box" id="step-yground">
-          <label>Altura del Suelo (Y Única)</label>
+        <div class="input-box" id="hs-target-2">
+          <div class="section-header-box">
+            <label style="color: var(--text);">Altura del Suelo (Y Única)</label>
+            <div class="hotspot-beacon" onclick="triggerHotspot(1)">2</div>
+          </div>
           <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
         </div>
 
-        <div class="section-title" style="margin-top: 0.5rem;">Tipo de Bloque</div>
-        <div class="option-grid" id="step-blocktype">
-          <div class="option-card active" id="card-claim" onclick="setBlockType('claim')">
-            <div class="option-title">Claim Marker</div>
-            <div class="option-subtitle">Casas de Jugadores</div>
+        <div class="section-group" id="hs-target-3">
+          <div class="section-header-box">
+            <div class="section-title">Tipo de Bloque</div>
+            <div class="hotspot-beacon" onclick="triggerHotspot(2)">3</div>
           </div>
-          <div class="option-card" id="card-deny" onclick="setBlockType('deny')">
-            <div class="option-title">Deny Block</div>
-            <div class="option-subtitle">Spawn y Mercados</div>
+          <div class="option-grid">
+            <div class="option-card active" id="card-claim" onclick="setBlockType('claim')">
+              <div class="option-title">Claim Marker</div>
+              <div class="option-subtitle">Casas de Jugadores</div>
+            </div>
+            <div class="option-card" id="card-deny" onclick="setBlockType('deny')">
+              <div class="option-title">Deny Block</div>
+              <div class="option-subtitle">Spawn y Mercados</div>
+            </div>
           </div>
         </div>
 
@@ -556,7 +599,7 @@
         </div>
       </div>
 
-      <div class="section-group">
+      <div class="section-group" id="hs-target-4">
         <div class="section-title">Vista Previa Animada y Resultados</div>
         <canvas id="mapCanvas"></canvas>
 
@@ -575,7 +618,10 @@
           </div>
         </div>
 
-        <button class="btn-main" id="step-copybtn" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
+        <div style="position: relative;">
+          <button class="btn-main" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
+          <div class="hotspot-beacon" style="top:-10px; right:-10px;" onclick="triggerHotspot(3)">4</div>
+        </div>
       </div>
     </div>
 
@@ -702,17 +748,15 @@
   </div>
 </div>
 
-<div class="tutorial-modal-overlay" id="tutorialOverlay">
-  <div class="tutorial-modal">
-    <div class="tutorial-step-tag" id="tutStepTag">Paso 1 de 4</div>
-    <div class="tutorial-modal-title" id="tutTitle">Bienvenido al Generador de Protección</div>
-    <div class="tutorial-modal-body" id="tutBody">
-      Te guiaremos en 4 sencillos pasos para crear comandos de protección perfectos para tu servidor.
-    </div>
-    <div class="tutorial-modal-footer">
-      <button class="btn-tut-nav" onclick="closeTutorial()">Saltar</button>
-      <button class="btn-tut-next" id="tutBtnNext" onclick="nextTutorialStep()">Siguiente</button>
-    </div>
+<div class="hotspot-popover" id="hotspotPopover">
+  <div class="hotspot-popover-tag" id="hsTag">Hotspot 1 / 4</div>
+  <div class="hotspot-popover-title" id="hsTitle">Esquinas A y B</div>
+  <div class="hotspot-popover-body" id="hsBody">
+    Ingresa aquí las coordenadas X y Z de la primera esquina y de la esquina diagonal opuesta.
+  </div>
+  <div class="hotspot-popover-footer">
+    <button class="btn-popover-nav" onclick="closeHotspotPopover()">Cerrar</button>
+    <button class="btn-popover-next" id="hsBtnNext" onclick="nextHotspot()">Siguiente</button>
   </div>
 </div>
 
@@ -903,69 +947,97 @@
     ctx.fillText(`${label} (${(maxX-minX+1)}x${(maxZ-minZ+1)} m)`, w / 2, rectY - 8);
   }
 
-  let tutStep = 0;
-  const tutSteps = [
+  let currentHsIndex = 0;
+  const hotspotData = [
     {
-      title: "Paso 1: Ingresa las Esquinas",
-      body: "Obtén tus coordenadas in-game (X y Z) en la primera esquina de tu casa (Punto A) y luego en la esquina opuesta en diagonal (Punto B).",
-      tag: "Paso 1 de 4"
+      targetId: 'hs-target-1',
+      tag: 'Hotspot 1 / 4',
+      title: 'Esquinas A y B',
+      body: 'Ingresa las coordenadas X y Z de las esquinas opuestas de tu terreno.'
     },
     {
-      title: "Paso 2: Define la Altura Y",
-      body: "Ingresa la altura del suelo una sola vez (ejemplo: Y = 64). Esto evita llenar bloques no deseados en la superficie.",
-      tag: "Paso 2 de 4"
+      targetId: 'hs-target-2',
+      tag: 'Hotspot 2 / 4',
+      title: 'Altura del Suelo Y',
+      body: 'Coloca el nivel de altura Y del terreno una sola vez para fijar la profundidad del área.'
     },
     {
-      title: "Paso 3: Selecciona el Tipo de Bloque",
-      body: "Elige 'Claim Marker' para registrar la rotura de bloques en casas privadas o 'Deny Block' para áreas públicas totalmente indestructibles.",
-      tag: "Paso 3 de 4"
+      targetId: 'hs-target-3',
+      tag: 'Hotspot 3 / 4',
+      title: 'Tipo de Protección',
+      body: 'Elige Claim Marker para auditar roturas en casas o Deny Block para áreas indestructibles.'
     },
     {
-      title: "Paso 4: Copia tu Comando",
-      body: "Haz clic en 'Generar y Copiar Comando' y pégalo directamente en el chat de Minecraft para aplicar la protección al instante.",
-      tag: "Paso 4 de 4"
+      targetId: 'hs-target-4',
+      tag: 'Hotspot 4 / 4',
+      title: 'Generar y Copiar',
+      body: 'Haz clic en el botón para copiar el comando /fill directamente a tu portapapeles.'
     }
   ];
 
-  function startTutorial() {
-    tutStep = 0;
-    showTutorialStep();
-    document.getElementById('tutorialOverlay').classList.add('active');
+  function startHotspotTour() {
+    switchTab('generator');
+    currentHsIndex = 0;
+    showHotspotPopover(currentHsIndex);
   }
 
-  function showTutorialStep() {
-    const step = tutSteps[tutStep];
-    document.getElementById('tutStepTag').innerText = step.tag;
-    document.getElementById('tutTitle').innerText = step.title;
-    document.getElementById('tutBody').innerText = step.body;
+  function triggerHotspot(idx) {
+    currentHsIndex = idx;
+    showHotspotPopover(idx);
+  }
 
-    const btnNext = document.getElementById('tutBtnNext');
-    if (tutStep === tutSteps.length - 1) {
-      btnNext.innerText = "¡Entendido!";
+  function showHotspotPopover(idx) {
+    const data = hotspotData[idx];
+    const targetEl = document.getElementById(data.targetId);
+
+    document.querySelectorAll('.hotspot-target-highlight').forEach(el => el.classList.remove('hotspot-target-highlight'));
+    if (targetEl) targetEl.classList.add('hotspot-target-highlight');
+
+    document.getElementById('hsTag').innerText = data.tag;
+    document.getElementById('hsTitle').innerText = data.title;
+    document.getElementById('hsBody').innerText = data.body;
+
+    const btnNext = document.getElementById('hsBtnNext');
+    if (idx === hotspotData.length - 1) {
+      btnNext.innerText = '¡Listo!';
     } else {
-      btnNext.innerText = "Siguiente";
+      btnNext.innerText = 'Siguiente';
+    }
+
+    const popover = document.getElementById('hotspotPopover');
+    popover.classList.add('active');
+
+    if (targetEl) {
+      const rect = targetEl.getBoundingClientRect();
+      const popoverWidth = 280;
+      let leftPos = rect.left + window.scrollX;
+      let topPos = rect.bottom + window.scrollY + 10;
+
+      if (leftPos + popoverWidth > window.innerWidth - 20) {
+        leftPos = window.innerWidth - popoverWidth - 20;
+      }
+
+      popover.style.left = `${Math.max(10, leftPos)}px`;
+      popover.style.top = `${topPos}px`;
     }
   }
 
-  function nextTutorialStep() {
-    if (tutStep < tutSteps.length - 1) {
-      tutStep++;
-      showTutorialStep();
+  function nextHotspot() {
+    if (currentHsIndex < hotspotData.length - 1) {
+      currentHsIndex++;
+      showHotspotPopover(currentHsIndex);
     } else {
-      closeTutorial();
+      closeHotspotPopover();
     }
   }
 
-  function closeTutorial() {
-    document.getElementById('tutorialOverlay').classList.remove('active');
-    localStorage.setItem('tutSeen', 'true');
+  function closeHotspotPopover() {
+    document.querySelectorAll('.hotspot-target-highlight').forEach(el => el.classList.remove('hotspot-target-highlight'));
+    document.getElementById('hotspotPopover').classList.remove('active');
   }
 
   window.onload = function() {
     calculate();
-    if (!localStorage.getItem('tutSeen')) {
-      setTimeout(startTutorial, 600);
-    }
   };
 </script>
 </body>
