@@ -43,18 +43,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 2rem 1.5rem;
     }
 
+    /* CONTENEDOR AMPLIO EN PC (1200px) */
     .container {
       width: 100%;
-      max-width: 800px;
+      max-width: 1200px;
       display: flex;
       flex-direction: column;
       gap: 2rem;
     }
 
-    /* HEADER Y NAVEGACIÓN MINIMALISTA MONOCROMÁTICA */
     header {
       display: flex;
       flex-direction: column;
@@ -63,8 +63,16 @@
       padding-bottom: 1.5rem;
     }
 
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
     .header-title {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       color: var(--text);
@@ -73,12 +81,32 @@
     .header-sub {
       font-size: 0.95rem;
       color: var(--text-muted);
-      margin-top: -0.75rem;
+      margin-top: -0.6rem;
+    }
+
+    .btn-tutorial {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-tutorial:hover {
+      border-color: var(--text-muted);
+      background: #18181b;
     }
 
     .nav-tabs {
       display: flex;
-      gap: 1.5rem;
+      gap: 1.75rem;
       border-bottom: 1px solid transparent;
       overflow-x: auto;
       white-space: nowrap;
@@ -86,7 +114,7 @@
     }
 
     .nav-tab {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-dim);
       cursor: pointer;
@@ -104,7 +132,7 @@
       border-bottom-color: var(--accent);
     }
 
-    /* CONTENIDO DE PESTAÑAS */
+    /* CONTENIDO PESTAÑAS */
     .tab-content {
       display: none;
       flex-direction: column;
@@ -115,7 +143,22 @@
       display: flex;
     }
 
-    /* VISTA DE SECCIONES LIMPIAS (SIN CONTENEDORES PESADOS) */
+    /* GRID ANCHO EN PC */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (max-width: 840px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 1.25rem 0.85rem;
+      }
+    }
+
     .section-group {
       display: flex;
       flex-direction: column;
@@ -123,7 +166,7 @@
     }
 
     .section-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text);
@@ -132,24 +175,10 @@
     .section-desc {
       font-size: 0.9rem;
       color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    /* FORMULARIO DE ENTRADAS */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-    }
-
-    @media (max-width: 640px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-      body {
-        padding: 1.25rem 0.75rem;
-      }
-    }
-
+    /* FORMULARIO */
     .input-box {
       display: flex;
       flex-direction: column;
@@ -167,7 +196,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text);
-      padding: 0.75rem 0.85rem;
+      padding: 0.75rem 0.9rem;
       font-size: 0.95rem;
       font-family: inherit;
       width: 100%;
@@ -179,18 +208,17 @@
       border-color: var(--accent);
     }
 
-    /* SELECTOR DE BLOQUES Y CAPAS MINIMALISTAS */
     .option-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .option-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.85rem 1rem;
+      padding: 0.9rem 1.1rem;
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -208,7 +236,7 @@
     }
 
     .option-title {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: var(--text);
     }
@@ -221,7 +249,7 @@
     .layer-selector {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .layer-btn {
@@ -229,8 +257,8 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text-muted);
-      padding: 0.65rem 0.4rem;
-      font-size: 0.8rem;
+      padding: 0.7rem 0.4rem;
+      font-size: 0.82rem;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
@@ -245,14 +273,13 @@
       font-weight: 700;
     }
 
-    /* BOTÓN PRINCIPAL MONOCROMÁTICO */
     .btn-main {
       background: var(--accent);
       border: none;
       border-radius: 8px;
       color: #000000;
-      padding: 0.9rem 1.25rem;
-      font-size: 0.95rem;
+      padding: 0.95rem 1.25rem;
+      font-size: 1rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
@@ -265,14 +292,13 @@
       opacity: 0.9;
     }
 
-    /* FILA DE ESTADÍSTICAS MINIMALISTA */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 1rem;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 0;
+      padding: 1.1rem 0;
     }
 
     .stat-box {
@@ -280,7 +306,7 @@
     }
 
     .stat-val {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--text);
     }
@@ -293,12 +319,11 @@
       margin-top: 0.1rem;
     }
 
-    /* FILAS DE CÓDIGO CON BOTÓN INTEGRADO (SIN MONOESPACIADO) */
     .code-row {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.85rem 1rem;
+      padding: 0.9rem 1.1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -308,7 +333,7 @@
     }
 
     .code-text {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 500;
       color: var(--text);
       font-family: inherit;
@@ -320,10 +345,10 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
       font-family: inherit;
-      padding: 0.4rem 0.75rem;
+      padding: 0.45rem 0.85rem;
       cursor: pointer;
       transition: all 0.15s;
       white-space: nowrap;
@@ -340,15 +365,15 @@
       color: var(--green);
     }
 
+    /* VISOR 2D ANIMADO */
     canvas {
       width: 100%;
-      height: 150px;
+      height: 180px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
     }
 
-    /* TABLAS RESPONSIVAS SIN DESPLAZAMIENTO HORIZONTAL EN MÓVILES */
     .table-container {
       width: 100%;
       overflow-x: auto;
@@ -364,7 +389,7 @@
     }
 
     th, td {
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.1rem;
       border-bottom: 1px solid var(--border);
     }
 
@@ -383,15 +408,101 @@
     tr:last-child td {
       border-bottom: none;
     }
+
+    /* MODAL DE TUTORIAL GUIADO INTERACTIVO */
+    .tutorial-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .tutorial-modal-overlay.active {
+      display: flex;
+    }
+
+    .tutorial-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .tutorial-step-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tutorial-modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tutorial-modal-body {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .tutorial-modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .btn-tut-nav {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-tut-next {
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: #000;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- ENCABEZADO MONOCROMÁTICO -->
+  <!-- ENCABEZADO MONOCROMÁTICO Y NAVEGACIÓN -->
   <header>
-    <div class="header-title">Minecraft Bedrock</div>
-    <div class="header-sub">Documentación Oficial y Generador de Comandos</div>
+    <div class="header-top">
+      <div>
+        <div class="header-title">Minecraft Bedrock</div>
+        <div class="header-sub">Documentación Oficial y Generador de Comandos</div>
+      </div>
+      <button class="btn-tutorial" onclick="startTutorial()">
+        Ver Tutorial Interactivo
+      </button>
+    </div>
 
     <!-- PESTAÑAS MINIMALISTAS -->
     <div class="nav-tabs">
@@ -409,7 +520,7 @@
         <div class="section-title">Coordenadas del Terreno</div>
         
         <div class="grid-2">
-          <div class="input-box">
+          <div class="input-box" id="step-coords-1">
             <label>X1 (Esquina A)</label>
             <input type="number" id="x1" value="100" placeholder="100" oninput="calculate()">
           </div>
@@ -430,13 +541,13 @@
           </div>
         </div>
 
-        <div class="input-box">
+        <div class="input-box" id="step-yground">
           <label>Altura del Suelo (Y Única)</label>
           <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
         </div>
 
         <div class="section-title" style="margin-top: 0.5rem;">Tipo de Bloque</div>
-        <div class="option-grid">
+        <div class="option-grid" id="step-blocktype">
           <div class="option-card active" id="card-claim" onclick="setBlockType('claim')">
             <div class="option-title">Claim Marker</div>
             <div class="option-subtitle">Casas de Jugadores</div>
@@ -447,7 +558,7 @@
           </div>
         </div>
 
-        <div class="section-title" style="margin-top: 0.5rem;">Profundidad</div>
+        <div class="section-title" style="margin-top: 0.5rem;">Profundidad del Perímetro</div>
         <div class="layer-selector">
           <div class="layer-btn active" id="mode-under" onclick="setLayerMode('under')">Bajo suelo (Y-1)</div>
           <div class="layer-btn" id="mode-exact" onclick="setLayerMode('exact')">En superficie (Y)</div>
@@ -457,7 +568,7 @@
 
       <!-- PANEL DERECHO -->
       <div class="section-group">
-        <div class="section-title">Vista Previa y Resultados</div>
+        <div class="section-title">Vista Previa Animada y Resultados</div>
         <canvas id="mapCanvas"></canvas>
 
         <div class="stats-row">
@@ -475,7 +586,7 @@
           </div>
         </div>
 
-        <button class="btn-main" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
+        <button class="btn-main" id="step-copybtn" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
       </div>
     </div>
 
@@ -486,8 +597,18 @@
     </div>
   </div>
 
-  <!-- PESTAÑA 2: GUÍA DE COMANDOS -->
+  <!-- PESTAÑA 2: GUÍA DE COMANDOS Y TUTORIAL ESCRITO -->
   <div id="tab-guide" class="tab-content">
+    <div class="section-group">
+      <div class="section-title">Cómo usar el Generador de Protección</div>
+      <div class="section-desc">
+        1. <strong>Toma tus coordenadas in-game:</strong> En Minecraft, ubícate en la primera esquina de tu casa y anota X1 y Z1. Luego ve a la esquina opuesta en diagonal y anota X2 y Z2.<br>
+        2. <strong>Ingresa la Altura Y:</strong> Anota el nivel del suelo donde estás parado una sola vez.<br>
+        3. <strong>Elige el Bloque:</strong> Selecciona <em>Claim Marker</em> para casas de usuarios (audita roturas) o <em>Deny</em> para zonas públicas indestructibles.<br>
+        4. <strong>Copia y Ejecuta:</strong> Haz clic en "Generar y Copiar Comando" y pégalo directamente en el chat del juego.
+      </div>
+    </div>
+
     <div class="section-group">
       <div class="section-title">1. Obtención de Bloques y Brújula</div>
       <div class="section-desc">Ejecuta estos comandos en el chat siendo Operador (OP):</div>
@@ -595,9 +716,26 @@
   </div>
 </div>
 
+<!-- MODAL TUTORIAL INTERACTIVO -->
+<div class="tutorial-modal-overlay" id="tutorialOverlay">
+  <div class="tutorial-modal">
+    <div class="tutorial-step-tag" id="tutStepTag">Paso 1 de 4</div>
+    <div class="tutorial-modal-title" id="tutTitle">Bienvenido al Generador de Protección</div>
+    <div class="tutorial-modal-body" id="tutBody">
+      Te guiaremos en 4 sencillos pasos para crear comandos de protección perfectos para tu servidor.
+    </div>
+    <div class="tutorial-modal-footer">
+      <button class="btn-tut-nav" onclick="closeTutorial()">Saltar</button>
+      <button class="btn-tut-next" id="tutBtnNext" onclick="nextTutorialStep()">Siguiente</button>
+    </div>
+  </div>
+</div>
+
 <script>
   let selectedBlockType = 'claim';
   let selectedLayerMode = 'under';
+  let dashOffset = 0;
+  let animationFrameId = null;
 
   function switchTab(tabName) {
     document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
@@ -694,7 +832,7 @@
       container.appendChild(box);
     });
 
-    drawMap(minX, minZ, maxX, maxZ);
+    startMapAnimation(minX, minZ, maxX, maxZ);
   }
 
   function copySnippet(elementId, btn) {
@@ -714,8 +852,21 @@
     if (firstBtn) firstBtn.click();
   }
 
-  function drawMap(minX, minZ, maxX, maxZ) {
+  /* VISOR 2D ANIMADO CON EFECTO DE LÍNEA EN MOVIMIENTO */
+  function startMapAnimation(minX, minZ, maxX, maxZ) {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+    function animate() {
+      dashOffset -= 0.5;
+      drawMap(minX, minZ, maxX, maxZ, dashOffset);
+      animationFrameId = requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  function drawMap(minX, minZ, maxX, maxZ, offset) {
     const canvas = document.getElementById('mapCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -725,8 +876,10 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    ctx.strokeStyle = '#27272a';
+    /* GRID REJILLA DE FONDO */
+    ctx.strokeStyle = '#1e1e24';
     ctx.lineWidth = 1;
+    ctx.setLineDash([]);
     for (let x = 0; x < w; x += 16) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
     }
@@ -737,25 +890,32 @@
     const rangeX = (maxX - minX) || 1;
     const rangeZ = (maxZ - minZ) || 1;
 
-    const padding = 30;
+    const padding = 35;
     const scaleX = (w - padding * 2) / rangeX;
     const scaleZ = (h - padding * 2) / rangeZ;
     const scale = Math.min(scaleX, scaleZ, 4);
 
-    const rectW = Math.max(rangeX * scale, 20);
-    const rectH = Math.max(rangeZ * scale, 20);
+    const rectW = Math.max(rangeX * scale, 24);
+    const rectH = Math.max(rangeZ * scale, 24);
 
     const rectX = (w - rectW) / 2;
     const rectY = (h - rectH) / 2;
 
     const isClaim = (selectedBlockType === 'claim');
-    ctx.fillStyle = isClaim ? 'rgba(255, 255, 255, 0.1)' : 'rgba(244, 63, 94, 0.15)';
-    ctx.strokeStyle = isClaim ? '#ffffff' : '#f43f5e';
-    ctx.lineWidth = 1.5;
 
+    /* RECTÁNGULO DE RELLENO SUAVE */
+    ctx.fillStyle = isClaim ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.15)';
     ctx.fillRect(rectX, rectY, rectW, rectH);
+
+    /* BORDE ANIMADO CON DASHES EN MOVIMIENTO */
+    ctx.strokeStyle = isClaim ? '#10b981' : '#f43f5e';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.lineDashOffset = offset;
     ctx.strokeRect(rectX, rectY, rectW, rectH);
 
+    /* ETIQUETA DE TEXTO */
+    ctx.setLineDash([]);
     ctx.fillStyle = isClaim ? '#ffffff' : '#f43f5e';
     ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
     ctx.textAlign = 'center';
@@ -763,7 +923,71 @@
     ctx.fillText(`${label} (${(maxX-minX+1)}x${(maxZ-minZ+1)} m)`, w / 2, rectY - 8);
   }
 
-  window.onload = calculate;
+  /* SISTEMA DE TUTORIAL GUIADO INTERACTIVO */
+  let tutStep = 0;
+  const tutSteps = [
+    {
+      title: "Paso 1: Ingresa las Esquinas",
+      body: "Obtén tus coordenadas in-game (X y Z) en la primera esquina de tu casa (Punto A) y luego en la esquina opuesta en diagonal (Punto B).",
+      tag: "Paso 1 de 4"
+    },
+    {
+      title: "Paso 2: Define la Altura Y",
+      body: "Ingresa la altura del suelo una sola vez (ejemplo: Y = 64). Esto evita llenar bloques no deseados en la superficie.",
+      tag: "Paso 2 de 4"
+    },
+    {
+      title: "Paso 3: Selecciona el Tipo de Bloque",
+      body: "Elige 'Claim Marker' para registrar la rotura de bloques en casas privadas o 'Deny Block' para áreas públicas totalmente indestructibles.",
+      tag: "Paso 3 de 4"
+    },
+    {
+      title: "Paso 4: Copia tu Comando",
+      body: "Haz clic en 'Generar y Copiar Comando' y pégalo directamente en el chat de Minecraft para aplicar la protección al instante.",
+      tag: "Paso 4 de 4"
+    }
+  ];
+
+  function startTutorial() {
+    tutStep = 0;
+    showTutorialStep();
+    document.getElementById('tutorialOverlay').classList.add('active');
+  }
+
+  function showTutorialStep() {
+    const step = tutSteps[tutStep];
+    document.getElementById('tutStepTag').innerText = step.tag;
+    document.getElementById('tutTitle').innerText = step.title;
+    document.getElementById('tutBody').innerText = step.body;
+
+    const btnNext = document.getElementById('tutBtnNext');
+    if (tutStep === tutSteps.length - 1) {
+      btnNext.innerText = "¡Entendido!";
+    } else {
+      btnNext.innerText = "Siguiente";
+    }
+  }
+
+  function nextTutorialStep() {
+    if (tutStep < tutSteps.length - 1) {
+      tutStep++;
+      showTutorialStep();
+    } else {
+      closeTutorial();
+    }
+  }
+
+  function closeTutorial() {
+    document.getElementById('tutorialOverlay').classList.remove('active');
+    localStorage.setItem('tutSeen', 'true');
+  }
+
+  window.onload = function() {
+    calculate();
+    if (!localStorage.getItem('tutSeen')) {
+      setTimeout(startTutorial, 600);
+    }
+  };
 </script>
 </body>
 </html>
