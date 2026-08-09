@@ -3,66 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentación y Generador — Minecraft Bedrock</title>
+  <title>Documentación & Generador — Minecraft Bedrock</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* PALETA DE TONOS MARRÓN TIERRA MINECRAFT LAUNCHER UI */
-      --mc-dirt-dark: #211610;
-      --mc-dirt-card: #38261b;
-      --mc-dirt-panel: #4a3425;
-      --mc-dirt-border: #634734;
-      --mc-input-bg: #140d09;
+      /* VERCEL / GOOGLE API MODERN DARK PALETTE */
+      --bg-main: #090d16;
+      --bg-card: #111827;
+      --bg-input: #0b0f19;
+      --bg-hover: #1f293d;
       
-      --mc-green-btn: #388e3c;
-      --mc-green-hover: #43a047;
-      --mc-green-border: #55ff55;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: #10b981;
       
-      --mc-text-main: #ffffff;
-      --mc-text-sub: #d0c0b0;
-      --mc-text-muted: #968070;
-      --mc-yellow-gold: #ffff55;
-      --mc-red-border: #ff5555;
-      --mc-aqua: #55ffff;
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-red: #f43f5e;
+      --accent-yellow: #f59e0b;
+      
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      image-rendering: pixelated;
     }
 
     body {
-      background-color: var(--mc-dirt-dark);
-      background-image: 
-        radial-gradient(circle at 50% 0%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2338261b' d='M0 0h16v16H0z'/%3E%3Cpath fill='%232b1e16' d='M0 0h8v8H0z'/%3E%3C/svg%3E");
-      color: var(--mc-text-main);
-      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 1.5rem 1rem;
+      line-height: 1.5;
     }
 
     .container {
       width: 100%;
-      max-width: 960px;
+      max-width: 1020px;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
-    .launcher-navbar {
-      background: var(--mc-dirt-card);
-      border: 3px solid #000000;
-      box-shadow: inset 2px 2px 0 var(--mc-dirt-border), inset -2px -2px 0 #180f0a;
-      border-radius: 6px;
-      padding: 0.85rem 1.25rem;
+    .docs-navbar {
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.9rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -71,131 +69,141 @@
       gap: 1rem;
     }
 
-    .launcher-brand {
+    .brand-section {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.8rem;
     }
 
-    .brand-tag {
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      color: var(--mc-green-border);
-      letter-spacing: 1px;
+    .brand-badge {
+      background: var(--accent-green-glow);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .brand-title {
-      font-family: 'VT323', monospace;
-      font-size: 1.4rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      color: var(--mc-yellow-gold);
-      letter-spacing: 1px;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
     }
 
-    .nav-items {
+    .tab-navigation {
       display: flex;
-      gap: 0.75rem;
-      font-family: 'VT323', monospace;
-      font-size: 1.15rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.25rem;
+      gap: 0.25rem;
     }
 
     .nav-tab {
-      background: var(--mc-dirt-panel);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      color: var(--mc-text-sub);
-      padding: 0.4rem 0.8rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.1s;
+      transition: all 0.15s ease;
+      user-select: none;
     }
 
     .nav-tab:hover {
-      background: var(--mc-green-btn);
-      color: #ffffff;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .nav-tab.active {
-      background: var(--mc-green-btn);
-      border-color: var(--mc-green-border);
-      color: var(--mc-yellow-gold);
-      box-shadow: inset 2px 2px 0 #70c474, inset -2px -2px 0 #1b4d1e;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
     .tab-content {
       display: none;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     .tab-content.active {
       display: flex;
     }
 
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .card-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     @media (max-width: 768px) {
       .main-grid {
         grid-template-columns: 1fr;
       }
-      .nav-items {
+      .docs-navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .tab-navigation {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
       }
-      body {
-        padding: 1rem 0.5rem;
+      .nav-tab {
+        flex: 1;
+        text-align: center;
       }
     }
 
-    .card {
-      background: var(--mc-dirt-card);
-      border: 3px solid #000000;
-      box-shadow: inset 3px 3px 0 var(--mc-dirt-border), inset -3px -3px 0 #180f0a;
-      border-radius: 6px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .card-header {
-      border-bottom: 2px solid var(--mc-dirt-border);
-      padding-bottom: 0.75rem;
-    }
-
-    .card-title {
-      font-family: 'VT323', monospace;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--mc-yellow-gold);
-      letter-spacing: 1px;
-    }
-
-    .card-subtitle {
-      font-size: 0.85rem;
-      color: var(--mc-text-sub);
-      margin-top: 0.2rem;
-      line-height: 1.4;
-    }
-
-    .coord-section {
-      background: var(--mc-dirt-panel);
-      border: 2px solid #000000;
-      box-shadow: inset 2px 2px 0 #6e5039, inset -2px -2px 0 #1d130d;
-      border-radius: 4px;
+    .coord-card-group {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
       padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.8rem;
     }
 
-    .coord-group-title {
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      color: var(--mc-text-main);
+    .coord-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
@@ -205,146 +213,133 @@
       gap: 0.75rem;
     }
 
-    .single-y-box {
-      background: var(--mc-input-bg);
-      border: 2px solid var(--mc-dirt-border);
-      border-radius: 4px;
-      padding: 0.75rem;
+    .field-group {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.3rem;
     }
 
-    .single-y-label {
-      font-family: 'VT323', monospace;
-      font-size: 1.05rem;
-      color: var(--mc-yellow-gold);
-    }
-
-    .field-box {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .field-box label {
-      font-family: 'VT323', monospace;
-      font-size: 0.95rem;
-      color: var(--mc-text-sub);
+    .field-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
     }
 
     input[type="number"] {
-      background: var(--mc-input-bg);
-      border: 2px solid #000000;
-      box-shadow: inset 2px 2px 0 #000000;
-      border-radius: 4px;
-      color: var(--mc-text-main);
-      padding: 0.6rem 0.5rem;
-      font-size: 1.15rem;
-      font-family: 'VT323', monospace;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 0.65rem 0.75rem;
+      font-size: 0.95rem;
+      font-family: 'JetBrains Mono', monospace;
       width: 100%;
       outline: none;
+      transition: all 0.15s;
     }
 
     input[type="number"]:focus {
-      border-color: var(--mc-green-border);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px var(--accent-green-glow);
     }
 
     .block-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.6rem;
+      gap: 0.75rem;
     }
 
     .block-card {
-      background: var(--mc-dirt-panel);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      padding: 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
-      transition: all 0.1s;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+
+    .block-card:hover {
+      border-color: var(--text-muted);
+      background: var(--bg-hover);
     }
 
     .block-card.active-claim {
-      border-color: var(--mc-green-border);
-      background: #1c3b16;
-      box-shadow: inset 0 0 8px rgba(85, 255, 85, 0.4);
+      border-color: var(--accent-green);
+      background: var(--accent-green-glow);
     }
 
     .block-card.active-deny {
-      border-color: var(--mc-red-border);
-      background: #421616;
-      box-shadow: inset 0 0 8px rgba(255, 85, 85, 0.4);
+      border-color: var(--accent-red);
+      background: rgba(244, 63, 94, 0.12);
     }
 
     .block-name {
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       font-weight: 700;
     }
 
     .block-desc {
-      font-size: 0.72rem;
-      color: var(--mc-text-sub);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
     }
 
     .layer-selector {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.4rem;
+      gap: 0.5rem;
     }
 
     .layer-btn {
-      background: var(--mc-dirt-panel);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      color: var(--mc-text-sub);
-      padding: 0.6rem 0.3rem;
-      font-family: 'VT323', monospace;
-      font-size: 0.95rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      padding: 0.6rem 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
       cursor: pointer;
       text-align: center;
-      transition: all 0.1s;
+      transition: all 0.15s;
     }
 
     .layer-btn.active {
-      background: var(--mc-green-btn);
-      border-color: var(--mc-green-border);
-      color: var(--mc-text-main);
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
     }
 
-    .launcher-btn-play {
-      background: var(--mc-green-btn);
-      border: 3px solid #000000;
-      box-shadow: inset 2px 2px 0 #70c474, inset -2px -2px 0 #1b4d1e;
-      border-radius: 4px;
-      color: var(--mc-text-main);
-      padding: 0.9rem 1.25rem;
-      font-family: 'VT323', monospace;
-      font-size: 1.4rem;
-      letter-spacing: 1px;
+    .btn-action {
+      background: var(--accent-green);
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
       width: 100%;
       text-align: center;
-      transition: background 0.1s;
+      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
     }
 
-    .launcher-btn-play:hover {
-      background: var(--mc-green-hover);
-      color: var(--mc-yellow-gold);
+    .btn-action:hover {
+      background: #059669;
+      transform: translateY(-1px);
     }
 
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      background: var(--mc-input-bg);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      padding: 0.75rem;
+      gap: 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
     }
 
     .stat-box {
@@ -352,201 +347,215 @@
     }
 
     .stat-val {
-      font-family: 'VT323', monospace;
-      font-size: 1.4rem;
-      color: var(--mc-green-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent-green);
     }
 
     .stat-lbl {
-      font-family: 'VT323', monospace;
-      font-size: 0.85rem;
-      color: var(--mc-text-sub);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 0.2rem;
     }
 
-    .command-box {
-      background: var(--mc-input-bg);
-      border: 2px solid var(--mc-dirt-border);
-      border-radius: 4px;
-      padding: 1rem;
+    .code-container {
       position: relative;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
-    .command-code {
-      font-family: 'VT323', monospace;
-      color: var(--mc-green-border);
-      font-size: 1.25rem;
+    .code-text {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-green);
+      font-size: 0.95rem;
       word-break: break-all;
-      line-height: 1.4;
-      padding-right: 90px;
+      line-height: 1.5;
     }
 
-    .copy-btn {
-      position: absolute;
-      top: 0.6rem;
-      right: 0.6rem;
-      background: var(--mc-green-btn);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      color: #fff;
-      font-family: 'VT323', monospace;
-      font-size: 1rem;
-      padding: 0.4rem 0.75rem;
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.45rem 0.8rem;
       cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--text-secondary);
+    }
+
+    .btn-copy.copied {
+      background: var(--accent-green-glow);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
     }
 
     canvas {
       width: 100%;
       height: 160px;
-      background: var(--mc-input-bg);
-      border: 2px solid #000000;
-      border-radius: 4px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
     }
 
     .doc-section {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      line-height: 1.6;
+      gap: 1.5rem;
     }
 
     .doc-block {
-      background: var(--mc-dirt-panel);
-      border: 2px solid #000000;
-      border-radius: 4px;
-      padding: 1.1rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.8rem;
     }
 
-    .doc-block-title {
-      font-family: 'VT323', monospace;
-      font-size: 1.25rem;
-      color: var(--mc-yellow-gold);
+    .doc-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
-    .doc-code {
-      background: var(--mc-input-bg);
-      border: 1px solid var(--mc-dirt-border);
-      border-radius: 4px;
-      padding: 0.6rem 0.8rem;
-      font-family: 'VT323', monospace;
-      font-size: 1.15rem;
-      color: var(--mc-green-border);
-      word-break: break-all;
+    .doc-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 0.5rem;
+      font-size: 0.875rem;
     }
 
     th, td {
-      border: 1px solid var(--mc-dirt-border);
-      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
       text-align: left;
-      font-size: 0.88rem;
     }
 
     th {
-      background: var(--mc-input-bg);
-      color: var(--mc-yellow-gold);
-      font-family: 'VT323', monospace;
-      font-size: 1.05rem;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
     }
 
     td {
-      background: rgba(0,0,0,0.2);
+      color: var(--text-primary);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="launcher-navbar">
-    <div class="launcher-brand">
-      <span class="brand-tag">BEDROCK EDITION</span>
-      <span class="brand-title">CENTRO DE ADMINISTRACIÓN</span>
+  <header class="docs-navbar">
+    <div class="brand-section">
+      <span class="brand-badge">Minecraft Bedrock</span>
+      <span class="brand-title">Centro de Documentación & Protección</span>
     </div>
-    <div class="nav-items">
+    <div class="tab-navigation">
       <div class="nav-tab active" onclick="switchTab('generator')">Generador /fill</div>
       <div class="nav-tab" onclick="switchTab('guide')">Guía de Comandos</div>
       <div class="nav-tab" onclick="switchTab('security')">Plan de Seguridad</div>
     </div>
-  </div>
+  </header>
 
   <div id="tab-generator" class="tab-content active">
     <div class="main-grid">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">1. COORDENADAS DEL TERRENO</div>
-          <div class="card-subtitle">Ingresa X y Z para cada esquina, y la altura Y una sola vez</div>
+          <div class="card-title">Configuración de Coordenadas</div>
+          <div class="card-subtitle">Ingresa X y Z de cada esquina y la altura Y del suelo</div>
         </div>
 
-        <div class="coord-section">
-          <div>
-            <div class="coord-group-title">ESQUINA 1 (PUNTO A)</div>
-            <div class="xz-grid">
-              <div class="field-box">
-                <label>X1</label>
-                <input type="number" id="x1" value="100" placeholder="X1" oninput="calculate()">
-              </div>
-              <div class="field-box">
-                <label>Z1</label>
-                <input type="number" id="z1" value="-200" placeholder="Z1" oninput="calculate()">
-              </div>
+        <div class="coord-card-group">
+          <div class="coord-header">Esquina 1 (Punto A)</div>
+          <div class="xz-grid">
+            <div class="field-group">
+              <label>Coordenada X1</label>
+              <input type="number" id="x1" value="100" placeholder="X1" oninput="calculate()">
+            </div>
+            <div class="field-group">
+              <label>Coordenada Z1</label>
+              <input type="number" id="z1" value="-200" placeholder="Z1" oninput="calculate()">
             </div>
           </div>
+        </div>
 
-          <div>
-            <div class="coord-group-title">ESQUINA 2 (PUNTO B)</div>
-            <div class="xz-grid">
-              <div class="field-box">
-                <label>X2</label>
-                <input type="number" id="x2" value="130" placeholder="X2" oninput="calculate()">
-              </div>
-              <div class="field-box">
-                <label>Z2</label>
-                <input type="number" id="z2" value="-170" placeholder="Z2" oninput="calculate()">
-              </div>
+        <div class="coord-card-group">
+          <div class="coord-header">Esquina 2 (Punto B)</div>
+          <div class="xz-grid">
+            <div class="field-group">
+              <label>Coordenada X2</label>
+              <input type="number" id="x2" value="130" placeholder="X2" oninput="calculate()">
+            </div>
+            <div class="field-group">
+              <label>Coordenada Z2</label>
+              <input type="number" id="z2" value="-170" placeholder="Z2" oninput="calculate()">
             </div>
           </div>
+        </div>
 
-          <div class="single-y-box">
-            <div class="single-y-label">ALTURA DEL PISO (Y ÚNICA)</div>
-            <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
-          </div>
+        <div class="coord-card-group" style="border-color: rgba(16, 185, 129, 0.3);">
+          <div class="coord-header" style="color: var(--accent-green);">Altura del Suelo (Y Única)</div>
+          <input type="number" id="yGround" value="64" placeholder="Ej: 64 o -60" oninput="calculate()">
         </div>
 
         <div class="card-header" style="padding-top: 0.5rem;">
-          <div class="card-title">2. TIPO DE BLOQUE</div>
+          <div class="card-title">Tipo de Bloque de Protección</div>
         </div>
         <div class="block-selector">
           <div class="block-card active-claim" id="card-claim" onclick="setBlockType('claim')">
-            <div class="block-name" style="color: var(--mc-green-border);">Claim Marker</div>
+            <div class="block-name" style="color: var(--accent-green);">Claim Marker</div>
             <div class="block-desc">aal:claim_marker (Casas de Jugadores)</div>
           </div>
           <div class="block-card" id="card-deny" onclick="setBlockType('deny')">
-            <div class="block-name" style="color: var(--mc-red-border);">Deny Block</div>
+            <div class="block-name" style="color: var(--accent-red);">Deny Block</div>
             <div class="block-desc">minecraft:deny (Spawn y Mercados)</div>
           </div>
         </div>
 
         <div class="card-header" style="padding-top: 0.5rem;">
-          <div class="card-title">3. PROFUNDIDAD DEL PERÍMETRO</div>
+          <div class="card-title">Profundidad del Perímetro</div>
         </div>
         <div class="layer-selector">
-          <div class="layer-btn active" id="mode-under" onclick="setLayerMode('under')">Bajo el suelo (Y-1)</div>
-          <div class="layer-btn" id="mode-exact" onclick="setLayerMode('exact')">En el piso (Y)</div>
+          <div class="layer-btn active" id="mode-under" onclick="setLayerMode('under')">Bajo suelo (Y-1)</div>
+          <div class="layer-btn" id="mode-exact" onclick="setLayerMode('exact')">En superficie (Y)</div>
           <div class="layer-btn" id="mode-deep" onclick="setLayerMode('deep')">Triple capa (Y-3 a Y-1)</div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">PREVISUALIZACIÓN 2D</div>
-          <div class="card-subtitle">Esquema del terreno a proteger</div>
+          <div class="card-title">Previsualización del Área</div>
+          <div class="card-subtitle">Representación 2D del terreno a proteger</div>
         </div>
 
         <canvas id="mapCanvas"></canvas>
@@ -554,26 +563,26 @@
         <div class="stats-row">
           <div class="stat-box">
             <div class="stat-val" id="stat-area">0 m²</div>
-            <div class="stat-lbl">SUPERFICIE</div>
+            <div class="stat-lbl">Superficie</div>
           </div>
           <div class="stat-box">
             <div class="stat-val" id="stat-blocks">0</div>
-            <div class="stat-lbl">BLOQUES</div>
+            <div class="stat-lbl">Bloques</div>
           </div>
           <div class="stat-box">
             <div class="stat-val" id="stat-cmds">1</div>
-            <div class="stat-lbl">COMANDOS</div>
+            <div class="stat-lbl">Comandos</div>
           </div>
         </div>
 
-        <button class="launcher-btn-play" onclick="copyFirstCommand()">GENERAR Y COPIAR COMANDO</button>
+        <button class="btn-action" onclick="copyFirstCommand()">Generar y Copiar Comando</button>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <div class="card-title">COMANDO GENERADO PARA MINECRAFT BEDROCK</div>
-        <div class="card-subtitle">Ejecuta el comando en el chat como Administrador</div>
+        <div class="card-title">Comando /fill Listo</div>
+        <div class="card-subtitle">Copia y pega directamente en la consola del servidor de Minecraft</div>
       </div>
       <div id="commands-container"></div>
     </div>
@@ -582,48 +591,72 @@
   <div id="tab-guide" class="tab-content">
     <div class="card">
       <div class="card-header">
-        <div class="card-title">GUÍA DE COMANDOS Y ADMINISTRACIÓN</div>
-        <div class="card-subtitle">Manual oficial para obtener bloques y administrar parcelas</div>
+        <div class="card-title">Guía de Comandos de Administración</div>
+        <div class="card-subtitle">Comandos oficiales para obtener items de protección y gestionar el auditor</div>
       </div>
 
       <div class="doc-section">
         <div class="doc-block">
-          <div class="doc-block-title">1. Obtención de Bloques y Brújula (/give)</div>
-          <p style="font-size: 0.9rem; color: var(--mc-text-sub);">Ejecuta estos comandos en el chat del juego siendo Operador (OP):</p>
-          <div class="doc-code">/give @s aal:claim_marker 64</div>
-          <div class="doc-code">/give @s deny 64</div>
-          <div class="doc-code">/give @s recovery_compass 1</div>
+          <div class="doc-title">1. Comandos de Obtención de Items (/give)</div>
+          <div class="doc-desc">Ejecuta estos comandos en el chat del juego teniendo permisos de Operador (OP):</div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-claim">/give @s aal:claim_marker 64</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-claim', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-deny">/give @s deny 64</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-deny', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-compass">/give @s recovery_compass 1</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-compass', this)">Copiar</button>
+          </div>
         </div>
 
         <div class="doc-block">
-          <div class="doc-block-title">2. Dar Bloques a los Administradores Autorizados</div>
-          <div class="doc-code">/give teoremasine aal:claim_marker 64</div>
-          <div class="doc-code">/give julioverx aal:claim_marker 64</div>
-          <div class="doc-code">/give danix2410 aal:claim_marker 64</div>
+          <div class="doc-title">2. Asignar Bloques a Administradores Autorizados</div>
+          
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-teo">/give teoremasine aal:claim_marker 64</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-teo', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-julio">/give julioverx aal:claim_marker 64</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-julio', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-give-danix">/give danix2410 aal:claim_marker 64</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-give-danix', this)">Copiar</button>
+          </div>
         </div>
 
         <div class="doc-block">
-          <div class="doc-block-title">3. Diferencia entre Zonas Deny y Claim Marker</div>
+          <div class="doc-title">3. Comparativa entre Tipos de Protección</div>
           <table>
             <thead>
               <tr>
                 <th>Tipo de Zona</th>
-                <th>Bloque</th>
-                <th>Comportamiento en Supervivencia</th>
+                <th>Bloque Requerido</th>
+                <th>Comportamiento de Jugadores</th>
                 <th>Uso Recomendado</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="color: var(--mc-red-border); font-weight: 700;">Indestructible</td>
-                <td>minecraft:deny</td>
-                <td>Nadie sin OP puede romper ni colocar bloques encima.</td>
-                <td>Spawn, Tiendas, Mercados, Monumentos.</td>
+                <td style="color: var(--accent-red); font-weight: 600;">Indestructible</td>
+                <td><code style="color: var(--accent-cyan)">minecraft:deny</code></td>
+                <td>Ningún jugador sin OP puede colocar o romper bloques.</td>
+                <td>Spawn, Tiendas del Servidor, Monumentos.</td>
               </tr>
               <tr>
-                <td style="color: var(--mc-green-border); font-weight: 700;">Monitoreada</td>
-                <td>aal:claim_marker</td>
-                <td>Los jugadores construyen libremente, pero cada bloque roto se registra.</td>
+                <td style="color: var(--accent-green); font-weight: 600;">Monitoreada</td>
+                <td><code style="color: var(--accent-cyan)">aal:claim_marker</code></td>
+                <td>Construcción libre, pero cada bloque roto genera un registro de auditoría.</td>
                 <td>Casas de jugadores, Parcelas privadas.</td>
               </tr>
             </tbody>
@@ -631,13 +664,17 @@
         </div>
 
         <div class="doc-block">
-          <div class="doc-block-title">4. Cómo Consultar los Bloques Rotos en las Casas</div>
-          <p style="font-size: 0.9rem; color: var(--mc-text-sub);">
-            1. Sostén la <strong>Brújula de Recuperación (recovery_compass)</strong> y haz clic derecho / interactúa en pantalla.<br>
-            2. Selecciona la Opción <strong>8. Protected Area Block Break Logs</strong>.<br>
-            3. Verás la lista de bloques destruidos en parcelas registradas con el nombre del jugador, bloque roto, fecha, hora y coordenadas exactas (X, Y, Z).<br>
-            4. Teletranspórtate a las coordenadas para inspeccionar: <code class="doc-code">/tp @s X Y Z</code>
-          </p>
+          <div class="doc-title">4. Uso de la Brújula de Auditoría para Inspección</div>
+          <div class="doc-desc">
+            1. Sostén la <strong>Brújula de Recuperación (recovery_compass)</strong> e interactúa en pantalla.<br>
+            2. Selecciona la <strong>Opción 8. Protected Area Block Break Logs</strong>.<br>
+            3. Revisa la lista con el nombre del jugador, bloque destruido, fecha y coordenadas.<br>
+            4. Usa el comando de teletransporte para la inspección in situ:
+          </div>
+          <div class="code-container">
+            <span class="code-text" id="cmd-tp-example">/tp @s X Y Z</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-tp-example', this)">Copiar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -646,53 +683,65 @@
   <div id="tab-security" class="tab-content">
     <div class="card">
       <div class="card-header">
-        <div class="card-title">PLAN DE SEGURIDAD NATIVO Y REGLAS ANTIGRIEFING</div>
-        <div class="card-subtitle">Estrategia de protección sin depender de mods pesados</div>
+        <div class="card-title">Plan de Seguridad Anti-Griefing</div>
+        <div class="card-subtitle">Reglas de servidor para prevenir fuego, explosiones y destrucción</div>
       </div>
 
       <div class="doc-section">
         <div class="doc-block">
-          <div class="doc-block-title">Reglas Oficiales del Servidor (Gamerules)</div>
-          <p style="font-size: 0.9rem; color: var(--mc-text-sub);">Ejecuta estas reglas desde el chat como OP para prevenir incendios y explosiones:</p>
-          <div class="doc-code">/gamerule tntexplodes false</div>
-          <div class="doc-code">/gamerule mobgriefing false</div>
-          <div class="doc-code">/gamerule fireSpreads false</div>
-          <div class="doc-code">/gamerule showcoordinates true</div>
+          <div class="doc-title">1. Reglas Globales del Servidor (Gamerules)</div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-gr-tnt">/gamerule tntexplodes false</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-gr-tnt', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-gr-mob">/gamerule mobgriefing false</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-gr-mob', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-gr-fire">/gamerule fireSpreads false</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-gr-fire', this)">Copiar</button>
+          </div>
+
+          <div class="code-container">
+            <span class="code-text" id="cmd-gr-coords">/gamerule showcoordinates true</span>
+            <button class="btn-copy" onclick="copySnippet('cmd-gr-coords', this)">Copiar</button>
+          </div>
         </div>
 
         <div class="doc-block">
-          <div class="doc-block-title">Tabla de Referencia de Comandos de Administración</div>
+          <div class="doc-title">2. Tabla Rápida de Referencia</div>
           <table>
             <thead>
               <tr>
                 <th>Función</th>
-                <th>Comando Exacto</th>
+                <th>Comando</th>
+                <th>Acción</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Brújula de Auditoría</td>
-                <td>/give @s recovery_compass 1</td>
+                <td>Brújula Auditora</td>
+                <td><code style="color: var(--accent-cyan)">/give @s recovery_compass 1</code></td>
+                <td><button class="btn-copy" onclick="copyDirect('/give @s recovery_compass 1', this)">Copiar</button></td>
               </tr>
               <tr>
-                <td>Bloque Marcador de Casas</td>
-                <td>/give @s aal:claim_marker 64</td>
+                <td>Marcador de Casas</td>
+                <td><code style="color: var(--accent-cyan)">/give @s aal:claim_marker 64</code></td>
+                <td><button class="btn-copy" onclick="copyDirect('/give @s aal:claim_marker 64', this)">Copiar</button></td>
               </tr>
               <tr>
-                <td>Bloque Indestructible</td>
-                <td>/give @s deny 64</td>
+                <td>Bloque Deny</td>
+                <td><code style="color: var(--accent-cyan)">/give @s deny 64</code></td>
+                <td><button class="btn-copy" onclick="copyDirect('/give @s deny 64', this)">Copiar</button></td>
               </tr>
               <tr>
-                <td>Bloquear Explosiones TNT</td>
-                <td>/gamerule tntexplodes false</td>
-              </tr>
-              <tr>
-                <td>Bloquear Destrucción de Mobs</td>
-                <td>/gamerule mobgriefing false</td>
-              </tr>
-              <tr>
-                <td>Teletransportarse al Evento</td>
-                <td>/tp @s X Y Z</td>
+                <td>Desactivar TNT</td>
+                <td><code style="color: var(--accent-cyan)">/gamerule tntexplodes false</code></td>
+                <td><button class="btn-copy" onclick="copyDirect('/gamerule tntexplodes false', this)">Copiar</button></td>
               </tr>
             </tbody>
           </table>
@@ -793,10 +842,10 @@
 
     commands.forEach((cmd, idx) => {
       const box = document.createElement('div');
-      box.className = 'command-box';
+      box.className = 'code-container';
       box.innerHTML = `
-        <div class="command-code" id="cmd-${idx}">${cmd}</div>
-        <button class="copy-btn" onclick="copyCommand(${idx})">Copiar</button>
+        <span class="code-text" id="cmd-gen-${idx}">${cmd}</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-gen-${idx}', this)">Copiar</button>
       `;
       container.appendChild(box);
     });
@@ -804,21 +853,32 @@
     drawMap(minX, minZ, maxX, maxZ);
   }
 
-  function copyCommand(idx) {
-    const text = document.getElementById(`cmd-${idx}`).innerText;
+  function copySnippet(elementId, btn) {
+    const text = document.getElementById(elementId).innerText;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelectorAll('.copy-btn')[idx];
       btn.innerText = '¡Copiado!';
-      btn.style.color = '#ffff55';
+      btn.classList.add('copied');
       setTimeout(() => {
         btn.innerText = 'Copiar';
-        btn.style.color = '#ffffff';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function copyDirect(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.innerText = '¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerText = 'Copiar';
+        btn.classList.remove('copied');
       }, 2000);
     });
   }
 
   function copyFirstCommand() {
-    copyCommand(0);
+    const firstBtn = document.querySelectorAll('#commands-container .btn-copy')[0];
+    if (firstBtn) firstBtn.click();
   }
 
   function drawMap(minX, minZ, maxX, maxZ) {
@@ -832,7 +892,7 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    ctx.strokeStyle = '#22150e';
+    ctx.strokeStyle = '#1e293b';
     ctx.lineWidth = 1;
     for (let x = 0; x < w; x += 16) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -856,15 +916,15 @@
     const rectY = (h - rectH) / 2;
 
     const isClaim = (selectedBlockType === 'claim');
-    ctx.fillStyle = isClaim ? 'rgba(85, 255, 85, 0.25)' : 'rgba(255, 85, 85, 0.25)';
-    ctx.strokeStyle = isClaim ? '#55ff55' : '#ff5555';
+    ctx.fillStyle = isClaim ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)';
+    ctx.strokeStyle = isClaim ? '#10b981' : '#f43f5e';
     ctx.lineWidth = 2;
 
     ctx.fillRect(rectX, rectY, rectW, rectH);
     ctx.strokeRect(rectX, rectY, rectW, rectH);
 
-    ctx.fillStyle = isClaim ? '#55ff55' : '#ff5555';
-    ctx.font = '700 13px VT323, monospace';
+    ctx.fillStyle = isClaim ? '#10b981' : '#f43f5e';
+    ctx.font = '600 12px Inter, sans-serif';
     ctx.textAlign = 'center';
     const label = isClaim ? 'Zona Claim Marker' : 'Zona Deny Indestructible';
     ctx.fillText(`${label} (${(maxX-minX+1)}x${(maxZ-minZ+1)} m)`, w / 2, rectY - 8);
