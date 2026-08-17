@@ -1,0 +1,11 @@
+{
+  "resource_pack_name": "AdvanceAdminLog_RP",
+  "texture_name": "atlas.terrain",
+  "num_mip_levels": 4,
+  "padding": 8,
+  "texture_data": {
+    "claim_marker_dirt_tex": {
+      "textures": "textures/blocks/claim_marker_dirt"
+    }
+  }
+}

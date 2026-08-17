@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "aal:claim_marker",
+      "menu_category": {
+        "category": "construction"
+      }
+    },
+    "components": {
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "claim_marker_dirt_tex",
+          "render_layer": "opaque"
+        }
+      },
+      "minecraft:destructible_by_mining": false,
+      "minecraft:destructible_by_explosion": false,
+      "minecraft:map_color": "#866043",
+      "minecraft:light_emission": 0
+    }
+  }
+}

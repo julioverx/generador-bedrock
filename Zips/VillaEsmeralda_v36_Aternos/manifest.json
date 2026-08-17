@@ -1,0 +1,25 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Escribano Real - Villa Esmeralda",
+    "description": "Sistema Competitivo de Estadisticas para Villa Esmeralda.",
+    "uuid": "a2b13f89-4e78-4a92-b521-82782b6b1001",
+    "version": [36, 2, 0],
+    "min_engine_version": [1, 20, 80]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "3f99e4b7-951c-4b41-a128-4e8971f11002",
+      "version": [36, 2, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.11.0"
+    }
+  ]
+}

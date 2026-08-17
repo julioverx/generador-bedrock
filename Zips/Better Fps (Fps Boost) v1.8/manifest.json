@@ -1,0 +1,46 @@
+﻿{
+    "format_version":  2,
+    "header":  {
+                   "name":  "BETTER FPS v1.8 (FPS BOOST)",
+                   "description":  "Better FPS (FPS Boost) is a performance-focused Minecraft texture pack designed to make your game run smoother without changing the core vanilla look.",
+                   "uuid":  "295d959b-9c71-4e73-9056-76c00a63514c",
+                   "version":  [
+                                   1,
+                                   9,
+                                   0
+                               ],
+                   "min_engine_version":  [
+                                              1,
+                                              21,
+                                              0
+                                          ]
+               },
+    "modules":  [
+                    {
+                        "type":  "resources",
+                        "uuid":  "466da3e0-809e-4464-852a-b908e2a18e85",
+                        "version":  [
+                                        1,
+                                        9,
+                                        0
+                                    ]
+                    }
+                ],
+    "subpacks":  [
+                     {
+                         "folder_name":  "max_fps",
+                         "name":  "Â§cMax FPS Â§7- No Particles + Fast Grass",
+                         "memory_tier":  0
+                     },
+                     {
+                         "folder_name":  "default",
+                         "name":  "Â§aDefault Â§7- Original Better FPS",
+                         "memory_tier":  1
+                     }
+                 ],
+    "metadata":  {
+                     "authors":  [
+                                     "CraftStudio"
+                                 ]
+                 }
+}

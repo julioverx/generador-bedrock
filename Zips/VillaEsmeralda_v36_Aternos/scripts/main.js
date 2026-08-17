@@ -1,0 +1,1406 @@
+import { world, system, ItemStack, EnchantmentType, BlockPermutation } from "@minecraft/server";
+
+// ============================================================
+// VILLA ESMERALDA - ESCRIBANO REAL (Behavior Pack v3.0)
+// Kill Streaks, Milestones, Dynamic Nametags, Rankings, K/D
+// ============================================================
+
+const DISCORD_RULES_LINK = "https://discord.gg/aYm58cDb8";
+const playersInOffice = new Set();
+let sidebarTimer = null;
+
+// Strictly Hostile Mobs Filter (Excludes passive farm animals)
+const HOSTILE_MOBS = new Set([
+  "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:drowned", "minecraft:zombified_piglin",
+  "minecraft:skeleton", "minecraft:stray", "minecraft:wither_skeleton",
+  "minecraft:creeper", "minecraft:spider", "minecraft:cave_spider",
+  "minecraft:phantom", "minecraft:enderman", "minecraft:witch",
+  "minecraft:slime", "minecraft:magma_cube", "minecraft:blaze", "minecraft:ghast",
+  "minecraft:silverfish", "minecraft:endermite", "minecraft:guardian", "minecraft:elder_guardian",
+  "minecraft:piglin", "minecraft:piglin_brute", "minecraft:hoglin", "minecraft:zoglin",
+  "minecraft:pillager", "minecraft:vindicator", "minecraft:evoker", "minecraft:ravager", "minecraft:vex",
+  "minecraft:shulker", "minecraft:warden", "minecraft:wither", "minecraft:ender_dragon", "minecraft:breeze"
+]);
+
+function isHostileMob(entity) {
+  if (!entity || !entity.typeId) return false;
+  return HOSTILE_MOBS.has(entity.typeId);
+}
+
+// Kill Streak tracking (resets on death)
+const killStreaks = new Map();
+
+const VILLA_TIPS = [
+  "Respeta siempre las construcciones ajenas y las zonas comunes.",
+  "Comercia de forma justa en el Spawn y evita las estafas.",
+  "Visita la Oficina del Escribano Real para ver tus titulos.",
+  "El respeto entre ciudadanos es la ley suprema de Villa Esmeralda.",
+  "Demuestra tu valor derrotando a los Jefes Supremos del reino."
+];
+
+// Milestone thresholds
+const MILESTONES = {
+  MobsKilled: [
+    { at: 50, label: "[LOGRO]", msg: "ha asesinado 50 mobs hostiles", color: "§e" },
+    { at: 100, label: "[LOGRO RARO]", msg: "alcanzo los 100 mobs eliminados", color: "§6" },
+    { at: 250, label: "[LOGRO EPICO]", msg: "ha destruido 250 criaturas hostiles", color: "§5" },
+    { at: 500, label: "[LOGRO LEGENDARIO]", msg: "supero las 500 bajas de mobs", color: "§d" },
+    { at: 1000, label: "[LOGRO MITICO]", msg: "alcanzo las 1000 bajas de mobs", color: "§4" }
+  ],
+  BloquesPicados: [
+    { at: 100, label: "[LOGRO]", msg: "ha picado 100 bloques", color: "§e" },
+    { at: 500, label: "[LOGRO RARO]", msg: "alcanzo los 500 bloques picados", color: "§6" },
+    { at: 1000, label: "[LOGRO EPICO]", msg: "supero los 1000 bloques picados", color: "§5" },
+    { at: 5000, label: "[LOGRO LEGENDARIO]", msg: "alcanzo los 5000 bloques picados", color: "§d" }
+  ],
+  PvPKills: [
+    { at: 1, label: "[PRIMERA SANGRE]", msg: "cobro su primera victima en PvP", color: "§4" },
+    { at: 10, label: "[LOGRO RARO]", msg: "alcanzo 10 bajas en PvP", color: "§6" },
+    { at: 25, label: "[LOGRO EPICO]", msg: "supero las 25 bajas en PvP", color: "§5" },
+    { at: 50, label: "[LOGRO LEGENDARIO]", msg: "alcanzo 50 bajas en PvP", color: "§d" }
+  ],
+  BossesKilled: [
+    { at: 1, label: "[LOGRO EPICO]", msg: "derroto a su primer Jefe Supremo", color: "§5" },
+    { at: 5, label: "[LOGRO LEGENDARIO]", msg: "ha derrotado 5 Jefes Supremos", color: "§d" },
+    { at: 10, label: "[LOGRO MITICO]", msg: "ha destruido 10 Jefes Supremos", color: "§4" }
+  ]
+};
+
+// Kill Streak thresholds
+const STREAK_THRESHOLDS = [
+  { at: 3, label: "RACHA", color: "§c", msg: "lleva 3 bajas seguidas" },
+  { at: 5, label: "MASACRE", color: "§4", msg: "esta imparable con 5 bajas" },
+  { at: 10, label: "LEYENDA", color: "§5", msg: "ha alcanzado 10 bajas sin caer" },
+  { at: 15, label: "DIOS DE LA GUERRA", color: "§d", msg: "tiene 15 bajas consecutivas" },
+  { at: 20, label: "INMORTAL", color: "§6", msg: "20 bajas sin morir, es indetenible" },
+  { at: 25, label: "MITICO", color: "§e", msg: "ha logrado 25 bajas consecutivas" },
+  { at: 30, label: "SEÑOR DE LA DESTRUCCION", color: "§4", msg: "ha aniquilado a 30 sin ser tocado" },
+  { at: 40, label: "TITAN", color: "§5", msg: "alcanzo 40 bajas seguidas... ¡Una locura!" },
+  { at: 50, label: "SEMI-DIOS", color: "§b", msg: "¡MEDIO CENTENAR DE BAJAS! 50 kills sin morir" },
+  { at: 100, label: "DIOS SUPREMO", color: "§3", msg: "¡100 BAJAS! Una deidad camina entre nosotros" },
+  { at: 200, label: "HERALDO DE LA MUERTE", color: "§4", msg: "ha alcanzado las 200 bajas. ¡Corran por sus vidas!" },
+  { at: 300, label: "EXTERMINADOR", color: "§c", msg: "lleva 300 bajas. No tiene piedad." },
+  { at: 400, label: "VERDUGO IMPLACABLE", color: "§5", msg: "ya sumo 400 bajas a su cuenta." },
+  { at: 500, label: "PESADILLA VIVIENTE", color: "§d", msg: "¡500 BAJAS! Medio millar de almas devoradas." },
+  { at: 600, label: "APOCALIPSIS", color: "§6", msg: "¡600 BAJAS! El fin del mundo tiene nombre." },
+  { at: 700, label: "DEMONIO PRIMORDIAL", color: "§e", msg: "¡700 BAJAS! Un ser de pura maldad." },
+  { at: 800, label: "COLOSO", color: "§b", msg: "¡800 BAJAS! Imparable. Inmortal. Invencible." },
+  { at: 900, label: "DESTRUCTOR DE MUNDOS", color: "§4", msg: "¡900 BAJAS! Solo cenizas quedan a su paso." },
+  { at: 1000, label: "ASESINO EN SERIE", color: "§3", msg: "ha alcanzado 1000 Mobs Kills y es el Asesino en Serie oficial!" }
+];
+
+// ============================================================
+// SCOREBOARDS INITIALIZATION
+// ============================================================
+
+function initializeScoreboards() {
+  try {
+    const sb = world.scoreboard;
+    const list = [
+      { id: "MobsKilled", name: "§c§lMobs Asesinados" },
+      { id: "PvPKills", name: "§4§lBajas en Duelos" },
+      { id: "BloquesPicados", name: "§e§lBloques Picados" },
+      { id: "BossesKilled", name: "§5§lJefes Derrotados" },
+      { id: "MuertesTotal", name: "§8§lMuertes Totales" }
+    ];
+    for (const o of list) {
+      if (!sb.getObjective(o.id)) sb.addObjective(o.id, o.name);
+    }
+  } catch (e) {}
+}
+
+initializeScoreboards();
+world.afterEvents.worldInitialize.subscribe(() => initializeScoreboards());
+
+function incrementScore(player, objId) {
+  try {
+    if (player && player.hasTag && player.hasTag("ignorar_escribano")) return;
+    let obj = world.scoreboard.getObjective(objId);
+    if (!obj) obj = world.scoreboard.addObjective(objId, objId);
+    if (player) {
+      player.runCommandAsync("scoreboard players add @s " + objId + " 1");
+    }
+  } catch (e) {}
+}
+
+function giveEnchantedBookItem(player, enchantments) {
+  try {
+    if (!player || !player.isValid()) return;
+    const book = new ItemStack("minecraft:enchanted_book", 1);
+    const enchantComp = book.getComponent("minecraft:enchantable");
+    if (enchantComp) {
+      for (const enc of enchantments) {
+        try {
+          enchantComp.addEnchantment({
+            type: new EnchantmentType(enc.id),
+            level: enc.level
+          });
+        } catch (err) {}
+      }
+    }
+    const inv = player.getComponent("inventory")?.container;
+    if (inv) {
+      inv.addItem(book);
+    }
+  } catch (e) {}
+}
+
+function getCitizenRank(player) {
+  try {
+    let specialBadges = 0;
+    if (player.hasTag("tag_rey_guerra")) specialBadges++;
+    if (player.hasTag("tag_leyenda_minera")) specialBadges++;
+    if (player.hasTag("tag_asesino_serie")) specialBadges++;
+    if (player.hasTag("leyenda_500")) specialBadges++;
+    if (player.getDynamicProperty("custom_ach_matadrakos") || player.hasTag("tag_matadrakos")) specialBadges++;
+    if (player.getDynamicProperty("custom_ach_dios_wither") || player.hasTag("tag_dios_wither")) specialBadges++;
+    if (player.getDynamicProperty("custom_ach_rey_poseidon") || player.hasTag("tag_rey_poseidon")) specialBadges++;
+
+    if (specialBadges >= 3) return "§6[Leyenda de la Villa]§r ";
+    if (specialBadges >= 1) return "§5[Veterano]§r ";
+
+    const bloques = getScore(player, "BloquesPicados");
+    const questsDone = player.getDynamicProperty("total_quests_completed") ?? 0;
+    if (bloques >= 1000 || questsDone >= 1) return "§e[Residente]§r ";
+
+    return "§7[Novato]§r ";
+  } catch (e) {
+    return "§7[Novato]§r ";
+  }
+}
+
+const QUEST_POOLS = {
+  mining: [
+    { id: 0, title: "Picar 150 Bloques", target: 150, desc: "150 bloques", em: 10, xp: 10 },
+    { id: 1, title: "Picar 300 Bloques", target: 300, desc: "300 bloques", em: 10, xp: 10 },
+    { id: 2, title: "Picar 1,000 Bloques (Difícil)", target: 1000, desc: "1,000 bloques", em: 20, xp: 20 },
+    { id: 3, title: "Picar 3,000 Bloques (Extrema)", target: 3000, desc: "3,000 bloques", em: 40, xp: 40 },
+    { id: 4, title: "Picar 50 Minerales", target: 50, desc: "50 minerales", em: 10, xp: 10 },
+    { id: 5, title: "Picar 100 Minerales (Difícil)", target: 100, desc: "100 minerales", em: 20, xp: 20 },
+    { id: 6, title: "Picar 250 Bloques de Piedra", target: 250, desc: "250 bloques", em: 10, xp: 10 },
+    { id: 7, title: "Picar 600 Bloques Profundos (Difícil)", target: 600, desc: "600 bloques", em: 20, xp: 20 },
+    { id: 8, title: "Picar 5,000 Bloques (Extrema)", target: 5000, desc: "5,000 bloques", em: 40, xp: 40 }
+  ],
+  hunting: [
+    { id: 0, title: "Cazar 25 Monstruos", target: 25, desc: "25 monstruos", em: 10, xp: 10 },
+    { id: 1, title: "Cazar 50 Mobs Hostiles", target: 50, desc: "50 mobs hostiles", em: 10, xp: 10 },
+    { id: 2, title: "Cazar 100 Mobs Hostiles (Difícil)", target: 100, desc: "100 mobs hostiles", em: 20, xp: 20 },
+    { id: 3, title: "Cazar 150 Mobs Hostiles (Extrema)", target: 150, desc: "150 mobs hostiles", em: 40, xp: 40 },
+    { id: 4, title: "Cazar 20 Creepers o Arañas", target: 20, desc: "20 creepers o arañas", em: 10, xp: 10, typeCheck: "creeper_spider" },
+    { id: 5, title: "Cazar 40 Esqueletos o Zombis (Difícil)", target: 40, desc: "40 monstruos", em: 20, xp: 20, typeCheck: "skeleton_zombie" },
+    { id: 6, title: "Cazar 30 Monstruos de la Noche", target: 30, desc: "30 monstruos", em: 10, xp: 10 },
+    { id: 7, title: "Cazar 75 Criaturas de Sombras (Difícil)", target: 75, desc: "75 mobs hostiles", em: 20, xp: 20 },
+    { id: 8, title: "Cazar 200 Mobs (Extrema)", target: 200, desc: "200 mobs hostiles", em: 40, xp: 40 }
+  ],
+  exploration: [
+    { id: 0, title: "Recorrer 3,000 Bloques", target: 3000, desc: "3,000 bloques", em: 10, xp: 10 },
+    { id: 1, title: "Recorrer 6,000 Bloques (Difícil)", target: 6000, desc: "6,000 bloques", em: 20, xp: 20 },
+    { id: 2, title: "Recorrer 10,000 Bloques (Difícil)", target: 10000, desc: "10,000 bloques", em: 20, xp: 20 },
+    { id: 3, title: "Recorrer 15,000 Bloques (Extrema)", target: 15000, desc: "15,000 bloques", em: 40, xp: 40 },
+    { id: 4, title: "Recorrer 4,500 Bloques", target: 4500, desc: "4,500 bloques", em: 10, xp: 10 },
+    { id: 5, title: "Recorrer 8,000 Bloques (Difícil)", target: 8000, desc: "8,000 bloques", em: 20, xp: 20 },
+    { id: 6, title: "Recorrer 12,000 Bloques (Difícil)", target: 12000, desc: "12,000 bloques", em: 20, xp: 20 },
+    { id: 7, title: "Recorrer 5,000 Bloques", target: 5000, desc: "5,000 bloques", em: 10, xp: 10 },
+    { id: 8, title: "Recorrer 20,000 Bloques (Extrema)", target: 20000, desc: "20,000 bloques", em: 40, xp: 40 }
+  ]
+};
+
+function getDailyQuestConfig(dayNumber) {
+  const safeDay = Math.max(0, dayNumber || 0);
+  const hash1 = Math.floor(Math.abs(Math.sin(safeDay * 12.9898 + 78.233)) * 43758.5453);
+  const hash2 = Math.floor(Math.abs(Math.sin(safeDay * 43.1415 + 12.871)) * 23421.6312);
+  const hash3 = Math.floor(Math.abs(Math.sin(safeDay * 93.3142 + 45.123)) * 65432.1234);
+
+  const mineIdx = hash1 % QUEST_POOLS.mining.length;
+  const huntIdx = hash2 % QUEST_POOLS.hunting.length;
+  const expIdx = hash3 % QUEST_POOLS.exploration.length;
+
+  return {
+    mine: QUEST_POOLS.mining[mineIdx],
+    hunt: QUEST_POOLS.hunting[huntIdx],
+    explore: QUEST_POOLS.exploration[expIdx]
+  };
+}
+
+function checkAndUpdateDailyQuests(player) {
+  try {
+    if (!player || !player.isValid()) return;
+    const currentDay = world.getDay();
+    const lastDay = player.getDynamicProperty("last_quest_day") ?? -1;
+
+    if (lastDay !== currentDay) {
+      player.setDynamicProperty("last_quest_day", currentDay);
+      player.setDynamicProperty("q_mine_cnt", 0);
+      player.setDynamicProperty("q_hunt_cnt", 0);
+      player.setDynamicProperty("q_explore_cnt", 0);
+      player.setDynamicProperty("q_mine_done", false);
+      player.setDynamicProperty("q_hunt_done", false);
+      player.setDynamicProperty("q_explore_done", false);
+      player.setDynamicProperty("last_loc_x", Math.floor(player.location.x));
+      player.setDynamicProperty("last_loc_z", Math.floor(player.location.z));
+    }
+  } catch (e) {}
+}
+
+function processQuestReward(player, questName, emeralds = 10, xpLevel = 10) {
+  try {
+    player.runCommandAsync(`give @s emerald ${emeralds}`);
+    player.runCommandAsync(`xp ${xpLevel}L @s`);
+    const totalQuests = (player.getDynamicProperty("total_quests_completed") ?? 0) + 1;
+    player.setDynamicProperty("total_quests_completed", totalQuests);
+
+    world.sendMessage(`\n§a§l[MISIÓN COMPLETADA]§r\n§f${player.name} §7completó la Misión Diaria §e${questName} §7y recibió §a${emeralds} Esmeraldas §7y §b${xpLevel} Niveles de XP!\n`);
+
+    for (const p of world.getAllPlayers()) {
+      try { p.playSound("random.levelup", { volume: 0.8, pitch: 1.2 }); } catch (e) {}
+    }
+  } catch (e) {}
+}
+
+// ============================================================
+// HELPER FUNCTIONS
+// ============================================================
+
+function getScore(player, objId) {
+  try {
+    const obj = world.scoreboard.getObjective(objId);
+    if (!obj) return 0;
+    return obj.getScore(player) ?? 0;
+  } catch (e) { return 0; }
+}
+
+function getRank(player, objId) {
+  try {
+    const obj = world.scoreboard.getObjective(objId);
+    if (!obj) return "-";
+    const scores = obj.getScores();
+    scores.sort((a, b) => b.score - a.score);
+    const idx = scores.findIndex(s => s.participant.displayName === player.name);
+    return idx === -1 ? "Sin Rango" : `#${idx + 1}`;
+  } catch (e) { return "-"; }
+}
+
+function getTopPlayer(objId) {
+  try {
+    const obj = world.scoreboard.getObjective(objId);
+    if (!obj) return null;
+    const scores = obj.getScores();
+    if (scores.length === 0) return null;
+    scores.sort((a, b) => b.score - a.score);
+
+    const topScore = scores[0].score;
+
+    // Check if any online player matching top score has a valid Gamertag
+    for (const s of scores) {
+      if (s.score === topScore) {
+        const dName = s.participant.displayName;
+        if (dName && !dName.includes("commands.scoreboard.players")) {
+          try { world.setDynamicProperty("top_name_" + objId, dName); } catch (e) {}
+          return { name: dName, score: topScore };
+        }
+      }
+    }
+
+    // Fallback to cached Gamertag if player is offline
+    const cachedName = world.getDynamicProperty("top_name_" + objId);
+    if (cachedName) {
+      return { name: `${cachedName} (Offline)`, score: topScore };
+    }
+
+    return { name: "Lider Leyenda", score: topScore };
+  } catch (e) { return null; }
+}
+
+function showSidebarWithTimer(objectiveId) {
+  try {
+    const dim = world.getDimension("overworld");
+    dim.runCommandAsync(`scoreboard objectives setdisplay sidebar ${objectiveId}`);
+    if (sidebarTimer) system.clearRun(sidebarTimer);
+    sidebarTimer = system.runTimeout(() => {
+      try {
+        dim.runCommandAsync("scoreboard objectives setdisplay sidebar");
+        sidebarTimer = null;
+      } catch (e) {}
+    }, 300);
+  } catch (e) {}
+}
+
+/**
+ * Check and announce milestones for a player in a given objective.
+ * Uses dynamic properties to avoid re-announcing.
+ */
+function checkMilestones(player, objId) {
+  try {
+    const milestones = MILESTONES[objId];
+    if (!milestones) return;
+
+    const score = getScore(player, objId);
+
+    for (const m of milestones) {
+      if (score >= m.at) {
+        const propKey = `milestone_${objId}_${m.at}`;
+        const alreadyAnnounced = player.getDynamicProperty(propKey);
+        if (!alreadyAnnounced) {
+          player.setDynamicProperty(propKey, true);
+          // Announce to entire server
+          world.sendMessage(`\n${m.color}${m.label} §f${player.name} §7${m.msg}\n`);
+          // Play achievement sound for everyone
+          for (const p of world.getAllPlayers()) {
+            try {
+              p.playSound("random.levelup", { volume: 0.6, pitch: 1.2 });
+            } catch (e) {}
+          }
+        }
+      }
+    }
+  } catch (e) {}
+}
+
+/**
+ * Process a kill for streak tracking and announce thresholds.
+ */
+function processKillStreak(player) {
+  try {
+    const mobs = getScore(player, "MobsKilled");
+    const savedCurrent = player.getDynamicProperty("current_streak") ?? 0;
+    const memoryCurrent = killStreaks.get(player.id) ?? 0;
+    let base = Math.max(savedCurrent, memoryCurrent);
+
+    // Sanity check: if streak exceeds mobs killed due to farm or score edit, reset base
+    if (base > mobs + 5) {
+      base = 0;
+    }
+
+    const current = base + 1;
+
+    killStreaks.set(player.id, current);
+    try { player.setDynamicProperty("current_streak", current); } catch (e) {}
+
+    const savedHighest = player.getDynamicProperty("highest_streak") ?? 0;
+    const highest = Math.max(savedHighest, current);
+    try { player.setDynamicProperty("highest_streak", highest); } catch (e) {}
+
+    // Reward for 1000 kills streak
+    if (current === 1000) {
+      if (!player.getDynamicProperty("reward_1000mobs")) {
+        player.setDynamicProperty("reward_1000mobs", true);
+        player.addTag("tag_asesino_serie");
+        player.runCommandAsync("xp 200L @s");
+        player.runCommandAsync("give @s anvil 1");
+        player.runCommandAsync("give @s netherite_sword 1");
+        player.runCommandAsync("give @s netherite_ingot 1");
+        player.runCommandAsync("give @s diamond_block 128");
+        player.runCommandAsync("give @s emerald_block 64");
+        player.runCommandAsync("give @s lapis_block 128");
+        giveEnchantedBookItem(player, [
+          { id: "sharpness", level: 5 },
+          { id: "unbreaking", level: 3 },
+          { id: "looting", level: 3 },
+          { id: "fire_aspect", level: 2 },
+          { id: "mending", level: 1 }
+        ]);
+        world.sendMessage(`\n§b§l[RECOMPENSA DE RACHA LEGENDARIA]§r\n§f${player.name} §7ha conseguido una racha legendaria de §e1000 BAJAS CONSECUTIVAS §7y recibe el Kit Divino de Netherite, Libro Divino, Yunque, XP y Lingote de Netherite!\n`);
+      } else {
+        // Subsequent 1000 Mob Streak in new life: Veteran Reward (1 Netherite Ingot + 200L XP)
+        player.runCommandAsync("xp 200L @s");
+        player.runCommandAsync("give @s netherite_ingot 1");
+        world.sendMessage(`\n§b§l[RECOMPENSA DE RACHA VETERANA]§r\n§f${player.name} §7ha vuelto a lograr una racha imparable de §e1000 BAJAS CONSECUTIVAS §7y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+      }
+      for (const p of world.getAllPlayers()) {
+        try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+      }
+    }
+
+    for (const t of STREAK_THRESHOLDS) {
+      if (current === t.at) {
+        world.sendMessage(`\n${t.color}[${t.label}] §f${player.name} §7${t.msg}\n`);
+        // Play dramatic sound for everyone
+        for (const p of world.getAllPlayers()) {
+          try {
+            p.playSound("mob.wither.spawn", { volume: 0.3, pitch: 1.5 });
+          } catch (e) {}
+        }
+        break;
+      }
+    }
+  } catch (e) {}
+}
+
+/**
+ * Reset kill streak on death and announce if it was significant.
+ */
+function resetKillStreak(player, killerName) {
+  try {
+    const savedCurrent = player.getDynamicProperty("current_streak") ?? 0;
+    const memoryCurrent = killStreaks.get(player.id) ?? 0;
+    const streak = Math.max(savedCurrent, memoryCurrent);
+
+    killStreaks.set(player.id, 0);
+    try { player.setDynamicProperty("current_streak", 0); } catch (e) {}
+
+    if (streak >= 3 && killerName) {
+      world.sendMessage(`\n§8[FIN DE RACHA] §f${killerName} §7detuvo la racha de ${streak} bajas de §f${player.name}\n`);
+    }
+  } catch (e) {}
+}
+
+/**
+ * Generic function to grant a custom achievement.
+ * Keeps track of total achievements and gives rewards at milestones.
+ */
+function grantCustomAchievement(player, id, title) {
+  try {
+    const propKey = `custom_ach_${id}`;
+    if (player.getDynamicProperty(propKey)) return;
+    
+    player.setDynamicProperty(propKey, true);
+    
+    world.sendMessage(`\n§6§l[LOGRO DESBLOQUEADO]§r\n§f${player.name} §7ha conseguido: §e${title}\n`);
+    
+    for (const p of world.getAllPlayers()) {
+      try {
+        p.playSound("random.toast", { volume: 1.0, pitch: 1.0 });
+      } catch (e) {}
+    }
+
+    // Track total custom achievements for rewards
+    const totalAch = (player.getDynamicProperty("total_custom_ach_count") ?? 0) + 1;
+    player.setDynamicProperty("total_custom_ach_count", totalAch);
+
+    // Give reward if they reach 500 achievements
+    if (totalAch === 500) {
+      player.runCommandAsync("give @s diamond_block 128");
+      player.runCommandAsync("give @s emerald_block 128");
+      player.addTag("leyenda_500");
+      world.sendMessage(`\n§b§l[RECOMPENSA MAYOR]§r\n§f${player.name} §7ha completado §e500 LOGROS §7y ha recibido 2 stacks de bloques de diamante y esmeralda!\n`);
+    }
+
+  } catch (e) {}
+}
+
+// ============================================================
+// ENTITY DEATH EVENTS (with Streaks + Milestones)
+// ============================================================
+
+world.afterEvents.entityDie.subscribe((event) => {
+  try {
+    const { deadEntity, damageSource } = event;
+    if (!deadEntity) return;
+
+    const attacker = damageSource?.damagingEntity;
+
+    // --- PLAYER DIED ---
+    if (deadEntity.typeId === "minecraft:player") {
+      // Remove temporary death status tags
+      try {
+        deadEntity.removeTag("tag_lechero");
+        deadEntity.removeTag("tag_pajizo");
+      } catch (e) {}
+
+      // Track death
+      try {
+        incrementScore(deadEntity, "MuertesTotal");
+      } catch (e) {}
+
+      // Reset mob streak & pvp streak of dead player
+      const killerName = (attacker && attacker.typeId === "minecraft:player") ? attacker.name : null;
+      resetKillStreak(deadEntity, killerName);
+      try { deadEntity.setDynamicProperty("pvp_streak", 0); } catch (e) {}
+
+      // PvP Kill for attacker (Strict 50 PvP Kill Streak)
+      if (attacker && attacker.typeId === "minecraft:player") {
+        try {
+          incrementScore(attacker, "PvPKills");
+        } catch (e) {}
+        checkMilestones(attacker, "PvPKills");
+
+        const pvpStreak = (attacker.getDynamicProperty("pvp_streak") ?? 0) + 1;
+        try { attacker.setDynamicProperty("pvp_streak", pvpStreak); } catch (e) {}
+
+        if (pvpStreak === 50) {
+          if (!attacker.getDynamicProperty("reward_50pvp")) {
+            attacker.setDynamicProperty("reward_50pvp", true);
+            attacker.addTag("tag_rey_guerra");
+            world.sendMessage(`\n§6§l[RACHA PVP LEGENDARIA]§r\n§f${attacker.name} §7ha logrado una racha sangrienta de §e50 BAJAS PVP CONSECUTIVAS §7y recibe el Kit Divino de Netherite!\n`);
+            for (const p of world.getAllPlayers()) {
+              try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+            }
+            attacker.runCommandAsync("xp 200L @s");
+            attacker.runCommandAsync("give @s anvil 1");
+            attacker.runCommandAsync("give @s golden_apple 16");
+            attacker.runCommandAsync("give @s netherite_chestplate 1");
+            attacker.runCommandAsync("give @s netherite_ingot 1");
+            giveEnchantedBookItem(attacker, [{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          } else {
+            // Subsequent 50 PvP Streak in new life: Veteran Reward (1 Netherite Ingot + 200L XP)
+            world.sendMessage(`\n§6§l[RACHA PVP VETERANA]§r\n§f${attacker.name} §7ha vuelto a lograr §e50 BAJAS PVP CONSECUTIVAS §7y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+            for (const p of world.getAllPlayers()) {
+              try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+            }
+            attacker.runCommandAsync("xp 200L @s");
+            attacker.runCommandAsync("give @s netherite_ingot 1");
+          }
+        }
+      }
+      return;
+    }
+
+    // Only count kills by players from here
+    if (!attacker || attacker.typeId !== "minecraft:player") return;
+
+    // --- BOSS KILLED ---
+    const bosses = ["minecraft:wither", "minecraft:ender_dragon", "minecraft:elder_guardian"];
+    if (bosses.includes(deadEntity.typeId)) {
+      try {
+        incrementScore(attacker, "BossesKilled");
+      } catch (e) {}
+      checkMilestones(attacker, "BossesKilled");
+
+      if (deadEntity.typeId === "minecraft:ender_dragon") {
+        if (!attacker.getDynamicProperty("reward_matadrakos")) {
+          attacker.setDynamicProperty("reward_matadrakos", true);
+          grantCustomAchievement(attacker, "matadrakos", "Matadrakos");
+          attacker.addTag("tag_matadrakos");
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s elytra 1");
+          attacker.runCommandAsync("give @s firework_rocket 64");
+          attacker.runCommandAsync("give @s anvil 1");
+          attacker.runCommandAsync("give @s diamond_boots 1");
+          giveEnchantedBookItem(attacker, [{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          giveEnchantedBookItem(attacker, [{id:"feather_falling",level:4},{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+        }
+      }
+      if (deadEntity.typeId === "minecraft:wither") {
+        if (!attacker.getDynamicProperty("reward_dios_wither")) {
+          attacker.setDynamicProperty("reward_dios_wither", true);
+          grantCustomAchievement(attacker, "dios_wither", "Dios Wither");
+          attacker.addTag("tag_dios_wither");
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s totem_of_undying 2");
+          attacker.runCommandAsync("give @s wither_rose 1");
+          attacker.runCommandAsync("give @s emerald_block 64");
+          attacker.runCommandAsync("give @s diamond_leggings 1");
+          attacker.runCommandAsync("give @s anvil 1");
+          giveEnchantedBookItem(attacker, [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+        }
+      }
+      if (deadEntity.typeId === "minecraft:elder_guardian") {
+        if (!attacker.getDynamicProperty("reward_rey_poseidon")) {
+          attacker.setDynamicProperty("reward_rey_poseidon", true);
+          grantCustomAchievement(attacker, "rey_poseidon", "Rey Poseidon");
+          attacker.addTag("tag_rey_poseidon");
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s trident 1");
+          attacker.runCommandAsync("give @s diamond_helmet 1");
+          attacker.runCommandAsync("give @s emerald_block 64");
+          attacker.runCommandAsync("give @s anvil 1");
+          giveEnchantedBookItem(attacker, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          giveEnchantedBookItem(attacker, [{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+        }
+      }
+    }
+
+    // --- HOSTILE MOB KILLED ---
+    try {
+      if (isHostileMob(deadEntity)) {
+        // Daily Quest Check (with strict mob type filter)
+        checkAndUpdateDailyQuests(attacker);
+        const cfgH = getDailyQuestConfig(world.getDay()).hunt;
+        
+        let countsForQuest = true;
+        if (cfgH.typeCheck === "skeleton_zombie") {
+          const valid = ["minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:drowned", "minecraft:skeleton", "minecraft:wither_skeleton", "minecraft:stray", "minecraft:bogged"];
+          if (!valid.includes(deadEntity.typeId)) countsForQuest = false;
+        } else if (cfgH.typeCheck === "creeper_spider") {
+          const valid = ["minecraft:creeper", "minecraft:spider", "minecraft:cave_spider"];
+          if (!valid.includes(deadEntity.typeId)) countsForQuest = false;
+        }
+
+        if (countsForQuest && !attacker.getDynamicProperty("q_hunt_done")) {
+          const currentHunt = (attacker.getDynamicProperty("q_hunt_cnt") ?? 0) + 1;
+          attacker.setDynamicProperty("q_hunt_cnt", currentHunt);
+          if (currentHunt >= cfgH.target) {
+            attacker.setDynamicProperty("q_hunt_done", true);
+            processQuestReward(attacker, `${cfgH.title} (${cfgH.desc})`, cfgH.em, cfgH.xp);
+          }
+        }
+
+        incrementScore(attacker, "MobsKilled");
+        processKillStreak(attacker);
+        checkMilestones(attacker, "MobsKilled");
+
+        // Baby Zombie Achievement
+        if (deadEntity.typeId === "minecraft:zombie" && deadEntity.getComponent("minecraft:is_baby")) {
+          grantCustomAchievement(attacker, "nooo_chiquito", "¡NOOO! el chiquito");
+        }
+      }
+    } catch (e) {}
+  } catch (e) {}
+});
+
+// ============================================================
+// BLOCK BREAK EVENT (with Milestones + Protected Zone Alarm)
+// 9x9x9 protection zone centered at NPC (X: 1453, Y: 73, Z: -1021)
+// X: 1449 to 1457 | Y: 69 to 77 | Z: -1025 to -1017
+// ============================================================
+
+world.afterEvents.playerBreakBlock.subscribe((event) => {
+  try {
+    if (!event.player) return;
+
+    // Daily Quest Check
+    checkAndUpdateDailyQuests(event.player);
+    const cfgM = getDailyQuestConfig(world.getDay()).mine;
+    if (!event.player.getDynamicProperty("q_mine_done")) {
+      const currentMine = (event.player.getDynamicProperty("q_mine_cnt") ?? 0) + 1;
+      event.player.setDynamicProperty("q_mine_cnt", currentMine);
+      if (currentMine >= cfgM.target) {
+        event.player.setDynamicProperty("q_mine_done", true);
+        processQuestReward(event.player, `${cfgM.title} (${cfgM.desc})`, cfgM.em, cfgM.xp);
+      }
+    }
+
+    // Count block for BloquesPicados
+    incrementScore(event.player, "BloquesPicados");
+    checkMilestones(event.player, "BloquesPicados");
+
+    const blockCount = getScore(event.player, "BloquesPicados");
+    if (blockCount >= 5000 && !event.player.getDynamicProperty("reward_5000bloques")) {
+      event.player.setDynamicProperty("reward_5000bloques", true);
+      event.player.addTag("tag_leyenda_minera");
+      world.sendMessage(`\n§6§l[LOGRO DESBLOQUEADO]§r\n§f${event.player.name} §7ha conseguido: §eLeyenda Minera §7(5000 Bloques Picados) y recibe el Kit Divino de Minería!\n`);
+      for (const p of world.getAllPlayers()) {
+        try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+      }
+      event.player.runCommandAsync("xp 200L @s");
+      event.player.runCommandAsync("give @s anvil 1");
+      event.player.runCommandAsync("give @s iron_block 64");
+      event.player.runCommandAsync("give @s netherite_pickaxe 1");
+      event.player.runCommandAsync("give @s netherite_shovel 1");
+      event.player.runCommandAsync("give @s netherite_ingot 1");
+      giveEnchantedBookItem(event.player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"fortune",level:3},{id:"mending",level:1}]);
+    }
+
+    // CUSTOM ACHIEVEMENTS (Blocks)
+    const brokenId = event.brokenBlockPermutation?.type?.id ?? event.block.typeId;
+    
+    if (brokenId === "minecraft:dirt") {
+      const currentDirt = (event.player.getDynamicProperty("ach_dirt_count") ?? 0) + 1;
+      event.player.setDynamicProperty("ach_dirt_count", currentDirt);
+      if (currentDirt === 67) {
+        grantCustomAchievement(event.player, "sixseven", "SIXSEVEN BRO");
+      }
+    } else if (brokenId === "minecraft:quartz_ore" || brokenId === "minecraft:nether_quartz_ore") {
+      grantCustomAchievement(event.player, "warzone", "¡WARZONE!");
+    }
+
+    // PROTECTION ZONE: Check if block was broken inside the Escribano house perimeter
+    const block = event.block;
+    const bx = block.location.x;
+    const by = block.location.y;
+    const bz = block.location.z;
+
+    const inZone = (bx >= 1449 && bx <= 1457 && by >= 69 && by <= 77 && bz >= -1025 && bz <= -1017);
+
+    if (inZone) {
+      // Alert all players with alarm
+      world.sendMessage(
+        `\n§4§l[ALERTA - ZONA PROTEGIDA]§r\n` +
+        `§c${event.player.name} §7rompio un bloque de la casa del escribano\n` +
+        `§8Coordenadas: X:${bx} Y:${by} Z:${bz}\n`
+      );
+
+      // Play alarm sound to all players
+      for (const p of world.getAllPlayers()) {
+        try {
+          p.playSound("note.bass", { volume: 1.0, pitch: 0.5 });
+        } catch (e) {}
+      }
+
+      // Also play alarm to the offender specifically
+      event.player.playSound("mob.wither.spawn", { volume: 0.5, pitch: 2.0 });
+    }
+  } catch (e) {}
+});
+
+// ============================================================
+// WELCOME SYSTEM (Every login)
+// ============================================================
+
+world.afterEvents.playerSpawn.subscribe((event) => {
+  try {
+    const { player, initialSpawn } = event;
+    if (!player || !initialSpawn) return;
+
+    // Restore saved streak on join
+    const savedStreak = player.getDynamicProperty("current_streak") ?? 0;
+    killStreaks.set(player.id, savedStreak);
+
+    system.runTimeout(() => {
+      try {
+        if (!player.isValid()) return;
+
+        player.runCommandAsync(`title @s actionbar §l§aVILLA ESMERALDA §r§8- §e¡Bienvenido §f${player.name}§e!`);
+
+        player.playSound("random.orb", { volume: 0.8, pitch: 1.0 });
+
+        const tip = VILLA_TIPS[Math.floor(Math.random() * VILLA_TIPS.length)];
+
+        player.sendMessage(
+          `§r\n§l§6[ESCRIBANO REAL - VILLA ESMERALDA]§r\n` +
+          `§eBienvenido de vuelta a la Villa, §f${player.name}§e.\n` +
+          `§aSigue las reglas del reino siempre: §b${DISCORD_RULES_LINK}\n\n` +
+          `§l§bTUS MARCAS ACTUALES:§r\n` +
+          `§f  Bajas PvP:§r ${getScore(player, "PvPKills")} §8(${getRank(player, "PvPKills")})\n` +
+          `§f  Mobs Asesinados:§r ${getScore(player, "MobsKilled")} §8(${getRank(player, "MobsKilled")})\n` +
+          `§f  Bloques Picados:§r ${getScore(player, "BloquesPicados")} §8(${getRank(player, "BloquesPicados")})\n\n` +
+          `§7Consejo: ${tip}\n`
+        );
+      } catch (e) {}
+    }, 60);
+  } catch (e) {}
+});
+
+// ============================================================
+// NPC TAG DETECTION LOOP (Every 4 ticks)
+// ============================================================
+
+system.runInterval(() => {
+  try {
+    for (const player of world.getAllPlayers()) {
+      try {
+        // --- SIDEBAR BUTTONS ---
+        if (player.hasTag("ver_mobs")) {
+          player.removeTag("ver_mobs");
+          showSidebarWithTimer("MobsKilled");
+        }
+        if (player.hasTag("ver_pvp")) {
+          player.removeTag("ver_pvp");
+          showSidebarWithTimer("PvPKills");
+        }
+        if (player.hasTag("ver_bloques")) {
+          player.removeTag("ver_bloques");
+          showSidebarWithTimer("BloquesPicados");
+        }
+
+        // --- PROFILE (with K/D Ratio) ---
+        if (player.hasTag("ver_perfil")) {
+          player.removeTag("ver_perfil");
+          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
+
+          const pvp = getScore(player, "PvPKills");
+          const mobs = getScore(player, "MobsKilled");
+          const bloques = getScore(player, "BloquesPicados");
+          const bosses = getScore(player, "BossesKilled");
+          const muertes = getScore(player, "MuertesTotal");
+          const streak = killStreaks.get(player.id) ?? 0;
+
+          // K/D Ratio
+          const totalKills = pvp + mobs;
+          const kd = muertes > 0 ? (totalKills / muertes).toFixed(1) : totalKills > 0 ? "Perfecto" : "0.0";
+
+          let badges = "";
+          if (getRank(player, "PvPKills") === "#1" && pvp > 0) badges += "  §6- Campeon del Reino\n";
+          if (getRank(player, "MobsKilled") === "#1" && mobs > 0) badges += "  §c- Cazador Leyenda\n";
+          if (getRank(player, "BloquesPicados") === "#1" && bloques > 0) badges += "  §e- Maestro Minero\n";
+          if (getRank(player, "BossesKilled") === "#1" && bosses > 0) badges += "  §5- Matadrakos\n";
+          if (!badges) badges = "  §7- Ninguna todavia\n";
+
+          player.sendMessage(
+            `§r\n§l§6=== PERFIL REAL: §f${player.name} §6===§r\n\n` +
+            `§l§eINSIGNIAS:§r\n${badges}\n` +
+            `§l§bESTADISTICAS:§r\n` +
+            `  §fBajas PvP:§r ${pvp} §8(${getRank(player, "PvPKills")})\n` +
+            `  §fMobs Asesinados:§r ${mobs} §8(${getRank(player, "MobsKilled")})\n` +
+            `  §fBloques Picados:§r ${bloques} §8(${getRank(player, "BloquesPicados")})\n` +
+            `  §fJefes Derrotados:§r ${bosses} §8(${getRank(player, "BossesKilled")})\n` +
+            `  §fMuertes Totales:§r ${muertes}\n\n` +
+            `§l§bCOMBATE:§r\n` +
+            `  §fK/D Ratio:§r ${kd} §8(${totalKills} kills / ${muertes} muertes)\n` +
+            `  §fRacha Actual:§r ${streak} bajas seguidas\n` +
+            `§6===========================§r\n`
+          );
+        }
+
+        // --- RULES ---
+        if (player.hasTag("ver_reglas")) {
+          player.removeTag("ver_reglas");
+          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
+
+          player.sendMessage(
+            `§r\n§l§6CONSTITUCION DE VILLA ESMERALDA§r\n\n` +
+            `§a1.§f No griefing ni destruccion de propiedades ajenas.\n` +
+            `§a2.§f Respetar los pactos de comercio y no estafar.\n` +
+            `§a3.§f Respetar las zonas protegidas del Spawn.\n` +
+            `§a4.§f El PvP solo esta permitido si ambas partes lo acuerdan.\n\n` +
+            `§eReglamento completo en Discord:\n§b${DISCORD_RULES_LINK}\n`
+          );
+        }
+
+        // --- MISIONES DIARIAS ---
+        if (player.hasTag("ver_misiones")) {
+          player.removeTag("ver_misiones");
+          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
+
+          checkAndUpdateDailyQuests(player);
+
+          const dailyCfg = getDailyQuestConfig(world.getDay());
+
+          const qM = player.getDynamicProperty("q_mine_cnt") ?? 0;
+          const qMDone = player.getDynamicProperty("q_mine_done") ?? false;
+          const qH = player.getDynamicProperty("q_hunt_cnt") ?? 0;
+          const qHDone = player.getDynamicProperty("q_hunt_done") ?? false;
+          const qE = player.getDynamicProperty("q_explore_cnt") ?? 0;
+          const qEDone = player.getDynamicProperty("q_explore_done") ?? false;
+
+          const pctM = Math.min(Math.floor((qM / dailyCfg.mine.target) * 100), 100);
+          const pctH = Math.min(Math.floor((qH / dailyCfg.hunt.target) * 100), 100);
+          const pctE = Math.min(Math.floor((qE / dailyCfg.explore.target) * 100), 100);
+
+          const textM = qMDone ? "§a[COMPLETADA 100%]" : `§e${pctM}% §8(${qM}/${dailyCfg.mine.target}) §a[+${dailyCfg.mine.em} Em / ${dailyCfg.mine.xp}L XP]`;
+          const textH = qHDone ? "§a[COMPLETADA 100%]" : `§e${pctH}% §8(${qH}/${dailyCfg.hunt.target}) §a[+${dailyCfg.hunt.em} Em / ${dailyCfg.hunt.xp}L XP]`;
+          const textE = qEDone ? "§a[COMPLETADA 100%]" : `§e${pctE}% §8(${Math.floor(qE)}/${dailyCfg.explore.target}) §a[+${dailyCfg.explore.em} Em / ${dailyCfg.explore.xp}L XP]`;
+
+          player.sendMessage(
+            `§r\n§l§6=== MISIONES DIARIAS DE LA VILLA ===§r\n` +
+            `§7Recompensas por Dificultad (Moderada: 10, Difícil: 20, Extrema: 40)\n\n` +
+            `§e[MINA] §f${dailyCfg.mine.title}:§r ${textM}\n` +
+            `§c[CAZA] §f${dailyCfg.hunt.title}:§r ${textH}\n` +
+            `§b[RUTA] §f${dailyCfg.explore.title}:§r ${textE}\n\n` +
+            `§8Misiones rotadas automáticamente cada día in-game.\n`
+          );
+        }
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 4);
+
+// ============================================================
+// DYNAMIC NAMETAGS SYSTEM (Every 5 seconds / 100 ticks)
+// Updates the nametag of #1 players with their highest title.
+// ============================================================
+
+const titleMap = new Map(); // playerId -> current title applied
+
+system.runInterval(() => {
+  try {
+    const categories = [
+      { objId: "PvPKills", title: "§4[Caballero Negro]§r ", priority: 4 },
+      { objId: "MobsKilled", title: "§c[Cazador Leyenda]§r ", priority: 3 },
+      { objId: "BloquesPicados", title: "§e[Maestro Minero]§r ", priority: 2 },
+      { objId: "BossesKilled", title: "§5[Matadrakos]§r ", priority: 1 }
+    ];
+
+    // Determine what title each player should have (highest priority wins)
+    const playerTitles = new Map();
+
+    for (const cat of categories) {
+      const top = getTopPlayer(cat.objId);
+      if (top && top.score > 0) {
+        const existing = playerTitles.get(top.name);
+        if (!existing || cat.priority > existing.priority) {
+          playerTitles.set(top.name, { title: cat.title, priority: cat.priority });
+        }
+      }
+    }
+
+    // Apply or remove titles & track exploration
+    for (const player of world.getAllPlayers()) {
+      try {
+        checkAndUpdateDailyQuests(player);
+
+        // Track exploration distance
+        const cfgE = getDailyQuestConfig(world.getDay()).explore;
+        if (!player.getDynamicProperty("q_explore_done")) {
+          const px = Math.floor(player.location.x);
+          const pz = Math.floor(player.location.z);
+          const lastX = player.getDynamicProperty("last_loc_x") ?? px;
+          const lastZ = player.getDynamicProperty("last_loc_z") ?? pz;
+
+          const dist = Math.sqrt((px - lastX) * (px - lastX) + (pz - lastZ) * (pz - lastZ));
+          if (dist > 1 && dist < 100) {
+            const currentExp = (player.getDynamicProperty("q_explore_cnt") ?? 0) + dist;
+            player.setDynamicProperty("q_explore_cnt", currentExp);
+            if (currentExp >= cfgE.target) {
+              player.setDynamicProperty("q_explore_done", true);
+              processQuestReward(player, `${cfgE.title} (${cfgE.desc})`, cfgE.em, cfgE.xp);
+            }
+          }
+          player.setDynamicProperty("last_loc_x", px);
+          player.setDynamicProperty("last_loc_z", pz);
+        }
+
+        const titleInfo = playerTitles.get(player.name);
+        const mobs = getScore(player, "MobsKilled");
+        const bloques = getScore(player, "BloquesPicados");
+        const pvp = getScore(player, "PvPKills");
+
+        if (mobs < 1000 && player.hasTag("tag_asesino_serie")) {
+          player.removeTag("tag_asesino_serie");
+          try { player.setDynamicProperty("reward_1000mobs", false); } catch (e) {}
+        }
+        if (bloques < 5000 && player.hasTag("tag_leyenda_minera")) {
+          player.removeTag("tag_leyenda_minera");
+          try { player.setDynamicProperty("reward_5000bloques", false); } catch (e) {}
+        }
+        if (pvp < 50 && player.hasTag("tag_rey_guerra")) {
+          player.removeTag("tag_rey_guerra");
+          try { player.setDynamicProperty("reward_50pvp", false); } catch (e) {}
+        }
+
+        const citizenRank = getCitizenRank(player);
+        let rankingTitle = "";
+        
+        // 1. Asesino en Serie (1000 Mobs Streak) takes highest precedence
+        if (player.hasTag("tag_asesino_serie") && mobs >= 1000) {
+          rankingTitle = "§6[Asesino en Serie]§r ";
+        } 
+        // 2. Top #1 Leaderboard Title (Caballero Negro, Cazador Leyenda, Maestro Minero, Matadrakos) OUTRANKS static achievement tags!
+        else if (titleInfo) {
+          rankingTitle = titleInfo.title;
+        } 
+        // 3. Static Achievement Tags (if NOT Top #1 on leaderboard)
+        else if (player.hasTag("tag_rey_poseidon")) {
+          rankingTitle = "§b[Rey Poseidon]§r ";
+        } else if (player.hasTag("tag_dios_wither")) {
+          rankingTitle = "§5[Dios Wither]§r ";
+        } else if (player.hasTag("tag_matadrakos")) {
+          rankingTitle = "§d[Matadrakos]§r ";
+        } else if (player.hasTag("tag_rey_guerra")) {
+          rankingTitle = "§c[Rey de la Guerra]§r ";
+        } else if (player.hasTag("tag_leyenda_minera")) {
+          rankingTitle = "§e[Leyenda Minera]§r ";
+        } else if (player.hasTag("leyenda_500")) {
+          rankingTitle = "§b[Leyenda]§r ";
+        }
+
+        let tempTitle = "";
+        if (player.hasTag("tag_lechero")) {
+          tempTitle = "§a[Lechero]§r ";
+        } else if (player.hasTag("tag_pajizo")) {
+          tempTitle = "§e[Pajizo]§r ";
+        }
+
+        const newTag = `${citizenRank}${tempTitle}${rankingTitle}${player.name}`;
+        
+        if (player.nameTag !== newTag) {
+          player.nameTag = newTag;
+        }
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 100);
+
+// ============================================================
+// PERIODIC RANKINGS BROADCAST (Every 15 minutes / 18000 ticks)
+// ============================================================
+
+system.runInterval(() => {
+  try {
+    const pvpTop = getTopPlayer("PvPKills");
+    const mobsTop = getTopPlayer("MobsKilled");
+    const blocksTop = getTopPlayer("BloquesPicados");
+
+    let lines = `§r\n§l§6[RANKING OFICIAL DE VILLA ESMERALDA]§r\n`;
+
+    if (pvpTop && pvpTop.score > 0) {
+      lines += `  §fLider PvP:§r ${pvpTop.name} §8(${pvpTop.score} bajas)\n`;
+    }
+    if (mobsTop && mobsTop.score > 0) {
+      lines += `  §fLider Mobs:§r ${mobsTop.name} §8(${mobsTop.score} eliminados)\n`;
+    }
+    if (blocksTop && blocksTop.score > 0) {
+      lines += `  §fLider Mineria:§r ${blocksTop.name} §8(${blocksTop.score} bloques)\n`;
+    }
+
+    lines += `§7Consulta tus marcas completas con el Escribano Real.\n`;
+
+    world.sendMessage(lines);
+  } catch (e) {}
+}, 18000);
+
+// ============================================================
+// ACOUSTIC ENTRANCE + WAIT MUSIC (LOOPING)
+// 5x5x5 radius around NPC (X: 1453, Y: 73, Z: -1021)
+// Replays "Wait" automatically while the player stays inside.
+// Uses /music command to override ambient game music.
+// ============================================================
+
+system.runInterval(() => {
+  try {
+    for (const player of world.getAllPlayers()) {
+      try {
+        const { x, y, z } = player.location;
+        const inside = (x >= 1448 && x <= 1458 && y >= 70 && y <= 78 && z >= -1026 && z <= -1016);
+
+        if (inside && !playersInOffice.has(player.id)) {
+          // ENTERED
+          playersInOffice.add(player.id);
+
+          // Entrance sounds
+          system.runTimeout(() => {
+            try {
+              if (!player.isValid()) return;
+              player.playSound("item.book.page_turn", { volume: 1.0, pitch: 0.9 });
+              player.playSound("beacon.activate", { volume: 0.6, pitch: 1.5 });
+            } catch (e) {}
+          }, 5);
+
+          // Play Wait immediately via /music to override game ambient music and loop
+          system.runTimeout(() => {
+            try {
+              if (!player.isValid()) return;
+              player.runCommandAsync("music play record.wait 0.5 1.0 loop");
+            } catch (e) {}
+          }, 30);
+
+        } else if (!inside && playersInOffice.has(player.id)) {
+          // EXITED: stop music
+          playersInOffice.delete(player.id);
+          try {
+            player.runCommandAsync("music stop 2.0");
+          } catch (e) {}
+        }
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 10);
+
+// ============================================================
+// CUSTOM ACHIEVEMENTS (Items & Inventory)
+// ============================================================
+
+// Drinking Milk ("Lechero")
+world.afterEvents.itemCompleteUse.subscribe((event) => {
+  try {
+    if (event.itemStack?.typeId === "minecraft:milk_bucket") {
+      grantCustomAchievement(event.source, "lechero", "Lechero");
+      event.source.addTag("tag_lechero");
+    }
+  } catch (e) {}
+});
+
+// Fishing ("Coporero")
+world.afterEvents.itemUse.subscribe((event) => {
+  try {
+    if (event.itemStack?.typeId === "minecraft:fishing_rod") {
+      grantCustomAchievement(event.source, "coporero", "Coporero");
+    }
+  } catch (e) {}
+});
+
+// Periodic Inventory & Position Check (Every 2 seconds / 40 ticks)
+system.runInterval(() => {
+  try {
+    for (const player of world.getAllPlayers()) {
+      try {
+        // --- 1. Position Check (Aventurero: 20k blocks from spawn) ---
+        const { x, z } = player.location;
+        const distance = Math.sqrt(x * x + z * z);
+        if (distance >= 20000) {
+          grantCustomAchievement(player, "aventurero", "Aventurero");
+        }
+
+        // --- 2. Inventory Check ---
+        const invComp = player.getComponent("inventory");
+        if (!invComp || !invComp.container) continue;
+        
+        const inv = invComp.container;
+        const boatTypes = [
+          "minecraft:oak_boat", "minecraft:spruce_boat", "minecraft:birch_boat", "minecraft:jungle_boat", 
+          "minecraft:acacia_boat", "minecraft:dark_oak_boat", "minecraft:mangrove_boat", "minecraft:cherry_boat", 
+          "minecraft:bamboo_raft", "minecraft:oak_chest_boat", "minecraft:spruce_chest_boat", "minecraft:birch_chest_boat", 
+          "minecraft:jungle_chest_boat", "minecraft:acacia_chest_boat", "minecraft:dark_oak_chest_boat", 
+          "minecraft:mangrove_chest_boat", "minecraft:cherry_chest_boat", "minecraft:bamboo_chest_raft"
+        ];
+        
+        let stickCount = 0;
+        let hasHay = false;
+        let hasNetheriteChest = false;
+        let hasBoat = false;
+
+        for (let i = 0; i < inv.size; i++) {
+          const item = inv.getItem(i);
+          if (item) {
+            if (item.typeId === "minecraft:stick") stickCount += item.amount;
+            else if (item.typeId === "minecraft:hay_block") hasHay = true;
+            else if (item.typeId === "minecraft:netherite_chestplate") hasNetheriteChest = true;
+            else if (boatTypes.includes(item.typeId)) hasBoat = true;
+          }
+        }
+
+        if (stickCount >= 64) grantCustomAchievement(player, "dios_palos", "Dios de los palos");
+        if (hasHay) {
+          grantCustomAchievement(player, "rey_paja", "El rey de la paja");
+          if (!player.hasTag("tag_pajizo")) {
+            player.addTag("tag_pajizo");
+            player.runCommandAsync("give @s milk_bucket 1");
+          }
+        }
+        if (hasNetheriteChest) grantCustomAchievement(player, "pecho_duro", "Pecho duro");
+        if (hasBoat) grantCustomAchievement(player, "canoero", "Canoero");
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 100);
+
+// ============================================================
+// AUTOMATED DROWNED SPAWNER (Island Cell: X: 1553, Y: 49, Z: -995)
+// Spawns Drowned underwater around the island when a player is near.
+// Maintains a cap of 8 Drowned to ensure zero server lag.
+// ============================================================
+
+system.runInterval(() => {
+  try {
+    const dim = world.getDimension("overworld");
+    const islandLoc = { x: 1553, y: 49, z: -995 };
+    
+    // Check if any player is within 35 blocks of the island
+    let playerNear = false;
+    for (const player of world.getAllPlayers()) {
+      if (player.isValid()) {
+        const dx = player.location.x - islandLoc.x;
+        const dy = player.location.y - islandLoc.y;
+        const dz = player.location.z - islandLoc.z;
+        if (dx * dx + dy * dy + dz * dz <= 1225) { // 35 blocks radius
+          playerNear = true;
+          break;
+        }
+      }
+    }
+
+    if (!playerNear) return;
+
+    // Count existing drowned around the island (25 block radius)
+    const drownedEntities = dim.getEntities({
+      type: "minecraft:drowned",
+      location: islandLoc,
+      maxDistance: 25
+    });
+
+    if (drownedEntities.length < 8) {
+      // Spawn a new Drowned at random position around underwater floor (Y: 49)
+      const offsetX = Math.floor((Math.random() - 0.5) * 16);
+      const offsetZ = Math.floor((Math.random() - 0.5) * 16);
+      const spawnX = islandLoc.x + offsetX;
+      const spawnY = islandLoc.y;
+      const spawnZ = islandLoc.z + offsetZ;
+
+      try {
+        dim.spawnEntity("minecraft:drowned", { x: spawnX, y: spawnY, z: spawnZ });
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 100);
+
+// ============================================================
+// AUTOMATED PRISON & ANTI-SABOTAGE SYSTEM (v36.4.0)
+// Cell: X: 1553, Y: 69, Z: -992 | Stone: X: 1551, Y: 67, Z: -992
+// Spawn Exit: X: 1593, Y: 64, Z: -1164
+// ============================================================
+
+const PRISON_CONFIG = {
+  cellLoc: { x: 1553, y: 69, z: -992 },
+  stoneLoc: { x: 1551, y: 67, z: -992 },
+  releaseLoc: { x: 1593, y: 64, z: -1164 },
+  levels: {
+    preso_nivel1: { item: "minecraft:iron_pickaxe", name: "Hierro (250 usos)", enchants: [{ id: "silk_touch", level: 1 }] },
+    preso_nivel2: { item: "minecraft:iron_pickaxe", name: "Hierro Irrompible (750 usos)", enchants: [{ id: "silk_touch", level: 1 }, { id: "unbreaking", level: 3 }] },
+    preso_nivel3: { item: "minecraft:diamond_pickaxe", name: "Diamante (1,561 usos)", enchants: [{ id: "silk_touch", level: 1 }] },
+    preso_nivel4: { item: "minecraft:diamond_pickaxe", name: "Diamante Irrompible (4,683 usos)", enchants: [{ id: "silk_touch", level: 1 }, { id: "unbreaking", level: 3 }] },
+    preso_nivel5: { item: "minecraft:netherite_pickaxe", name: "Netherite (2,031 usos)", enchants: [{ id: "silk_touch", level: 1 }] },
+    preso_nivel6: { item: "minecraft:netherite_pickaxe", name: "Netherite Irrompible (6,093 usos)", enchants: [{ id: "silk_touch", level: 1 }, { id: "unbreaking", level: 3 }] }
+  }
+};
+
+// Protect Lava Generator Column at X: 1551, Z: -992 (Y: 67..72):
+// If a prisoner attempts to place a block into the generator column (including Y: 71), restore lava & regenerate pickaxe!
+world.afterEvents.playerPlaceBlock.subscribe((event) => {
+  try {
+    const { player, block } = event;
+    if (!player || !block) return;
+    
+    let activeLevelTag = null;
+    for (const tag of Object.keys(PRISON_CONFIG.levels)) {
+      if (player.hasTag(tag)) {
+        activeLevelTag = tag;
+        break;
+      }
+    }
+
+    if (activeLevelTag) {
+      const bx = block.location.x;
+      const by = block.location.y;
+      const bz = block.location.z;
+
+      // Check if block was placed in the generator column at X: 1551, Z: -992 (Y: 67 to 72)
+      if (bx === 1551 && bz === -992 && by >= 67 && by <= 72) {
+        // Restore Lava stream
+        try {
+          block.setPermutation(BlockPermutation.resolve("minecraft:lava"));
+        } catch (e) {}
+
+        // Regenerate pickaxe as penalty for attempting to sabotage lava!
+        const inv = player.getComponent("inventory")?.container;
+        if (inv) {
+          inv.clearAll();
+          const lvlCfg = PRISON_CONFIG.levels[activeLevelTag];
+          const item = new ItemStack(lvlCfg.item, 1);
+          const enchantComp = item.getComponent("minecraft:enchantable");
+          if (enchantComp) {
+            for (const enc of lvlCfg.enchants) {
+              try {
+                enchantComp.addEnchantment({ type: new EnchantmentType(enc.id), level: enc.level });
+              } catch (err) {}
+            }
+          }
+          inv.addItem(item);
+        }
+
+        player.sendMessage(`\n§c§l[SANCION POR SABOTAJE]§r\n§f¡Has intentado tapar la lava del generador! Tu pico ha sido regenerado a nuevo como castigo.\n`);
+        try { player.playSound("ambient.weather.thunder", { volume: 0.8, pitch: 1.0 }); } catch (e) {}
+      }
+    }
+  } catch (e) {}
+});
+
+const pendingArrests = new Set();
+
+// 3. Prisoner Automation Loop (Runs every 1 second / 20 ticks)
+system.runInterval(() => {
+  try {
+    const dim = world.getDimension("overworld");
+
+    for (const player of world.getAllPlayers()) {
+      try {
+        if (!player || !player.isValid()) continue;
+
+        let activeLevelTag = null;
+        for (const tag of Object.keys(PRISON_CONFIG.levels)) {
+          if (player.hasTag(tag)) {
+            activeLevelTag = tag;
+            break;
+          }
+        }
+
+        if (activeLevelTag) {
+          const isJailed = player.getDynamicProperty("jailed_active");
+
+          // A. INITIATE ARREST (10s Warning)
+          if (!isJailed && !pendingArrests.has(player.id)) {
+            pendingArrests.add(player.id);
+
+            try {
+              player.onScreenDisplay.setTitle("§c§lARRESTO INMINENTE");
+              player.onScreenDisplay.updateSubtitle("§fGuarda tus cosas. En 10s iras a la Celda.");
+            } catch (e) {}
+
+            player.sendMessage(`\n§c§l[ADVERTENCIA DE PRISION]§r\n§fTienes 10 segundos para guardar tus objetos en un cofre. Seras trasladado a la Celda de la Isla y tu inventario sera limpiado.\n`);
+            try { player.playSound("ambient.weather.thunder", { volume: 0.8, pitch: 1.0 }); } catch (e) {}
+
+            system.runTimeout(() => {
+              try {
+                if (!player || !player.isValid()) return;
+                pendingArrests.delete(player.id);
+
+                player.setDynamicProperty("jailed_active", true);
+                player.addTag("ignorar_escribano");
+
+                // Native Inventory Clear
+                const inv = player.getComponent("inventory")?.container;
+                if (inv) {
+                  inv.clearAll();
+                }
+
+                // Native SpawnPoint & Teleport
+                try {
+                  player.setSpawnPoint({ dimension: dim, location: PRISON_CONFIG.cellLoc });
+                } catch (e) {}
+
+                try {
+                  player.teleport(PRISON_CONFIG.cellLoc);
+                } catch (e) {}
+
+                // Give assigned Silk Touch Pickaxe
+                const lvlCfg = PRISON_CONFIG.levels[activeLevelTag];
+                if (inv) {
+                  const item = new ItemStack(lvlCfg.item, 1);
+                  const enchantComp = item.getComponent("minecraft:enchantable");
+                  if (enchantComp) {
+                    for (const enc of lvlCfg.enchants) {
+                      try {
+                        enchantComp.addEnchantment({ type: new EnchantmentType(enc.id), level: enc.level });
+                      } catch (err) {}
+                    }
+                  }
+                  inv.addItem(item);
+                }
+
+                world.sendMessage(`\n§c§l[PRISIONERO ENTRANDO A CELDA]§r\n§f${player.name} §7ha sido ingresado a la Celda de la Isla con condena §e${lvlCfg.name}§7!\n`);
+              } catch (e) {
+                pendingArrests.delete(player.id);
+              }
+            }, 200); // 10 seconds delay
+          }
+
+          // B. ACTIVE PRISONER MAINTENANCE
+          if (isJailed && !pendingArrests.has(player.id)) {
+            // Anti-Escape Position Tether (Keep inside cell)
+            const dx = player.location.x - PRISON_CONFIG.cellLoc.x;
+            const dz = player.location.z - PRISON_CONFIG.cellLoc.z;
+            if (dx * dx + dz * dz > 225) {
+              try { player.teleport(PRISON_CONFIG.cellLoc); } catch (e) {}
+            }
+
+            // Floor Item Cleaner (Destroys loose items lying around cell floor)
+            try {
+              dim.runCommandAsync(`kill @e[type=item,x=1553,y=69,z=-992,r=10]`);
+            } catch (e) {}
+
+            // Check if Pickaxe is Broken
+            const inv = player.getComponent("inventory")?.container;
+            let hasPick = false;
+            if (inv) {
+              for (let i = 0; i < inv.size; i++) {
+                const item = inv.getItem(i);
+                if (item && item.typeId.includes("pickaxe")) {
+                  hasPick = true;
+                  break;
+                }
+              }
+            }
+
+            // C. AUTOMATIC RELEASE UPON PICKAXE BREAK
+            if (!hasPick && !player.getDynamicProperty("jail_rewarding")) {
+              player.setDynamicProperty("jail_rewarding", true);
+
+              // Restore Spawn Point to Spawn Plaza
+              try {
+                player.setSpawnPoint({ dimension: dim, location: PRISON_CONFIG.releaseLoc });
+              } catch (e) {}
+
+              // Remove Prison Tags & States
+              for (const tag of Object.keys(PRISON_CONFIG.levels)) {
+                player.removeTag(tag);
+              }
+              player.removeTag("ignorar_escribano");
+              player.setDynamicProperty("jailed_active", false);
+              player.setDynamicProperty("jail_rewarding", false);
+
+              // Native Teleport to Spawn Exit
+              try {
+                player.teleport(PRISON_CONFIG.releaseLoc);
+              } catch (e) {}
+
+              world.sendMessage(`\n§a§l[CONDENA CUMPLIDA]§r\n§f${player.name} §7ha terminado de romper su pico en la Celda de la Isla y ha sido liberado en el Spawn!\n`);
+              for (const p of world.getAllPlayers()) {
+                try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+  } catch (e) {}
+}, 20);
+

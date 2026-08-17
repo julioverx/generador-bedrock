@@ -760,6 +760,48 @@
         <button class="btn-copy" onclick="copySnippet('cmd-sb-reset', this)">Copiar</button>
       </div>
     </div>
+
+    <div class="section-group">
+      <div class="section-title">6. Sistema de Prisión y Condenas por Niveles (Celda de la Isla)</div>
+      <div class="section-desc">
+        Para encarcelar a un recluso en la Celda de la Isla. Al poner el tag, el servidor envía un aviso de 10s para guardar pertenencias, limpia el inventario, fija respawn en la celda y entrega el pico con Toque de Seda. Al romperse el pico es liberado en el Spawn automáticamente:
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n1">/tag &lt;jugador&gt; add preso_nivel1</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n1', this)">Copiar (Hierro 250 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n2">/tag &lt;jugador&gt; add preso_nivel2</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n2', this)">Copiar (Hierro Irrompible 750 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n3">/tag &lt;jugador&gt; add preso_nivel3</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n3', this)">Copiar (Diamante 1,561 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n4">/tag &lt;jugador&gt; add preso_nivel4</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n4', this)">Copiar (Diamante Irrompible 4,683 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n5">/tag &lt;jugador&gt; add preso_nivel5</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n5', this)">Copiar (Netherite 2,031 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-n6">/tag &lt;jugador&gt; add preso_nivel6</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-n6', this)">Copiar (Netherite Irrompible 6,093 usos)</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-preso-free">/tag &lt;jugador&gt; remove preso_nivel1</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-preso-free', this)">Copiar (Liberar Antes)</button>
+      </div>
+    </div>
   </div>
 
   <div id="tab-security" class="tab-content">

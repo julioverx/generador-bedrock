@@ -1,0 +1,7 @@
+{
+  "format_version": "1.1.0",
+  "aal:claim_marker": {
+    "textures": "claim_marker_dirt_tex",
+    "sound": "dirt"
+  }
+}
