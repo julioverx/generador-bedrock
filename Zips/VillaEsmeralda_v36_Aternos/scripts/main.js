@@ -150,6 +150,7 @@ function getCitizenRank(player) {
     let specialBadges = 0;
     if (player.hasTag("tag_rey_guerra")) specialBadges++;
     if (player.hasTag("tag_leyenda_minera")) specialBadges++;
+    if (player.hasTag("tag_lider_granjero")) specialBadges++;
     if (player.hasTag("tag_asesino_serie")) specialBadges++;
     if (player.hasTag("leyenda_500")) specialBadges++;
     if (player.getDynamicProperty("custom_ach_matadrakos") || player.hasTag("tag_matadrakos")) specialBadges++;
@@ -173,35 +174,46 @@ const QUEST_POOLS = {
   mining: [
     { id: 0, title: "Picar 150 Bloques", target: 150, desc: "150 bloques", em: 10, xp: 10 },
     { id: 1, title: "Picar 300 Bloques", target: 300, desc: "300 bloques", em: 10, xp: 10 },
-    { id: 2, title: "Picar 1,000 Bloques (Difícil)", target: 1000, desc: "1,000 bloques", em: 20, xp: 20 },
-    { id: 3, title: "Picar 3,000 Bloques (Extrema)", target: 3000, desc: "3,000 bloques", em: 40, xp: 40 },
-    { id: 4, title: "Picar 50 Minerales", target: 50, desc: "50 minerales", em: 10, xp: 10 },
-    { id: 5, title: "Picar 100 Minerales (Difícil)", target: 100, desc: "100 minerales", em: 20, xp: 20 },
-    { id: 6, title: "Picar 250 Bloques de Piedra", target: 250, desc: "250 bloques", em: 10, xp: 10 },
-    { id: 7, title: "Picar 600 Bloques Profundos (Difícil)", target: 600, desc: "600 bloques", em: 20, xp: 20 },
-    { id: 8, title: "Picar 5,000 Bloques (Extrema)", target: 5000, desc: "5,000 bloques", em: 40, xp: 40 }
+    { id: 2, title: "Picar 250 Bloques de Piedra", target: 250, desc: "250 bloques", em: 10, xp: 10 },
+    { id: 3, title: "Picar 50 Minerales (Menas)", target: 50, desc: "50 minerales", em: 10, xp: 10, typeCheck: "ore_strict" },
+    { id: 4, title: "Picar 1,000 Bloques (Difícil)", target: 1000, desc: "1,000 bloques", em: 30, xp: 25 },
+    { id: 5, title: "Picar 100 Minerales (Difícil)", target: 100, desc: "100 minerales", em: 30, xp: 25, typeCheck: "ore_strict" },
+    { id: 6, title: "Picar 600 Bloques Profundos (Difícil)", target: 600, desc: "600 bloques de pizarra", em: 30, xp: 25, typeCheck: "deepslate_strict" },
+    { id: 7, title: "Picar 2,500 Bloques (Extrema)", target: 2500, desc: "2,500 bloques", em: 70, xp: 50 },
+    { id: 8, title: "Picar 4,000 Bloques (Extrema)", target: 4000, desc: "4,000 bloques", em: 70, xp: 50 }
   ],
   hunting: [
-    { id: 0, title: "Cazar 25 Monstruos", target: 25, desc: "25 monstruos", em: 10, xp: 10 },
-    { id: 1, title: "Cazar 50 Mobs Hostiles", target: 50, desc: "50 mobs hostiles", em: 10, xp: 10 },
-    { id: 2, title: "Cazar 100 Mobs Hostiles (Difícil)", target: 100, desc: "100 mobs hostiles", em: 20, xp: 20 },
-    { id: 3, title: "Cazar 150 Mobs Hostiles (Extrema)", target: 150, desc: "150 mobs hostiles", em: 40, xp: 40 },
-    { id: 4, title: "Cazar 20 Creepers o Arañas", target: 20, desc: "20 creepers o arañas", em: 10, xp: 10, typeCheck: "creeper_spider" },
-    { id: 5, title: "Cazar 40 Esqueletos o Zombis (Difícil)", target: 40, desc: "40 monstruos", em: 20, xp: 20, typeCheck: "skeleton_zombie" },
-    { id: 6, title: "Cazar 30 Monstruos de la Noche", target: 30, desc: "30 monstruos", em: 10, xp: 10 },
-    { id: 7, title: "Cazar 75 Criaturas de Sombras (Difícil)", target: 75, desc: "75 mobs hostiles", em: 20, xp: 20 },
-    { id: 8, title: "Cazar 200 Mobs (Extrema)", target: 200, desc: "200 mobs hostiles", em: 40, xp: 40 }
+    { id: 0, title: "Cazar 25 Monstruos Hostiles", target: 25, desc: "25 monstruos", em: 10, xp: 10 },
+    { id: 1, title: "Cazar 40 Mobs Hostiles", target: 40, desc: "40 mobs hostiles", em: 10, xp: 10 },
+    { id: 2, title: "Cazar 20 Creepers o Arañas", target: 20, desc: "20 creepers o arañas", em: 10, xp: 10, typeCheck: "creeper_spider" },
+    { id: 3, title: "Cazar 30 Monstruos Nocturnos", target: 30, desc: "30 monstruos", em: 10, xp: 10 },
+    { id: 4, title: "Cazar 40 Esqueletos o Zombis (Difícil)", target: 40, desc: "40 monstruos", em: 30, xp: 25, typeCheck: "skeleton_zombie" },
+    { id: 5, title: "Cazar 50 Criaturas de Sombras (Difícil)", target: 50, desc: "50 criaturas de sombras", em: 30, xp: 25, typeCheck: "shadow_creatures" },
+    { id: 6, title: "Cazar 80 Mobs Hostiles (Difícil)", target: 80, desc: "80 mobs hostiles", em: 30, xp: 25 },
+    { id: 7, title: "Cazar 120 Mobs Hostiles (Extrema)", target: 120, desc: "120 mobs hostiles", em: 70, xp: 50 },
+    { id: 8, title: "Cazar 160 Mobs Hostiles (Extrema)", target: 160, desc: "160 mobs hostiles", em: 70, xp: 50 }
   ],
   exploration: [
     { id: 0, title: "Recorrer 3,000 Bloques", target: 3000, desc: "3,000 bloques", em: 10, xp: 10 },
-    { id: 1, title: "Recorrer 6,000 Bloques (Difícil)", target: 6000, desc: "6,000 bloques", em: 20, xp: 20 },
-    { id: 2, title: "Recorrer 10,000 Bloques (Difícil)", target: 10000, desc: "10,000 bloques", em: 20, xp: 20 },
-    { id: 3, title: "Recorrer 15,000 Bloques (Extrema)", target: 15000, desc: "15,000 bloques", em: 40, xp: 40 },
-    { id: 4, title: "Recorrer 4,500 Bloques", target: 4500, desc: "4,500 bloques", em: 10, xp: 10 },
-    { id: 5, title: "Recorrer 8,000 Bloques (Difícil)", target: 8000, desc: "8,000 bloques", em: 20, xp: 20 },
-    { id: 6, title: "Recorrer 12,000 Bloques (Difícil)", target: 12000, desc: "12,000 bloques", em: 20, xp: 20 },
-    { id: 7, title: "Recorrer 5,000 Bloques", target: 5000, desc: "5,000 bloques", em: 10, xp: 10 },
-    { id: 8, title: "Recorrer 20,000 Bloques (Extrema)", target: 20000, desc: "20,000 bloques", em: 40, xp: 40 }
+    { id: 1, title: "Recorrer 4,500 Bloques", target: 4500, desc: "4,500 bloques", em: 10, xp: 10 },
+    { id: 2, title: "Recorrer 5,000 Bloques", target: 5000, desc: "5,000 bloques", em: 10, xp: 10 },
+    { id: 3, title: "Recorrer 6,000 Bloques (Difícil)", target: 6000, desc: "6,000 bloques", em: 30, xp: 25 },
+    { id: 4, title: "Recorrer 8,000 Bloques (Difícil)", target: 8000, desc: "8,000 bloques", em: 30, xp: 25 },
+    { id: 5, title: "Recorrer 10,000 Bloques (Difícil)", target: 10000, desc: "10,000 bloques", em: 30, xp: 25 },
+    { id: 6, title: "Recorrer 12,000 Bloques (Difícil)", target: 12000, desc: "12,000 bloques", em: 30, xp: 25 },
+    { id: 7, title: "Recorrer 15,000 Bloques (Extrema)", target: 15000, desc: "15,000 bloques", em: 70, xp: 50 },
+    { id: 8, title: "Recorrer 20,000 Bloques (Extrema)", target: 20000, desc: "20,000 bloques", em: 70, xp: 50 }
+  ],
+  farming: [
+    { id: 0, title: "Cosechar 50 Cultivos", target: 50, desc: "50 cultivos", em: 10, xp: 10, typeCheck: "crop_harvest" },
+    { id: 1, title: "Plantar 25 Retoños de Árboles", target: 25, desc: "25 retoños", em: 10, xp: 10, typeCheck: "sapling_plant" },
+    { id: 2, title: "Talar 50 Troncos de Madera", target: 50, desc: "50 troncos", em: 10, xp: 10, typeCheck: "log_chop" },
+    { id: 3, title: "Cosechar 150 Cultivos (Difícil)", target: 150, desc: "150 cultivos", em: 30, xp: 25, typeCheck: "crop_harvest" },
+    { id: 4, title: "Talar 200 Troncos de Madera (Difícil)", target: 200, desc: "200 troncos", em: 30, xp: 25, typeCheck: "log_chop" },
+    { id: 5, title: "Plantar 60 Retoños de Árboles (Difícil)", target: 60, desc: "60 retoños", em: 30, xp: 25, typeCheck: "sapling_plant" },
+    { id: 6, title: "Cosechar 400 Cultivos (Extrema)", target: 400, desc: "400 cultivos", em: 70, xp: 50, typeCheck: "crop_harvest" },
+    { id: 7, title: "Talar 500 Troncos de Madera (Extrema)", target: 500, desc: "500 troncos", em: 70, xp: 50, typeCheck: "log_chop" },
+    { id: 8, title: "Gran Cosecha y Tala (ULTRA EXTREMA)", target: 1000, desc: "1,000 cultivos y troncos", em: 250, xp: 100, typeCheck: "farm_ultra" }
   ]
 };
 
@@ -210,15 +222,18 @@ function getDailyQuestConfig(dayNumber) {
   const hash1 = Math.floor(Math.abs(Math.sin(safeDay * 12.9898 + 78.233)) * 43758.5453);
   const hash2 = Math.floor(Math.abs(Math.sin(safeDay * 43.1415 + 12.871)) * 23421.6312);
   const hash3 = Math.floor(Math.abs(Math.sin(safeDay * 93.3142 + 45.123)) * 65432.1234);
+  const hash4 = Math.floor(Math.abs(Math.sin(safeDay * 57.1932 + 31.984)) * 87654.3210);
 
   const mineIdx = hash1 % QUEST_POOLS.mining.length;
   const huntIdx = hash2 % QUEST_POOLS.hunting.length;
   const expIdx = hash3 % QUEST_POOLS.exploration.length;
+  const farmIdx = hash4 % QUEST_POOLS.farming.length;
 
   return {
     mine: QUEST_POOLS.mining[mineIdx],
     hunt: QUEST_POOLS.hunting[huntIdx],
-    explore: QUEST_POOLS.exploration[expIdx]
+    explore: QUEST_POOLS.exploration[expIdx],
+    farm: QUEST_POOLS.farming[farmIdx]
   };
 }
 
@@ -233,9 +248,11 @@ function checkAndUpdateDailyQuests(player) {
       player.setDynamicProperty("q_mine_cnt", 0);
       player.setDynamicProperty("q_hunt_cnt", 0);
       player.setDynamicProperty("q_explore_cnt", 0);
+      player.setDynamicProperty("q_farm_cnt", 0);
       player.setDynamicProperty("q_mine_done", false);
       player.setDynamicProperty("q_hunt_done", false);
       player.setDynamicProperty("q_explore_done", false);
+      player.setDynamicProperty("q_farm_done", false);
       player.setDynamicProperty("last_loc_x", Math.floor(player.location.x));
       player.setDynamicProperty("last_loc_z", Math.floor(player.location.z));
     }
@@ -614,6 +631,9 @@ world.afterEvents.entityDie.subscribe((event) => {
         } else if (cfgH.typeCheck === "creeper_spider") {
           const valid = ["minecraft:creeper", "minecraft:spider", "minecraft:cave_spider"];
           if (!valid.includes(deadEntity.typeId)) countsForQuest = false;
+        } else if (cfgH.typeCheck === "shadow_creatures") {
+          const valid = ["minecraft:enderman", "minecraft:phantom", "minecraft:cave_spider", "minecraft:witch", "minecraft:stray", "minecraft:bogged", "minecraft:vex", "minecraft:endermite", "minecraft:shulker", "minecraft:warden"];
+          if (!valid.includes(deadEntity.typeId)) countsForQuest = false;
         }
 
         if (countsForQuest && !attacker.getDynamicProperty("q_hunt_done")) {
@@ -648,15 +668,62 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
   try {
     if (!event.player) return;
 
-    // Daily Quest Check
+    const brokenId = event.brokenBlockPermutation?.type?.id ?? event.block.typeId;
+
+    // Daily Quest Check (Mining)
     checkAndUpdateDailyQuests(event.player);
     const cfgM = getDailyQuestConfig(world.getDay()).mine;
-    if (!event.player.getDynamicProperty("q_mine_done")) {
+
+    let countsForMine = true;
+    if (cfgM.typeCheck === "deepslate_strict") {
+      if (!brokenId.includes("deepslate")) countsForMine = false;
+    } else if (cfgM.typeCheck === "ore_strict") {
+      if (!brokenId.endsWith("_ore") && brokenId !== "minecraft:ancient_debris" && !brokenId.includes("_ore")) countsForMine = false;
+    }
+
+    if (countsForMine && !event.player.getDynamicProperty("q_mine_done")) {
       const currentMine = (event.player.getDynamicProperty("q_mine_cnt") ?? 0) + 1;
       event.player.setDynamicProperty("q_mine_cnt", currentMine);
       if (currentMine >= cfgM.target) {
         event.player.setDynamicProperty("q_mine_done", true);
         processQuestReward(event.player, `${cfgM.title} (${cfgM.desc})`, cfgM.em, cfgM.xp);
+      }
+    }
+
+    // Daily Quest Check (Farming & Log/Crop Tracking)
+    const cfgF = getDailyQuestConfig(world.getDay()).farm;
+    const isCrop = brokenId.includes("wheat") || brokenId.includes("carrot") || brokenId.includes("potato") || brokenId.includes("beetroot") || brokenId.includes("melon") || brokenId.includes("pumpkin") || brokenId.includes("cocoa") || brokenId.includes("berry") || brokenId.includes("pitcher") || brokenId.includes("torchflower");
+    const isLog = brokenId.endsWith("_log") || brokenId.endsWith("_wood") || brokenId.includes("stem") || brokenId.includes("bamboo_block");
+
+    if (isCrop) {
+      const totCrops = (event.player.getDynamicProperty("total_crops_harvested") ?? 0) + 1;
+      event.player.setDynamicProperty("total_crops_harvested", totCrops);
+
+      if (!event.player.getDynamicProperty("q_farm_done")) {
+        if (cfgF.typeCheck === "crop_harvest" || cfgF.typeCheck === "farm_ultra") {
+          const currentFarm = (event.player.getDynamicProperty("q_farm_cnt") ?? 0) + 1;
+          event.player.setDynamicProperty("q_farm_cnt", currentFarm);
+          if (currentFarm >= cfgF.target) {
+            event.player.setDynamicProperty("q_farm_done", true);
+            processQuestReward(event.player, `${cfgF.title} (${cfgF.desc})`, cfgF.em, cfgF.xp);
+          }
+        }
+      }
+    }
+
+    if (isLog) {
+      const totLogs = (event.player.getDynamicProperty("total_logs_felled") ?? 0) + 1;
+      event.player.setDynamicProperty("total_logs_felled", totLogs);
+
+      if (!event.player.getDynamicProperty("q_farm_done")) {
+        if (cfgF.typeCheck === "log_chop" || cfgF.typeCheck === "farm_ultra") {
+          const currentFarm = (event.player.getDynamicProperty("q_farm_cnt") ?? 0) + 1;
+          event.player.setDynamicProperty("q_farm_cnt", currentFarm);
+          if (currentFarm >= cfgF.target) {
+            event.player.setDynamicProperty("q_farm_done", true);
+            processQuestReward(event.player, `${cfgF.title} (${cfgF.desc})`, cfgF.em, cfgF.xp);
+          }
+        }
       }
     }
 
@@ -852,21 +919,26 @@ system.runInterval(() => {
           const qHDone = player.getDynamicProperty("q_hunt_done") ?? false;
           const qE = player.getDynamicProperty("q_explore_cnt") ?? 0;
           const qEDone = player.getDynamicProperty("q_explore_done") ?? false;
+          const qF = player.getDynamicProperty("q_farm_cnt") ?? 0;
+          const qFDone = player.getDynamicProperty("q_farm_done") ?? false;
 
           const pctM = Math.min(Math.floor((qM / dailyCfg.mine.target) * 100), 100);
           const pctH = Math.min(Math.floor((qH / dailyCfg.hunt.target) * 100), 100);
           const pctE = Math.min(Math.floor((qE / dailyCfg.explore.target) * 100), 100);
+          const pctF = Math.min(Math.floor((qF / dailyCfg.farm.target) * 100), 100);
 
           const textM = qMDone ? "§a[COMPLETADA 100%]" : `§e${pctM}% §8(${qM}/${dailyCfg.mine.target}) §a[+${dailyCfg.mine.em} Em / ${dailyCfg.mine.xp}L XP]`;
           const textH = qHDone ? "§a[COMPLETADA 100%]" : `§e${pctH}% §8(${qH}/${dailyCfg.hunt.target}) §a[+${dailyCfg.hunt.em} Em / ${dailyCfg.hunt.xp}L XP]`;
           const textE = qEDone ? "§a[COMPLETADA 100%]" : `§e${pctE}% §8(${Math.floor(qE)}/${dailyCfg.explore.target}) §a[+${dailyCfg.explore.em} Em / ${dailyCfg.explore.xp}L XP]`;
+          const textF = qFDone ? "§a[COMPLETADA 100%]" : `§e${pctF}% §8(${qF}/${dailyCfg.farm.target}) §a[+${dailyCfg.farm.em} Em / ${dailyCfg.farm.xp}L XP]`;
 
           player.sendMessage(
             `§r\n§l§6=== MISIONES DIARIAS DE LA VILLA ===§r\n` +
-            `§7Recompensas por Dificultad (Moderada: 10, Difícil: 20, Extrema: 40)\n\n` +
+            `§7Recompensas por Dificultad (Estándar: 10, Difícil: 30, Extrema: 70, Ultra: 250)\n\n` +
             `§e[MINA] §f${dailyCfg.mine.title}:§r ${textM}\n` +
             `§c[CAZA] §f${dailyCfg.hunt.title}:§r ${textH}\n` +
-            `§b[RUTA] §f${dailyCfg.explore.title}:§r ${textE}\n\n` +
+            `§b[RUTA] §f${dailyCfg.explore.title}:§r ${textE}\n` +
+            `§a[GRANJA] §f${dailyCfg.farm.title}:§r ${textF}\n\n` +
             `§8Misiones rotadas automáticamente cada día in-game.\n`
           );
         }
@@ -960,7 +1032,9 @@ system.runInterval(() => {
           rankingTitle = titleInfo.title;
         } 
         // 3. Static Achievement Tags (if NOT Top #1 on leaderboard)
-        else if (player.hasTag("tag_rey_poseidon")) {
+        else if (player.hasTag("tag_lider_granjero")) {
+          rankingTitle = "§a[Líder Granjero]§r ";
+        } else if (player.hasTag("tag_rey_poseidon")) {
           rankingTitle = "§b[Rey Poseidon]§r ";
         } else if (player.hasTag("tag_dios_wither")) {
           rankingTitle = "§5[Dios Wither]§r ";
@@ -1118,6 +1192,8 @@ system.runInterval(() => {
         let hasHay = false;
         let hasNetheriteChest = false;
         let hasBoat = false;
+        let hasNetheriteHoe = false;
+        let hasAxe = false;
 
         for (let i = 0; i < inv.size; i++) {
           const item = inv.getItem(i);
@@ -1126,6 +1202,8 @@ system.runInterval(() => {
             else if (item.typeId === "minecraft:hay_block") hasHay = true;
             else if (item.typeId === "minecraft:netherite_chestplate") hasNetheriteChest = true;
             else if (boatTypes.includes(item.typeId)) hasBoat = true;
+            else if (item.typeId === "minecraft:netherite_hoe") hasNetheriteHoe = true;
+            else if (item.typeId.endsWith("_axe")) hasAxe = true;
           }
         }
 
@@ -1139,6 +1217,23 @@ system.runInterval(() => {
         }
         if (hasNetheriteChest) grantCustomAchievement(player, "pecho_duro", "Pecho duro");
         if (hasBoat) grantCustomAchievement(player, "canoero", "Canoero");
+
+        // Líder Granjero Élite Achievement
+        const totCrops = player.getDynamicProperty("total_crops_harvested") ?? 0;
+        const totLogs = player.getDynamicProperty("total_logs_felled") ?? 0;
+        if (hasNetheriteHoe && hasAxe && (totCrops >= 1000 || totLogs >= 500) && !player.getDynamicProperty("reward_lider_granjero")) {
+          player.setDynamicProperty("reward_lider_granjero", true);
+          player.addTag("tag_lider_granjero");
+          grantCustomAchievement(player, "lider_granjero", "Líder Granjero");
+          world.sendMessage(`\n§a§l[LOGRO DESBLOQUEADO]§r\n§f${player.name} §7ha conseguido: §eLíder Granjero §7(1,000 Cultivos o 500 Troncos con Azada de Netherite y Hacha) y recibe el Kit Divino Granjero!\n`);
+          for (const p of world.getAllPlayers()) {
+            try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+          player.runCommandAsync("xp 200L @s");
+          player.runCommandAsync("give @s anvil 1");
+          player.runCommandAsync("give @s emerald_block 64");
+          player.runCommandAsync("give @s netherite_ingot 1");
+        }
       } catch (e) {}
     }
   } catch (e) {}
@@ -1219,6 +1314,23 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
   try {
     const { player, block } = event;
     if (!player || !block) return;
+
+    // Daily Quest Check (Farming - Planting Saplings)
+    const placedId = block.typeId;
+    if (placedId.includes("sapling") || placedId.includes("propagule")) {
+      checkAndUpdateDailyQuests(player);
+      const cfgF = getDailyQuestConfig(world.getDay()).farm;
+      if (!player.getDynamicProperty("q_farm_done")) {
+        if (cfgF.typeCheck === "sapling_plant") {
+          const currentFarm = (player.getDynamicProperty("q_farm_cnt") ?? 0) + 1;
+          player.setDynamicProperty("q_farm_cnt", currentFarm);
+          if (currentFarm >= cfgF.target) {
+            player.setDynamicProperty("q_farm_done", true);
+            processQuestReward(player, `${cfgF.title} (${cfgF.desc})`, cfgF.em, cfgF.xp);
+          }
+        }
+      }
+    }
     
     let activeLevelTag = null;
     for (const tag of Object.keys(PRISON_CONFIG.levels)) {
