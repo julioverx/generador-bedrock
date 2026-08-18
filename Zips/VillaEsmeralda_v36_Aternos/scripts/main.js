@@ -749,8 +749,6 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
     }
 
     // CUSTOM ACHIEVEMENTS (Blocks)
-    const brokenId = event.brokenBlockPermutation?.type?.id ?? event.block.typeId;
-    
     if (brokenId === "minecraft:dirt") {
       const currentDirt = (event.player.getDynamicProperty("ach_dirt_count") ?? 0) + 1;
       event.player.setDynamicProperty("ach_dirt_count", currentDirt);
