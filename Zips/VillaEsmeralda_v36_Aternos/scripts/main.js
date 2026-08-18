@@ -100,6 +100,7 @@ function initializeScoreboards() {
       { id: "MobsKilled", name: "§c§lMobs Asesinados" },
       { id: "PvPKills", name: "§4§lBajas en Duelos" },
       { id: "BloquesPicados", name: "§e§lBloques Picados" },
+      { id: "GranjaTotal", name: "§a§lGranja y Cosecha" },
       { id: "BossesKilled", name: "§5§lJefes Derrotados" },
       { id: "MuertesTotal", name: "§8§lMuertes Totales" }
     ];
@@ -796,6 +797,7 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
     const isLog = brokenId.endsWith("_log") || brokenId.endsWith("_wood") || brokenId.includes("stem") || brokenId.includes("bamboo_block");
 
     if (isCrop) {
+      incrementScore(event.player, "GranjaTotal");
       const totCrops = (event.player.getDynamicProperty("total_crops_harvested") ?? 0) + 1;
       event.player.setDynamicProperty("total_crops_harvested", totCrops);
 
@@ -812,6 +814,7 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
     }
 
     if (isLog) {
+      incrementScore(event.player, "GranjaTotal");
       const totLogs = (event.player.getDynamicProperty("total_logs_felled") ?? 0) + 1;
       event.player.setDynamicProperty("total_logs_felled", totLogs);
 
@@ -968,6 +971,10 @@ system.runInterval(() => {
         if (player.hasTag("ver_bloques")) {
           player.removeTag("ver_bloques");
           showSidebarWithTimer("BloquesPicados");
+        }
+        if (player.hasTag("ver_granja")) {
+          player.removeTag("ver_granja");
+          showSidebarWithTimer("GranjaTotal");
         }
         if (player.hasTag("ver_jefes")) {
           player.removeTag("ver_jefes");
@@ -1139,9 +1146,10 @@ const titleMap = new Map(); // playerId -> current title applied
 system.runInterval(() => {
   try {
     const categories = [
-      { objId: "PvPKills", title: "§4[Caballero Negro]§r ", priority: 4 },
-      { objId: "MobsKilled", title: "§c[Cazador Leyenda]§r ", priority: 3 },
-      { objId: "BloquesPicados", title: "§e[Maestro Minero]§r ", priority: 2 },
+      { objId: "PvPKills", title: "§4[Caballero Negro]§r ", priority: 5 },
+      { objId: "MobsKilled", title: "§c[Cazador Leyenda]§r ", priority: 4 },
+      { objId: "BloquesPicados", title: "§e[Maestro Minero]§r ", priority: 3 },
+      { objId: "GranjaTotal", title: "§a[Maestro Granjero]§r ", priority: 2 },
       { objId: "BossesKilled", title: "§5[Matadrakos]§r ", priority: 1 }
     ];
 
