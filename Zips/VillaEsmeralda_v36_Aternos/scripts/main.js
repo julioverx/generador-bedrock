@@ -1233,6 +1233,16 @@ system.runInterval(() => {
           player.runCommandAsync("give @s anvil 1");
           player.runCommandAsync("give @s emerald_block 64");
           player.runCommandAsync("give @s netherite_ingot 1");
+          player.runCommandAsync("give @s netherite_hoe 1");
+          player.runCommandAsync("give @s netherite_axe 1");
+          
+          // Libros Divinos para Azada
+          giveEnchantedBookItem(player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"fortune",level:3},{id:"mending",level:1}]);
+          giveEnchantedBookItem(player, [{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          
+          // Libros Divinos para Hacha
+          giveEnchantedBookItem(player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"sharpness",level:5},{id:"mending",level:1}]);
+          giveEnchantedBookItem(player, [{id:"fortune",level:3},{id:"fire_aspect",level:2},{id:"mending",level:1}]);
         }
       } catch (e) {}
     }
