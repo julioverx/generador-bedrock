@@ -1006,44 +1006,44 @@ system.runInterval(() => {
 
           // 2. Elite Badges Unlocked
           let eliteBadges = [];
-          if (player.getDynamicProperty("custom_ach_matadrakos") || player.hasTag("tag_matadrakos")) eliteBadges.push("🐉 Matadrakos (Ender Dragon)");
-          if (player.getDynamicProperty("custom_ach_dios_wither") || player.hasTag("tag_dios_wither")) eliteBadges.push("💀 Dios Wither (Wither Boss)");
-          if (player.getDynamicProperty("custom_ach_rey_poseidon") || player.hasTag("tag_rey_poseidon")) eliteBadges.push("🔱 Rey Poseidon (Elder Guardian)");
-          if (player.getDynamicProperty("reward_lider_granjero") || player.hasTag("tag_lider_granjero")) eliteBadges.push("🌾 Líder Granjero (Cultivos & Tala)");
-          if (player.getDynamicProperty("reward_50pvp") || player.hasTag("tag_rey_guerra")) eliteBadges.push("⚔️ Rey de la Guerra (50 PvP)");
-          if (player.getDynamicProperty("reward_5000bloques") || player.hasTag("tag_leyenda_minera")) eliteBadges.push("⛏️ Leyenda Minera (5,000 Bloques)");
-          if (player.getDynamicProperty("reward_1000mobs") || player.hasTag("tag_asesino_serie")) eliteBadges.push("🗡️ Asesino en Serie (1,000 Mobs Racha)");
+          if (player.getDynamicProperty("custom_ach_matadrakos") || player.hasTag("tag_matadrakos")) eliteBadges.push("Matadrakos (Ender Dragon)");
+          if (player.getDynamicProperty("custom_ach_dios_wither") || player.hasTag("tag_dios_wither")) eliteBadges.push("Dios Wither (Wither Boss)");
+          if (player.getDynamicProperty("custom_ach_rey_poseidon") || player.hasTag("tag_rey_poseidon")) eliteBadges.push("Rey Poseidon (Elder Guardian)");
+          if (player.getDynamicProperty("reward_lider_granjero") || player.hasTag("tag_lider_granjero")) eliteBadges.push("Lider Granjero (Cultivos y Tala)");
+          if (player.getDynamicProperty("reward_50pvp") || player.hasTag("tag_rey_guerra")) eliteBadges.push("Rey de la Guerra (50 PvP)");
+          if (player.getDynamicProperty("reward_5000bloques") || player.hasTag("tag_leyenda_minera")) eliteBadges.push("Leyenda Minera (5,000 Bloques)");
+          if (player.getDynamicProperty("reward_1000mobs") || player.hasTag("tag_asesino_serie")) eliteBadges.push("Asesino en Serie (1,000 Mobs Racha)");
 
           // 3. Secondary Achievements Unlocked
           let subBadges = [];
-          if (player.getDynamicProperty("custom_ach_nooo_chiquito")) subBadges.push("👶 ¡NOOO! el chiquito");
-          if (player.getDynamicProperty("custom_ach_lechero") || player.hasTag("tag_lechero")) subBadges.push("🥛 Lechero");
-          if (player.getDynamicProperty("custom_ach_rey_paja") || player.hasTag("tag_pajizo")) subBadges.push("🌾 El rey de la paja");
-          if (player.getDynamicProperty("custom_ach_coporero")) subBadges.push("🎣 Coporero");
-          if (player.getDynamicProperty("custom_ach_canoero")) subBadges.push("⛵ Canoero");
-          if (player.getDynamicProperty("custom_ach_pecho_duro")) subBadges.push("🛡️ Pecho duro");
-          if (player.getDynamicProperty("custom_ach_dios_palos")) subBadges.push("🪵 Dios de los palos");
-          if (player.getDynamicProperty("custom_ach_aventurero")) subBadges.push("🧭 Aventurero");
-          if (player.getDynamicProperty("custom_ach_sixseven")) subBadges.push("🧱 SIXSEVEN BRO");
-          if (player.getDynamicProperty("custom_ach_warzone")) subBadges.push("💎 ¡WARZONE!");
+          if (player.getDynamicProperty("custom_ach_nooo_chiquito")) subBadges.push("¡NOOO! el chiquito");
+          if (player.getDynamicProperty("custom_ach_lechero") || player.hasTag("tag_lechero")) subBadges.push("Lechero");
+          if (player.getDynamicProperty("custom_ach_rey_paja") || player.hasTag("tag_pajizo")) subBadges.push("El rey de la paja");
+          if (player.getDynamicProperty("custom_ach_coporero")) subBadges.push("Coporero");
+          if (player.getDynamicProperty("custom_ach_canoero")) subBadges.push("Canoero");
+          if (player.getDynamicProperty("custom_ach_pecho_duro")) subBadges.push("Pecho duro");
+          if (player.getDynamicProperty("custom_ach_dios_palos")) subBadges.push("Dios de los palos");
+          if (player.getDynamicProperty("custom_ach_aventurero")) subBadges.push("Aventurero");
+          if (player.getDynamicProperty("custom_ach_sixseven")) subBadges.push("SIXSEVEN BRO");
+          if (player.getDynamicProperty("custom_ach_warzone")) subBadges.push("¡WARZONE!");
 
           const textLeader = leaderBadges.length > 0 ? leaderBadges.map(b => "  §6- " + b).join("\n") + "\n" : "  §7- Ninguno actualmente\n";
-          const textElite = eliteBadges.length > 0 ? eliteBadges.map(b => "  §a✔ " + b).join("\n") + "\n" : "  §7- Ninguna todavía\n";
-          const textSub = subBadges.length > 0 ? subBadges.map(b => "  §b✔ " + b).join("\n") + "\n" : "  §7- Ninguno todavía\n";
+          const textElite = eliteBadges.length > 0 ? eliteBadges.map(b => "  §a[x] §f" + b).join("\n") + "\n" : "  §7- Ninguna todavía\n";
+          const textSub = subBadges.length > 0 ? subBadges.map(b => "  §b[x] §f" + b).join("\n") + "\n" : "  §7- Ninguno todavía\n";
 
           player.sendMessage(
             `§r\n§l§6=== PERFIL COMPLETO: §f${player.name} §6===§r\n` +
             `§fRango Actual: ${getCitizenRank(player)}\n\n` +
-            `§l§e🏆 LÍDERES DE CLASIFICACIÓN (#1):§r\n${textLeader}\n` +
-            `§l§a⭐ INSIGNIAS DE ÉLITE CONSEGUIDAS:§r\n${textElite}\n` +
-            `§l§b🎖️ LOGROS SECUNDARIOS DESBLOQUEADOS:§r\n${textSub}\n` +
-            `§l§b📊 ESTADÍSTICAS GENERALES:§r\n` +
+            `§l§e[+] LIDERES DE CLASIFICACION (#1):§r\n${textLeader}\n` +
+            `§l§a[+] INSIGNIAS DE ELITE CONSEGUIDAS:§r\n${textElite}\n` +
+            `§l§b[+] LOGROS SECUNDARIOS DESBLOQUEADOS:§r\n${textSub}\n` +
+            `§l§e[+] ESTADISTICAS GENERALES:§r\n` +
             `  §fBajas PvP:§r ${pvp} §8(${getRank(player, "PvPKills")})\n` +
             `  §fMobs Asesinados:§r ${mobs} §8(${getRank(player, "MobsKilled")})\n` +
             `  §fBloques Picados:§r ${bloques} §8(${getRank(player, "BloquesPicados")})\n` +
             `  §fJefes Derrotados:§r ${bosses} §8(${getRank(player, "BossesKilled")})\n` +
             `  §fMuertes Totales:§r ${muertes}\n\n` +
-            `§l§c⚔️ COMBATE & RACHAS:§r\n` +
+            `§l§c[+] COMBATE Y RACHAS:§r\n` +
             `  §fK/D Ratio:§r ${kd} §8(${totalKills} kills / ${muertes} muertes)\n` +
             `  §fRacha Actual:§r ${streak} bajas seguidas\n` +
             `§6===========================================§r\n`
