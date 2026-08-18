@@ -151,6 +151,7 @@ function getCitizenRank(player) {
     if (player.hasTag("tag_rey_guerra")) specialBadges++;
     if (player.hasTag("tag_leyenda_minera")) specialBadges++;
     if (player.hasTag("tag_lider_granjero")) specialBadges++;
+    if (player.hasTag("tag_contratista_real")) specialBadges++;
     if (player.hasTag("tag_asesino_serie")) specialBadges++;
     if (player.hasTag("leyenda_500")) specialBadges++;
     if (player.getDynamicProperty("custom_ach_matadrakos") || player.hasTag("tag_matadrakos")) specialBadges++;
@@ -216,6 +217,92 @@ const QUEST_POOLS = {
     { id: 8, title: "Gran Cosecha y Tala (ULTRA EXTREMA)", target: 700, desc: "700 cultivos/troncos (Eficiencia V)", em: 250, xp: 100, typeCheck: "farm_ultra" }
   ]
 };
+
+const WEEKLY_CONTRACTS = [
+  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero (Filo VI)", typeCheck: "contract_mobs" },
+  { id: 1, title: "El Infierno de Netherite", desc: "Picar 60 Ancient Debris", target: 60, relicType: "herrero", relicName: "Libro Reliquia del Herrero (Eficiencia VI)", typeCheck: "contract_debris" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y Troncos", target: 12000, relicType: "agricola", relicName: "Kit Reliquia Granjero (Eficiencia VI + Filo VI)", typeCheck: "contract_farm" },
+  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Libro Reliquia de Armadura (Protección V)", typeCheck: "contract_explore" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles en la semana", target: 3000, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero + Pechera V", typeCheck: "contract_war" },
+  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas", target: 30, relicType: "armadura", relicName: "Libro Reliquia de Armadura + Tridente Divino", typeCheck: "contract_ocean" },
+  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Libro Reliquia del Herrero + Pico Eficiencia VI", typeCheck: "contract_deepslate" },
+  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "Picar 50 Ancient Debris en la semana", target: 50, relicType: "trilogia", relicName: "Trilogía de Libros Reliquia (Herrero, Guerrero y Armadura)", typeCheck: "contract_king" }
+];
+
+function getWeeklyContractConfig(dayNumber) {
+  const currentWeek = Math.floor(Math.max(0, dayNumber || 0) / 7);
+  const idx = currentWeek % WEEKLY_CONTRACTS.length;
+  return WEEKLY_CONTRACTS[idx];
+}
+
+function checkAndUpdateWeeklyContract(player) {
+  try {
+    if (!player || !player.isValid()) return;
+    const currentWeek = Math.floor(Math.max(0, world.getDay() || 0) / 7);
+    const lastWeek = player.getDynamicProperty("last_contract_week") ?? -1;
+
+    if (lastWeek !== currentWeek) {
+      player.setDynamicProperty("last_contract_week", currentWeek);
+      player.setDynamicProperty("q_weekly_cnt", 0);
+      player.setDynamicProperty("q_weekly_done", false);
+
+      // Title Screen Alert on start of new Weekly Contract!
+      const contract = getWeeklyContractConfig(world.getDay());
+      try {
+        player.onScreenDisplay.setTitle("§6§l[CONTRATO SEMANAL MÍTICO]§r");
+        player.onScreenDisplay.setSubtitle(`§e${contract.title} §7- ¡Habla con el Escribano!`);
+        player.playSound("random.levelup", { volume: 1.0, pitch: 0.8 });
+      } catch (e) {}
+    }
+  } catch (e) {}
+}
+
+function processWeeklyContractReward(player, contract) {
+  try {
+    player.setDynamicProperty("q_weekly_done", true);
+    player.addTag("tag_contratista_real");
+    grantCustomAchievement(player, "contratista_real", "Contratista Real");
+
+    // Full Screen Title Broadcast to ALL players on the server!
+    for (const p of world.getAllPlayers()) {
+      try {
+        p.onScreenDisplay.setTitle("§c§l[CONTRATISTA REAL]§r");
+        p.onScreenDisplay.setSubtitle(`§f¡${player.name} §7ha completado: §e"${contract.title}"!§r`);
+        p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 });
+        p.playSound("ambient.weather.thunder", { volume: 0.8, pitch: 1.0 });
+      } catch (e) {}
+    }
+
+    world.sendMessage(
+      `\n§6§l===========================================§r\n` +
+      `§c§l[CONTRATO MÍTICO COMPLETADO POR UN HÉROE]§r\n` +
+      `§f¡${player.name} §7ha logrado lo imposible completando el Contrato Semanal: §e"${contract.title}"!§r\n` +
+      `§7Ha sido coronado como §c[Contratista Real] §7y recibe sus Reliquias Supremas!\n` +
+      `§6===========================================§r\n`
+    );
+
+    // Give Relic Rewards
+    player.runCommandAsync("xp 500L @s");
+    player.runCommandAsync("give @s emerald_block 256");
+    player.runCommandAsync("give @s netherite_ingot 8");
+    player.runCommandAsync("give @s anvil 2");
+
+    if (contract.relicType === "herrero") {
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    } else if (contract.relicType === "guerrero") {
+      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+    } else if (contract.relicType === "armadura") {
+      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    } else if (contract.relicType === "agricola") {
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+    } else if (contract.relicType === "trilogia") {
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    }
+  } catch (e) {}
+}
 
 function getDailyQuestConfig(dayNumber) {
   const safeDay = Math.max(0, dayNumber || 0);
@@ -645,6 +732,19 @@ world.afterEvents.entityDie.subscribe((event) => {
           }
         }
 
+        // Weekly Contract Check (Hostile Mobs)
+        checkAndUpdateWeeklyContract(attacker);
+        const contractW = getWeeklyContractConfig(world.getDay());
+        if (!attacker.getDynamicProperty("q_weekly_done")) {
+          if (contractW.typeCheck === "contract_mobs" || contractW.typeCheck === "contract_war") {
+            const curW = (attacker.getDynamicProperty("q_weekly_cnt") ?? 0) + 1;
+            attacker.setDynamicProperty("q_weekly_cnt", curW);
+            if (curW >= contractW.target) {
+              processWeeklyContractReward(attacker, contractW);
+            }
+          }
+        }
+
         incrementScore(attacker, "MobsKilled");
         processKillStreak(attacker);
         checkMilestones(attacker, "MobsKilled");
@@ -723,6 +823,28 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
             event.player.setDynamicProperty("q_farm_done", true);
             processQuestReward(event.player, `${cfgF.title} (${cfgF.desc})`, cfgF.em, cfgF.xp);
           }
+        }
+      }
+    }
+
+    // Weekly Contract Check (Debris, Deepslate, Crops, Logs)
+    checkAndUpdateWeeklyContract(event.player);
+    const contractW = getWeeklyContractConfig(world.getDay());
+    if (!event.player.getDynamicProperty("q_weekly_done")) {
+      let countsWeekly = false;
+      if (contractW.typeCheck === "contract_debris" || contractW.typeCheck === "contract_king") {
+        if (brokenId === "minecraft:ancient_debris") countsWeekly = true;
+      } else if (contractW.typeCheck === "contract_deepslate") {
+        if (brokenId.includes("deepslate")) countsWeekly = true;
+      } else if (contractW.typeCheck === "contract_farm") {
+        if (isCrop || isLog) countsWeekly = true;
+      }
+
+      if (countsWeekly) {
+        const curW = (event.player.getDynamicProperty("q_weekly_cnt") ?? 0) + 1;
+        event.player.setDynamicProperty("q_weekly_cnt", curW);
+        if (curW >= contractW.target) {
+          processWeeklyContractReward(event.player, contractW);
         }
       }
     }
@@ -970,6 +1092,34 @@ system.runInterval(() => {
             `§8Misiones rotadas automáticamente cada día in-game.\n`
           );
         }
+
+        // --- CONTRATO SEMANAL MÍTICO ---
+        if (player.hasTag("ver_contrato")) {
+          player.removeTag("ver_contrato");
+          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
+
+          checkAndUpdateWeeklyContract(player);
+
+          const currentDay = world.getDay();
+          const contract = getWeeklyContractConfig(currentDay);
+          const qW = player.getDynamicProperty("q_weekly_cnt") ?? 0;
+          const qWDone = player.getDynamicProperty("q_weekly_done") ?? false;
+          const dayInWeek = (currentDay % 7) + 1;
+          const daysLeft = 7 - dayInWeek;
+
+          const pctW = Math.min(Math.floor((qW / contract.target) * 100), 100);
+          const textW = qWDone ? "§a[CONTRATO COMPLETADO 100%]" : `§e${pctW}% §8(${Math.floor(qW)}/${contract.target}) §c[Quedan ${daysLeft} días de plazo]`;
+
+          player.sendMessage(
+            `§r\n§l§6=== CONTRATO SEMANAL MÍTICO DE LA VILLA ===§r\n` +
+            `§7Semana actual: Día ${dayInWeek}/7 (Quedan ${daysLeft} días)\n\n` +
+            `§e[DESAFÍO MÍTICO] §f${contract.title}:§r\n` +
+            `  §7Objetivo: §f${contract.desc}\n` +
+            `  §7Progreso: ${textW}\n` +
+            `  §7Reliquia en Juego: §e${contract.relicName} + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n\n` +
+            `§8Sanción por retraso: Si empiezas 2 días tarde, será matemáticamente imposible completar a tiempo.\n`
+          );
+        }
       } catch (e) {}
     }
   } catch (e) {}
@@ -1060,7 +1210,9 @@ system.runInterval(() => {
           rankingTitle = titleInfo.title;
         } 
         // 3. Static Achievement Tags (if NOT Top #1 on leaderboard)
-        else if (player.hasTag("tag_lider_granjero")) {
+        else if (player.hasTag("tag_contratista_real")) {
+          rankingTitle = "§c[Contratista Real]§r ";
+        } else if (player.hasTag("tag_lider_granjero")) {
           rankingTitle = "§a[Líder Granjero]§r ";
         } else if (player.hasTag("tag_rey_poseidon")) {
           rankingTitle = "§b[Rey Poseidon]§r ";
