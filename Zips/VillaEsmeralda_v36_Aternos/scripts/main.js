@@ -884,19 +884,29 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
       grantCustomAchievement(event.player, "warzone", "¡WARZONE!");
     }
 
-    // PROTECTION ZONE: Check if block was broken inside the Escribano house perimeter
+    // DYNAMIC PROTECTION ZONE: Check if block was broken near ANY NPC or in original Escribano perimeter
     const block = event.block;
     const bx = block.location.x;
     const by = block.location.y;
     const bz = block.location.z;
 
-    const inZone = (bx >= 1449 && bx <= 1457 && by >= 69 && by <= 77 && bz >= -1025 && bz <= -1017);
+    const inOriginalZone = (bx >= 1449 && bx <= 1457 && by >= 69 && by <= 77 && bz >= -1025 && bz <= -1017);
 
-    if (inZone) {
+    // Search for nearby NPCs within 6 blocks of the broken block
+    let nearbyNpcName = null;
+    try {
+      const nearbyNpcs = event.dimension.getEntities({ type: "npc", location: block.location, maxDistance: 6 });
+      if (nearbyNpcs.length > 0) {
+        nearbyNpcName = nearbyNpcs[0].nameTag || "un NPC Protegido";
+      }
+    } catch (e) {}
+
+    if (inOriginalZone || nearbyNpcName) {
+      const npcTagText = nearbyNpcName ? `cerca de ${nearbyNpcName}` : "en la Casa del Escribano";
       // Alert all players with alarm
       world.sendMessage(
-        `\n§4§l[ALERTA - ZONA PROTEGIDA]§r\n` +
-        `§c${event.player.name} §7rompio un bloque de la casa del escribano\n` +
+        `\n§4§l[ALERTA DE SEGURIDAD - ZONA PROTEGIDA]§r\n` +
+        `§c${event.player.name} §7rompio un bloque ${npcTagText}\n` +
         `§8Coordenadas: X:${bx} Y:${by} Z:${bz}\n`
       );
 
@@ -907,7 +917,11 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
         } catch (e) {}
       }
 
-      // Also play alarm to the offender specifically
+      // Also play alarm sound to offender specifically
+      try {
+        event.player.playSound("mob.ghast.scream", { volume: 0.8, pitch: 1.0 });
+      } catch (e) {}
+    }
       event.player.playSound("mob.wither.spawn", { volume: 0.5, pitch: 2.0 });
     }
   } catch (e) {}
