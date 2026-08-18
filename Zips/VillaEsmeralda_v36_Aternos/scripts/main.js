@@ -922,8 +922,6 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
         event.player.playSound("mob.ghast.scream", { volume: 0.8, pitch: 1.0 });
       } catch (e) {}
     }
-      event.player.playSound("mob.wither.spawn", { volume: 0.5, pitch: 2.0 });
-    }
   } catch (e) {}
 });
 
