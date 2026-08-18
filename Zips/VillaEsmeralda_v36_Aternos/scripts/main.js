@@ -969,6 +969,10 @@ system.runInterval(() => {
           player.removeTag("ver_bloques");
           showSidebarWithTimer("BloquesPicados");
         }
+        if (player.hasTag("ver_jefes")) {
+          player.removeTag("ver_jefes");
+          showSidebarWithTimer("BossesKilled");
+        }
 
         // --- PROFILE (with Full Unlocked Achievements & Badges List) ---
         if (player.hasTag("ver_perfil")) {
