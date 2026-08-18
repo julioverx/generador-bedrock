@@ -222,7 +222,7 @@ const QUEST_POOLS = {
 const WEEKLY_CONTRACTS = [
   { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero (Filo VI)", typeCheck: "contract_mobs" },
   { id: 1, title: "El Infierno de Netherite", desc: "Picar 60 Ancient Debris", target: 60, relicType: "herrero", relicName: "Libro Reliquia del Herrero (Eficiencia VI)", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y Troncos", target: 12000, relicType: "agricola", relicName: "Kit Reliquia Granjero (Eficiencia VI + Filo VI)", typeCheck: "contract_farm" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Kit Reliquia Granjero (Eficiencia VI + Filo VI)", typeCheck: "contract_farm" },
   { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Libro Reliquia de Armadura (Protección V)", typeCheck: "contract_explore" },
   { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles en la semana", target: 3000, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero + Pechera V", typeCheck: "contract_war" },
   { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas", target: 30, relicType: "armadura", relicName: "Libro Reliquia de Armadura + Tridente Divino", typeCheck: "contract_ocean" },
