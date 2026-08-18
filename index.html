@@ -890,6 +890,38 @@
         <button class="btn-copy" onclick="copySnippet('cmd-btn-jefes', this)">Botón 5: Top Jefes</button>
       </div>
     </div>
+
+    <div class="section-group">
+      <div class="section-title">8. Mover, Sentar y Gestionar NPCs (Teleport & Ride)</div>
+      <div class="section-desc">
+        Comandos para mover de sitio, sentar en sillas o eliminar NPCs con 1-clic de copia:
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-move-c1">/tp @e[type=npc,c=1] ~ ~ ~</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-move-c1', this)">Traer NPC Más Cercano</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-move-escribano">/tp @e[name="Escribano"] ~ ~ ~</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-move-escribano', this)">Traer Escribano</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-move-ministro">/tp @e[name="Ministro"] ~ ~ ~</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-move-ministro', this)">Traer Ministro</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-sit-npc">/ride @e[type=npc,c=1] start_riding @e[type=minecart,c=1]</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-sit-npc', this)">Sentar NPC en Silla / Vagoneta</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-kill-npc">/kill @e[type=npc,c=1]</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-kill-npc', this)">Eliminar NPC Más Cercano</button>
+      </div>
+    </div>
   </div>
 
   <!-- PESTAÑA 3: PLAN DE SEGURIDAD -->
