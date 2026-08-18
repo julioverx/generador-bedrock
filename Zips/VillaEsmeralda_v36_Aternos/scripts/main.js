@@ -213,7 +213,7 @@ const QUEST_POOLS = {
     { id: 5, title: "Plantar 60 Retoños de Árboles (Difícil)", target: 60, desc: "60 retoños", em: 30, xp: 25, typeCheck: "sapling_plant" },
     { id: 6, title: "Cosechar 400 Cultivos (Extrema)", target: 400, desc: "400 cultivos", em: 70, xp: 50, typeCheck: "crop_harvest" },
     { id: 7, title: "Talar 500 Troncos de Madera (Extrema)", target: 500, desc: "500 troncos", em: 70, xp: 50, typeCheck: "log_chop" },
-    { id: 8, title: "Gran Cosecha y Tala (ULTRA EXTREMA)", target: 1000, desc: "1,000 cultivos y troncos", em: 250, xp: 100, typeCheck: "farm_ultra" }
+    { id: 8, title: "Gran Cosecha y Tala (ULTRA EXTREMA)", target: 500, desc: "500 cultivos/troncos", em: 250, xp: 100, typeCheck: "farm_ultra" }
   ]
 };
 
