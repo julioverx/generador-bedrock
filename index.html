@@ -899,22 +899,17 @@
     <div class="section-group">
       <div class="section-title">8. Mover, Sentar y Gestionar NPCs (Teleport & Ride)</div>
       <div class="section-desc">
-        Comandos para mover de sitio, sentar en sillas o eliminar NPCs con 1-clic de copia:
+        Comandos para mover de sitio, sentar en sillas o eliminar NPCs con 1-clic de copia (Estar cerca del NPC para cargarlo):
       </div>
 
       <div class="code-row">
         <span class="code-text" id="cmd-move-c1">/tp @e[type=npc,c=1] ~ ~ ~</span>
-        <button class="btn-copy" onclick="copySnippet('cmd-move-c1', this)">Traer NPC Más Cercano</button>
+        <button class="btn-copy" onclick="copySnippet('cmd-move-c1', this)">Mover NPC Más Cercano a tus Pies</button>
       </div>
 
       <div class="code-row">
-        <span class="code-text" id="cmd-move-escribano">/tp @e[name="Escribano"] ~ ~ ~</span>
-        <button class="btn-copy" onclick="copySnippet('cmd-move-escribano', this)">Traer Escribano</button>
-      </div>
-
-      <div class="code-row">
-        <span class="code-text" id="cmd-move-ministro">/tp @e[name="Ministro"] ~ ~ ~</span>
-        <button class="btn-copy" onclick="copySnippet('cmd-move-ministro', this)">Traer Ministro</button>
+        <span class="code-text" id="cmd-move-type">/tp @e[type=npc,c=1] 1550 64 -1100</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-move-type', this)">Mover NPC a Coordenadas Exactas</button>
       </div>
 
       <div class="code-row">
@@ -924,7 +919,7 @@
 
       <div class="code-row">
         <span class="code-text" id="cmd-kill-npc">/kill @e[type=npc,c=1]</span>
-        <button class="btn-copy" onclick="copySnippet('cmd-kill-npc', this)">Eliminar NPC Más Cercano</button>
+        <button class="btn-copy" onclick="copySnippet('cmd-kill-npc', this)">Eliminar NPC (Para volver a invocarlo en nuevo sitio)</button>
       </div>
     </div>
   </div>
