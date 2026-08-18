@@ -812,6 +812,74 @@
         <button class="btn-copy" onclick="copySnippet('cmd-preso-free', this)">Copiar (Liberar Antes)</button>
       </div>
     </div>
+
+    <div class="section-group">
+      <div class="section-title">7. Invocación de NPCs y Comandos de Botones (Escribano & Ministro)</div>
+      <div class="section-desc">
+        Comandos para invocar NPCs en cualquier lugar del mapa y configurar sus botones de diálogo con 1-clic de copia:
+      </div>
+
+      <!-- ESCRIBANO -->
+      <div class="section-desc" style="margin-top: 1rem; font-weight: 700; color: var(--green);">🧙‍♂️ NPC 1: Escribano (Administración y Ciudadanía)</div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-npc-escribano">/summon npc ~ ~ ~ "Escribano"</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-npc-escribano', this)">Copiar Summon Escribano</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-perfil">/tag @initiator add ver_perfil</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-perfil', this)">Botón 1: Ver Perfil</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-misiones">/tag @initiator add ver_misiones</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-misiones', this)">Botón 2: Misiones Diarias</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-reglas">/tag @initiator add ver_reglas</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-reglas', this)">Botón 3: Reglas</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-bloques">/tag @initiator add ver_bloques</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-bloques', this)">Botón 4: Top Minería</button>
+      </div>
+
+      <!-- MINISTRO -->
+      <div class="section-desc" style="margin-top: 1.5rem; font-weight: 700; color: #a855f7;">👑 NPC 2: Ministro (Hazañas, Tops & Contratos)</div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-npc-ministro">/summon npc ~ ~ ~ "Ministro"</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-npc-ministro', this)">Copiar Summon Ministro</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-contrato">/tag @initiator add ver_contrato</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-contrato', this)">Botón 1: Contrato Mítico</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-mobs">/tag @initiator add ver_mobs</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-mobs', this)">Botón 2: Top Mobs</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-pvp">/tag @initiator add ver_pvp</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-pvp', this)">Botón 3: Top PvP</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-granja">/tag @initiator add ver_granja</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-granja', this)">Botón 4: Top Granja</button>
+      </div>
+
+      <div class="code-row">
+        <span class="code-text" id="cmd-btn-jefes">/tag @initiator add ver_jefes</span>
+        <button class="btn-copy" onclick="copySnippet('cmd-btn-jefes', this)">Botón 5: Top Jefes</button>
+      </div>
+    </div>
   </div>
 
   <!-- PESTAÑA 3: PLAN DE SEGURIDAD -->
