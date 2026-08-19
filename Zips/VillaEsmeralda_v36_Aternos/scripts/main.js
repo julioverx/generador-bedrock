@@ -733,12 +733,25 @@ world.afterEvents.entityDie.subscribe((event) => {
           }
         }
 
-        // Weekly Contract Check (Hostile Mobs)
+        // Weekly Contract Check (Hostile Mobs & Bosses)
         checkAndUpdateWeeklyContract(attacker);
         const contractW = getWeeklyContractConfig(world.getDay());
         if (!attacker.getDynamicProperty("q_weekly_done")) {
+          let points = 0;
           if (contractW.typeCheck === "contract_mobs" || contractW.typeCheck === "contract_war") {
-            const curW = (attacker.getDynamicProperty("q_weekly_cnt") ?? 0) + 1;
+            points = 1;
+          } else if (contractW.typeCheck === "contract_king") {
+            if (deadEntity.typeId === "minecraft:wither" || deadEntity.typeId === "minecraft:ender_dragon" || deadEntity.typeId === "minecraft:elder_guardian") {
+              points = 10;
+            }
+          } else if (contractW.typeCheck === "contract_ocean") {
+            if (deadEntity.typeId === "minecraft:elder_guardian" || deadEntity.typeId === "minecraft:drowned" || deadEntity.typeId === "minecraft:guardian") {
+              points = 1;
+            }
+          }
+
+          if (points > 0) {
+            const curW = (attacker.getDynamicProperty("q_weekly_cnt") ?? 0) + points;
             attacker.setDynamicProperty("q_weekly_cnt", curW);
             if (curW >= contractW.target) {
               processWeeklyContractReward(attacker, contractW);
