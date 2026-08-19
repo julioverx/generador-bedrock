@@ -252,12 +252,24 @@ function checkAndUpdateWeeklyContract(player) {
       player.setDynamicProperty("q_farm_logs_cnt", 0);
       player.setDynamicProperty("q_weekly_done", false);
 
-      // Title Screen Alert on start of new Weekly Contract!
+      // Title Screen Alert & Chat Announcement on start of new Weekly Contract!
       const contract = getWeeklyContractConfig(world.getDay());
       try {
         player.onScreenDisplay.setTitle("§6§l[CONTRATO SEMANAL MÍTICO]§r");
-        player.onScreenDisplay.setSubtitle(`§e${contract.title} §7- ¡Habla con el Escribano!`);
+        player.onScreenDisplay.setSubtitle(`§e${contract.title} §7- Ve a donde el Ministro`);
         player.playSound("random.levelup", { volume: 1.0, pitch: 0.8 });
+      } catch (e) {}
+
+      try {
+        world.sendMessage(
+          `\n§6§l===========================================§r\n` +
+          `§e§l[NUEVO CONTRATO SEMANAL MÍTICO DISPONIBLE]§r\n` +
+          `§f¡Ha comenzado una nueva Semana Mítica! Ve a donde el §a§lMinistro§r §7a revisar el nuevo desafío:\n` +
+          `§6Desafío: §e"${contract.title}"\n` +
+          `§7Objetivo: §f${contract.desc}\n` +
+          `§7Recompensas: §aEquipo Netherite + Libros Encantados VI/V + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n` +
+          `§6===========================================§r\n`
+        );
       } catch (e) {}
     }
   } catch (e) {}
