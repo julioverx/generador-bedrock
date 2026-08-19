@@ -182,7 +182,8 @@ const QUEST_POOLS = {
     { id: 5, title: "Picar 100 Minerales (Difícil)", target: 100, desc: "100 minerales", em: 30, xp: 25, typeCheck: "ore_strict" },
     { id: 6, title: "Picar 600 Bloques Profundos (Difícil)", target: 600, desc: "600 bloques de pizarra", em: 30, xp: 25, typeCheck: "deepslate_strict" },
     { id: 7, title: "Picar 2,500 Bloques (Extrema)", target: 2500, desc: "2,500 bloques", em: 70, xp: 50 },
-    { id: 8, title: "Picar 4,000 Bloques (Extrema)", target: 4000, desc: "4,000 bloques", em: 70, xp: 50 }
+    { id: 8, title: "Picar 4,000 Bloques (Extrema)", target: 4000, desc: "4,000 bloques", em: 70, xp: 50 },
+    { id: 9, title: "Gran Minería del Reino (ULTRA EXTREMA)", target: 7500, desc: "7,500 bloques (Eficiencia V + Faro)", em: 250, xp: 100 }
   ],
   hunting: [
     { id: 0, title: "Cazar 25 Monstruos Hostiles", target: 25, desc: "25 monstruos", em: 10, xp: 10 },
@@ -193,7 +194,8 @@ const QUEST_POOLS = {
     { id: 5, title: "Cazar 50 Criaturas de Sombras (Difícil)", target: 50, desc: "50 criaturas de sombras", em: 30, xp: 25, typeCheck: "shadow_creatures" },
     { id: 6, title: "Cazar 80 Mobs Hostiles (Difícil)", target: 80, desc: "80 mobs hostiles", em: 30, xp: 25 },
     { id: 7, title: "Cazar 120 Mobs Hostiles (Extrema)", target: 120, desc: "120 mobs hostiles", em: 70, xp: 50 },
-    { id: 8, title: "Cazar 160 Mobs Hostiles (Extrema)", target: 160, desc: "160 mobs hostiles", em: 70, xp: 50 }
+    { id: 8, title: "Cazar 160 Mobs Hostiles (Extrema)", target: 160, desc: "160 mobs hostiles", em: 70, xp: 50 },
+    { id: 9, title: "Cacería Mítica del Reino (ULTRA EXTREMA)", target: 350, desc: "350 mobs hostiles (Filo V)", em: 250, xp: 100 }
   ],
   exploration: [
     { id: 0, title: "Recorrer 3,000 Bloques", target: 3000, desc: "3,000 bloques", em: 10, xp: 10 },
@@ -204,7 +206,8 @@ const QUEST_POOLS = {
     { id: 5, title: "Recorrer 10,000 Bloques (Difícil)", target: 10000, desc: "10,000 bloques", em: 30, xp: 25 },
     { id: 6, title: "Recorrer 12,000 Bloques (Difícil)", target: 12000, desc: "12,000 bloques", em: 30, xp: 25 },
     { id: 7, title: "Recorrer 15,000 Bloques (Extrema)", target: 15000, desc: "15,000 bloques", em: 70, xp: 50 },
-    { id: 8, title: "Recorrer 20,000 Bloques (Extrema)", target: 20000, desc: "20,000 bloques", em: 70, xp: 50 }
+    { id: 8, title: "Recorrer 20,000 Bloques (Extrema)", target: 20000, desc: "20,000 bloques", em: 70, xp: 50 },
+    { id: 9, title: "Gran Travesía del Reino (ULTRA EXTREMA)", target: 35000, desc: "35,000 bloques (Elytra/Caballo)", em: 250, xp: 100 }
   ],
   farming: [
     { id: 0, title: "Cosechar 50 Cultivos", target: 50, desc: "50 cultivos", em: 10, xp: 10, typeCheck: "crop_harvest" },
@@ -220,14 +223,14 @@ const QUEST_POOLS = {
 };
 
 const WEEKLY_CONTRACTS = [
-  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero (Filo VI)", typeCheck: "contract_mobs" },
-  { id: 1, title: "El Infierno de Netherite", desc: "Picar 60 Ancient Debris", target: 60, relicType: "herrero", relicName: "Libro Reliquia del Herrero (Eficiencia VI)", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Kit Reliquia Granjero (Eficiencia VI + Filo VI)", typeCheck: "contract_farm" },
-  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Libro Reliquia de Armadura (Protección V)", typeCheck: "contract_explore" },
-  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles en la semana", target: 3000, relicType: "guerrero", relicName: "Libro Reliquia del Guerrero + Pechera V", typeCheck: "contract_war" },
-  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas", target: 30, relicType: "armadura", relicName: "Libro Reliquia de Armadura + Tridente Divino", typeCheck: "contract_ocean" },
-  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Libro Reliquia del Herrero + Pico Eficiencia VI", typeCheck: "contract_deepslate" },
-  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "Picar 50 Ancient Debris en la semana", target: 50, relicType: "trilogia", relicName: "Trilogía de Libros Reliquia (Herrero, Guerrero y Armadura)", typeCheck: "contract_king" }
+  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Libro Filo VI + Espada Netherite", typeCheck: "contract_mobs" },
+  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Libro Eficiencia VI + Pico Netherite", typeCheck: "contract_debris" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada + Hacha Netherite + Libros VI", typeCheck: "contract_farm" },
+  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Netherite + Notch Apples + Libro V", typeCheck: "contract_explore" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Netherite + Libros V y VI", typeCheck: "contract_war" },
+  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Netherite + Tridente + Libros V", typeCheck: "contract_ocean" },
+  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Netherite + Libro Eficiencia VI", typeCheck: "contract_deepslate" },
+  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Set Netherite + Trilogía de Libros VI", typeCheck: "contract_king" }
 ];
 
 function getWeeklyContractConfig(dayNumber) {
@@ -245,6 +248,8 @@ function checkAndUpdateWeeklyContract(player) {
     if (lastWeek !== currentWeek) {
       player.setDynamicProperty("last_contract_week", currentWeek);
       player.setDynamicProperty("q_weekly_cnt", 0);
+      player.setDynamicProperty("q_farm_crops_cnt", 0);
+      player.setDynamicProperty("q_farm_logs_cnt", 0);
       player.setDynamicProperty("q_weekly_done", false);
 
       // Title Screen Alert on start of new Weekly Contract!
@@ -282,22 +287,50 @@ function processWeeklyContractReward(player, contract) {
       `§6===========================================§r\n`
     );
 
-    // Give Relic Rewards
-    player.runCommandAsync("xp 500L @s");
-    player.runCommandAsync("give @s emerald_block 256");
-    player.runCommandAsync("give @s netherite_ingot 8");
-    player.runCommandAsync("give @s anvil 2");
+    // Give Relic Rewards (Common base rewards: Emerald Blocks, Netherite Ingots, Anvils, XP)
+    if (contract.id === 7) {
+      player.runCommandAsync("xp 1000L @s");
+      player.runCommandAsync("give @s emerald_block 512");
+      player.runCommandAsync("give @s netherite_ingot 16");
+      player.runCommandAsync("give @s anvil 4");
+    } else {
+      player.runCommandAsync("xp 500L @s");
+      player.runCommandAsync("give @s emerald_block 256");
+      player.runCommandAsync("give @s netherite_ingot 8");
+      player.runCommandAsync("give @s anvil 2");
+    }
 
-    if (contract.relicType === "herrero") {
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-    } else if (contract.relicType === "guerrero") {
+    if (contract.id === 0) { // Devorador de Titanes
+      player.runCommandAsync("give @s netherite_sword 1");
       giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
-    } else if (contract.relicType === "armadura") {
+    } else if (contract.id === 1) { // El Infierno de Netherite
+      player.runCommandAsync("give @s netherite_pickaxe 1");
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    } else if (contract.id === 2) { // El Granero Imperial
+      player.runCommandAsync("give @s netherite_hoe 1");
+      player.runCommandAsync("give @s netherite_axe 1");
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+    } else if (contract.id === 3) { // La Odisea Dimensional
+      player.runCommandAsync("give @s netherite_boots 1");
+      player.runCommandAsync("give @s enchanted_golden_apple 8");
       giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-    } else if (contract.relicType === "agricola") {
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    } else if (contract.id === 4) { // Señor de la Guerra Total
+      player.runCommandAsync("give @s netherite_chestplate 1");
+      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
       giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
-    } else if (contract.relicType === "trilogia") {
+    } else if (contract.id === 5) { // Buscador de Mitos Submarinos
+      player.runCommandAsync("give @s netherite_helmet 1");
+      player.runCommandAsync("give @s trident 1");
+      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      giveEnchantedBookItem(player, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+    } else if (contract.id === 6) { // Fiebre de Esmeraldas Intactas
+      player.runCommandAsync("give @s netherite_pickaxe 1");
+      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"fortune",level:3},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+    } else if (contract.id === 7) { // La Prueba del Rey
+      player.runCommandAsync("give @s netherite_leggings 1");
+      player.runCommandAsync("give @s netherite_sword 1");
+      player.runCommandAsync("give @s netherite_pickaxe 1");
       giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
       giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
       giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
@@ -485,31 +518,30 @@ function processKillStreak(player) {
     const highest = Math.max(savedHighest, current);
     try { player.setDynamicProperty("highest_streak", highest); } catch (e) {}
 
-    // Reward for 1000 kills streak
+    // Reward for 1000 kills streak (Asesino en Serie)
     if (current === 1000) {
       if (!player.getDynamicProperty("reward_1000mobs")) {
         player.setDynamicProperty("reward_1000mobs", true);
         player.addTag("tag_asesino_serie");
+        grantCustomAchievement(player, "asesino_serie", "Asesino en Serie");
         player.runCommandAsync("xp 200L @s");
-        player.runCommandAsync("give @s anvil 1");
-        player.runCommandAsync("give @s netherite_sword 1");
-        player.runCommandAsync("give @s netherite_ingot 1");
-        player.runCommandAsync("give @s diamond_block 128");
-        player.runCommandAsync("give @s emerald_block 64");
-        player.runCommandAsync("give @s lapis_block 128");
+        player.runCommandAsync("give @s anvil 2");
+        player.runCommandAsync("give @s netherite_chestplate 1");
+        player.runCommandAsync("give @s emerald_block 640");
+        player.runCommandAsync("give @s iron_block 640");
+        player.runCommandAsync("give @s lapis_block 256");
         giveEnchantedBookItem(player, [
-          { id: "sharpness", level: 5 },
+          { id: "protection", level: 4 },
           { id: "unbreaking", level: 3 },
-          { id: "looting", level: 3 },
-          { id: "fire_aspect", level: 2 },
-          { id: "mending", level: 1 }
+          { id: "mending", level: 1 },
+          { id: "thorns", level: 3 }
         ]);
-        world.sendMessage(`\n§b§l[RECOMPENSA DE RACHA LEGENDARIA]§r\n§f${player.name} §7ha conseguido una racha legendaria de §e1000 BAJAS CONSECUTIVAS §7y recibe el Kit Divino de Netherite, Libro Divino, Yunque, XP y Lingote de Netherite!\n`);
+        world.sendMessage(`\n§6§l[RECOMPENSA DE RACHA LEGENDARIA]§r\n§f${player.name} §7ha conseguido una racha legendaria de §e1,000 BAJAS CONSECUTIVAS §7y recibe la Pechera de Netherite, Libro de Protección IV + Espinas III, 10 Stacks de Esmeralda, 10 Stacks de Hierro, 4 Stacks de Lapislázuli, Yunques y 200L XP!\n`);
       } else {
         // Subsequent 1000 Mob Streak in new life: Veteran Reward (1 Netherite Ingot + 200L XP)
         player.runCommandAsync("xp 200L @s");
         player.runCommandAsync("give @s netherite_ingot 1");
-        world.sendMessage(`\n§b§l[RECOMPENSA DE RACHA VETERANA]§r\n§f${player.name} §7ha vuelto a lograr una racha imparable de §e1000 BAJAS CONSECUTIVAS §7y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+        world.sendMessage(`\n§6§l[RECOMPENSA DE RACHA VETERANA]§r\n§f${player.name} §7ha vuelto a lograr una racha imparable de §e1,000 BAJAS CONSECUTIVAS §7y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
       }
       for (const p of world.getAllPlayers()) {
         try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
@@ -681,12 +713,11 @@ world.afterEvents.entityDie.subscribe((event) => {
           grantCustomAchievement(attacker, "dios_wither", "Dios Wither");
           attacker.addTag("tag_dios_wither");
           attacker.runCommandAsync("xp 200L @s");
-          attacker.runCommandAsync("give @s totem_of_undying 2");
-          attacker.runCommandAsync("give @s wither_rose 1");
+          attacker.runCommandAsync("give @s nether_star 1");
           attacker.runCommandAsync("give @s emerald_block 64");
-          attacker.runCommandAsync("give @s diamond_leggings 1");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
           attacker.runCommandAsync("give @s anvil 1");
-          giveEnchantedBookItem(attacker, [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda §7+ §e1 Lingote de Netherite §7+ §b200L XP!\n`);
         }
       }
       if (deadEntity.typeId === "minecraft:elder_guardian") {
@@ -696,11 +727,11 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.addTag("tag_rey_poseidon");
           attacker.runCommandAsync("xp 200L @s");
           attacker.runCommandAsync("give @s trident 1");
-          attacker.runCommandAsync("give @s diamond_helmet 1");
           attacker.runCommandAsync("give @s emerald_block 64");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
           attacker.runCommandAsync("give @s anvil 1");
-          giveEnchantedBookItem(attacker, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}]);
-          giveEnchantedBookItem(attacker, [{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          giveEnchantedBookItem(attacker, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente Nativo §7+ §eLibro Encantado de Tridente (Canalización I + Lealtad III) §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
     }
@@ -853,9 +884,22 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
       } else if (contractW.typeCheck === "contract_deepslate") {
         if (brokenId.includes("deepslate")) countsWeekly = true;
       } else if (contractW.typeCheck === "contract_farm") {
-        if (isCrop || isLog) countsWeekly = true;
+        if (isCrop) {
+          const curCrops = Math.min(8000, (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) + 1);
+          event.player.setDynamicProperty("q_farm_crops_cnt", curCrops);
+        }
+        if (isLog) {
+          const curLogs = Math.min(8000, (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) + 1);
+          event.player.setDynamicProperty("q_farm_logs_cnt", curLogs);
+        }
+        const cDone = (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) >= 8000;
+        const lDone = (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) >= 8000;
+        event.player.setDynamicProperty("q_weekly_cnt", (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) + (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0));
+        if (cDone && lDone) {
+          processWeeklyContractReward(event.player, contractW);
+        }
       } else if (contractW.typeCheck === "contract_ocean") {
-        if (brokenId.includes("suspicious") || brokenId.includes("gravel") || brokenId.includes("sand")) countsWeekly = true;
+        if (brokenId === "minecraft:suspicious_sand" || brokenId === "minecraft:suspicious_gravel") countsWeekly = true;
       }
 
       if (countsWeekly) {
@@ -1449,14 +1493,14 @@ system.runInterval(() => {
         if (hasNetheriteChest) grantCustomAchievement(player, "pecho_duro", "Pecho duro");
         if (hasBoat) grantCustomAchievement(player, "canoero", "Canoero");
 
-        // Líder Granjero Élite Achievement
+        // Líder Granjero Élite Achievement (5,000 Cultivos o 5,000 Troncos)
         const totCrops = player.getDynamicProperty("total_crops_harvested") ?? 0;
         const totLogs = player.getDynamicProperty("total_logs_felled") ?? 0;
-        if (hasNetheriteHoe && hasAxe && (totCrops >= 1000 || totLogs >= 500) && !player.getDynamicProperty("reward_lider_granjero")) {
+        if ((totCrops >= 5000 || totLogs >= 5000) && !player.getDynamicProperty("reward_lider_granjero")) {
           player.setDynamicProperty("reward_lider_granjero", true);
           player.addTag("tag_lider_granjero");
           grantCustomAchievement(player, "lider_granjero", "Líder Granjero");
-          world.sendMessage(`\n§a§l[LOGRO DESBLOQUEADO]§r\n§f${player.name} §7ha conseguido: §eLíder Granjero §7(1,000 Cultivos o 500 Troncos con Azada de Netherite y Hacha) y recibe el Kit Divino Granjero!\n`);
+          world.sendMessage(`\n§a§l[LOGRO DESBLOQUEADO]§r\n§f${player.name} §7ha conseguido: §eLíder Granjero §7(5,000 Cultivos o 5,000 Troncos) y recibe el Kit Supremo Granjero de Netherite y 4 Libros Encantados!\n`);
           for (const p of world.getAllPlayers()) {
             try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
           }
@@ -1467,13 +1511,14 @@ system.runInterval(() => {
           player.runCommandAsync("give @s netherite_hoe 1");
           player.runCommandAsync("give @s netherite_axe 1");
           
-          // Libros Divinos para Azada
-          giveEnchantedBookItem(player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"fortune",level:3},{id:"mending",level:1}]);
-          giveEnchantedBookItem(player, [{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}]);
-          
-          // Libros Divinos para Hacha
-          giveEnchantedBookItem(player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"sharpness",level:5},{id:"mending",level:1}]);
-          giveEnchantedBookItem(player, [{id:"fortune",level:3},{id:"fire_aspect",level:2},{id:"mending",level:1}]);
+          // Libro 1: Eficiencia VI + Irrompibilidad IV + Reparación I
+          giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+          // Libro 2: Filo VI + Aspecto Ígneo III + Reparación I
+          giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+          // Libro 3: Fortuna III + Irrompibilidad III + Reparación I
+          giveEnchantedBookItem(player, [{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          // Libro 4: Botín III + Aspecto Ígneo II + Reparación I
+          giveEnchantedBookItem(player, [{id:"looting",level:3},{id:"fire_aspect",level:2},{id:"mending",level:1}]);
         }
       } catch (e) {}
     }
