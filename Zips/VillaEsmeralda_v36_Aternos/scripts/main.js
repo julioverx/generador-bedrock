@@ -841,6 +841,8 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
         if (brokenId.includes("deepslate")) countsWeekly = true;
       } else if (contractW.typeCheck === "contract_farm") {
         if (isCrop || isLog) countsWeekly = true;
+      } else if (contractW.typeCheck === "contract_ocean") {
+        if (brokenId.includes("suspicious") || brokenId.includes("gravel") || brokenId.includes("sand")) countsWeekly = true;
       }
 
       if (countsWeekly) {
@@ -1183,16 +1185,17 @@ system.runInterval(() => {
       try {
         checkAndUpdateDailyQuests(player);
 
-        // Track exploration distance
+        // Track exploration distance (Daily Quest & Weekly Contract)
         const cfgE = getDailyQuestConfig(world.getDay()).explore;
-        if (!player.getDynamicProperty("q_explore_done")) {
-          const px = Math.floor(player.location.x);
-          const pz = Math.floor(player.location.z);
-          const lastX = player.getDynamicProperty("last_loc_x") ?? px;
-          const lastZ = player.getDynamicProperty("last_loc_z") ?? pz;
+        const px = Math.floor(player.location.x);
+        const pz = Math.floor(player.location.z);
+        const lastX = player.getDynamicProperty("last_loc_x") ?? px;
+        const lastZ = player.getDynamicProperty("last_loc_z") ?? pz;
 
-          const dist = Math.sqrt((px - lastX) * (px - lastX) + (pz - lastZ) * (pz - lastZ));
-          if (dist > 1 && dist < 100) {
+        const dist = Math.sqrt((px - lastX) * (px - lastX) + (pz - lastZ) * (pz - lastZ));
+        if (dist > 1 && dist < 100) {
+          // 1. Daily Quest Exploration
+          if (!player.getDynamicProperty("q_explore_done")) {
             const currentExp = (player.getDynamicProperty("q_explore_cnt") ?? 0) + dist;
             player.setDynamicProperty("q_explore_cnt", currentExp);
             if (currentExp >= cfgE.target) {
@@ -1200,9 +1203,20 @@ system.runInterval(() => {
               processQuestReward(player, `${cfgE.title} (${cfgE.desc})`, cfgE.em, cfgE.xp);
             }
           }
-          player.setDynamicProperty("last_loc_x", px);
-          player.setDynamicProperty("last_loc_z", pz);
+
+          // 2. Weekly Contract Exploration ("La Odisea Dimensional")
+          checkAndUpdateWeeklyContract(player);
+          const contractW = getWeeklyContractConfig(world.getDay());
+          if (!player.getDynamicProperty("q_weekly_done") && contractW.typeCheck === "contract_explore") {
+            const curW = (player.getDynamicProperty("q_weekly_cnt") ?? 0) + dist;
+            player.setDynamicProperty("q_weekly_cnt", curW);
+            if (curW >= contractW.target) {
+              processWeeklyContractReward(player, contractW);
+            }
+          }
         }
+        player.setDynamicProperty("last_loc_x", px);
+        player.setDynamicProperty("last_loc_z", pz);
 
         const titleInfo = playerTitles.get(player.name);
         const mobs = getScore(player, "MobsKilled");
