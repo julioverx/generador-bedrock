@@ -1232,6 +1232,8 @@ system.runInterval(() => {
             `  §7Reliquia en Juego: §e${contract.relicName} + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n\n` +
             `§8Sanción por retraso: Si empiezas 2 días tarde, será matemáticamente imposible completar a tiempo.\n`
           );
+        }
+
         // --- SUITE ADMIN DE PRUEBAS INSTANTÁNEAS (/tag @s add test_...) ---
         try {
           if (player.hasTag("test_completar_diaria")) {
