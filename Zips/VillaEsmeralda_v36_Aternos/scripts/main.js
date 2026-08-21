@@ -1392,31 +1392,31 @@ system.runInterval(() => {
       const chestName = chest?.nameTag ?? "";
       const feetName = feet?.nameTag ?? "";
 
-      // --- WEAPONS / TOOLS PASSIVE BUFFS ---
-      // Espada Mítica / Reliquia -> Fuerza II (Strength II)
-      if (mainHandName.includes("Mítica") || mainHandName.includes("Reliquia") || mainHandName.includes("Guerrero") || mainHandName.includes("Rey")) {
+      // --- WEAPONS / TOOLS PASSIVE BUFFS (WEEKLY CONTRACT RELICS ONLY!) ---
+      // Only Contract Relic weapons/tools (named "Mítica" or "Reliquia") grant Strength II or Haste II
+      if (mainHandName.includes("Mítica") || mainHandName.includes("Reliquia")) {
         if (mainHand?.typeId === "minecraft:netherite_sword") {
           player.addEffect("strength", 40, { amplifier: 1, showParticles: false });
         }
-        if (mainHand?.typeId === "minecraft:netherite_pickaxe") {
+        if (mainHand?.typeId === "minecraft:netherite_pickaxe" || mainHand?.typeId === "minecraft:netherite_hoe" || mainHand?.typeId === "minecraft:netherite_axe") {
           player.addEffect("haste", 40, { amplifier: 1, showParticles: false });
         }
       }
 
-      // --- ARMOR PASSIVE BUFFS ---
-      // Pechera Mítica -> Resistencia II (Resistance II)
-      if (chestName.includes("Mítica") || chestName.includes("Guerra") || chestName.includes("Asesino") || chestName.includes("Protección")) {
+      // --- ARMOR PASSIVE BUFFS (WEEKLY CONTRACT RELICS ONLY!) ---
+      // ONLY Contract 4 Chestplate ("Pechera Mítica de la Guerra") grants Resistance II
+      if (chestName.includes("Mítica") && chestName.includes("Guerra")) {
         player.addEffect("resistance", 40, { amplifier: 1, showParticles: false });
       }
 
-      // Botas Míticas -> Velocidad II + Regeneración I
-      if (feetName.includes("Míticas") || feetName.includes("Dimensionales") || feetName.includes("Matadrakos")) {
+      // ONLY Contract 3 Boots ("Botas Míticas Dimensionales") grant Speed II + Regeneration I
+      if (feetName.includes("Míticas") && feetName.includes("Dimensionales")) {
         player.addEffect("speed", 40, { amplifier: 1, showParticles: false });
         player.addEffect("regeneration", 40, { amplifier: 0, showParticles: false });
       }
 
-      // Casco Mítico -> Visión Nocturna + Gracia de Delfín
-      if (headName.includes("Mítico") || headName.includes("Submarino") || headName.includes("Poseidón")) {
+      // ONLY Contract 5 Helmet ("Casco Mítico Submarino") grants Night Vision + Dolphin's Grace
+      if (headName.includes("Mítico") && headName.includes("Submarino")) {
         player.addEffect("night_vision", 300, { amplifier: 0, showParticles: false });
         player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
       }
