@@ -1321,6 +1321,32 @@ system.runInterval(() => {
             givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aHacha Prohibida del Líder Granjero§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Líder Granjero otorgado con éxito!");
           }
+          if (player.hasTag("test_dar_logro_mineria")) {
+            player.removeTag("test_dar_logro_mineria");
+            player.setDynamicProperty("reward_5000bloques", false);
+            player.addTag("tag_leyenda_minera");
+            grantCustomAchievement(player, "leyenda_minera", "Leyenda Minera");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s anvil 1");
+            player.runCommandAsync("give @s iron_block 64");
+            givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePico de Leyenda Minera§r");
+            givePreEnchantedItem(player, "minecraft:netherite_shovel", [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePala de Leyenda Minera§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Leyenda Minera (5,000 Bloques) otorgado con éxito!");
+          }
+          if (player.hasTag("test_dar_logro_pvp")) {
+            player.removeTag("test_dar_logro_pvp");
+            player.setDynamicProperty("reward_50pvpkills", false);
+            player.addTag("tag_rey_guerra");
+            grantCustomAchievement(player, "rey_guerra", "Rey de la Guerra");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s anvil 1");
+            player.runCommandAsync("give @s diamond_block 128");
+            player.runCommandAsync("give @s emerald_block 64");
+            player.runCommandAsync("give @s lapis_block 128");
+            givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§4Espada Rey de la Guerra§r");
+            givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§4Casco Rey de la Guerra§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Rey de la Guerra (50 Bajas PvP) otorgado con éxito!");
+          }
           if (player.hasTag("test_dar_logro_asesino")) {
             player.removeTag("test_dar_logro_asesino");
             player.setDynamicProperty("custom_ach_asesino_serie", false);
