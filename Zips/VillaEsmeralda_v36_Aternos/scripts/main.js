@@ -1390,6 +1390,61 @@ system.runInterval(() => {
 }, 4);
 
 // ============================================================
+// MYTHIC RELIC PASSIVE POWERS (Every 1 second / 20 ticks)
+// Applies Strength II, Resistance II, Haste II, Speed II, Night Vision, Dolphin's Grace
+// when holding or equipping Mythic Relic items from Weekly Contracts & Boss Achievements!
+// ============================================================
+system.runInterval(() => {
+  for (const player of world.getAllPlayers()) {
+    try {
+      if (!player || !player.isValid()) continue;
+
+      const equippable = player.getComponent("equippable");
+      const mainHand = equippable?.getEquipment("Mainhand");
+      const mainHandName = mainHand?.nameTag ?? "";
+
+      const head = equippable?.getEquipment("Head");
+      const chest = equippable?.getEquipment("Chest");
+      const feet = equippable?.getEquipment("Feet");
+
+      const headName = head?.nameTag ?? "";
+      const chestName = chest?.nameTag ?? "";
+      const feetName = feet?.nameTag ?? "";
+
+      // --- WEAPONS / TOOLS PASSIVE BUFFS ---
+      // Espada Mítica / Reliquia -> Fuerza II (Strength II)
+      if (mainHandName.includes("Mítica") || mainHandName.includes("Reliquia") || mainHandName.includes("Guerrero") || mainHandName.includes("Rey")) {
+        if (mainHand?.typeId === "minecraft:netherite_sword") {
+          player.addEffect("strength", 40, { amplifier: 1, showParticles: false });
+        }
+        if (mainHand?.typeId === "minecraft:netherite_pickaxe") {
+          player.addEffect("haste", 40, { amplifier: 1, showParticles: false });
+        }
+      }
+
+      // --- ARMOR PASSIVE BUFFS ---
+      // Pechera Mítica -> Resistencia II (Resistance II)
+      if (chestName.includes("Mítica") || chestName.includes("Guerra") || chestName.includes("Asesino") || chestName.includes("Protección")) {
+        player.addEffect("resistance", 40, { amplifier: 1, showParticles: false });
+      }
+
+      // Botas Míticas -> Velocidad II + Regeneración I
+      if (feetName.includes("Míticas") || feetName.includes("Dimensionales") || feetName.includes("Matadrakos")) {
+        player.addEffect("speed", 40, { amplifier: 1, showParticles: false });
+        player.addEffect("regeneration", 40, { amplifier: 0, showParticles: false });
+      }
+
+      // Casco Mítico -> Visión Nocturna + Gracia de Delfín
+      if (headName.includes("Mítico") || headName.includes("Submarino") || headName.includes("Poseidón")) {
+        player.addEffect("night_vision", 300, { amplifier: 0, showParticles: false });
+        player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
+      }
+
+    } catch (e) {}
+  }
+}, 20);
+
+// ============================================================
 // DYNAMIC NAMETAGS SYSTEM (Every 5 seconds / 100 ticks)
 // Updates the nametag of #1 players with their highest title.
 // ============================================================
