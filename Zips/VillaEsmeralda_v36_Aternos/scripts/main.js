@@ -1247,6 +1247,7 @@ system.runInterval(() => {
           }
           if (player.hasTag("test_completar_contrato")) {
             player.removeTag("test_completar_contrato");
+            player.setDynamicProperty("last_contract_week", -1);
             checkAndUpdateWeeklyContract(player);
             const contract = getWeeklyContractConfig(world.getDay());
             processWeeklyContractReward(player, contract);
@@ -1254,36 +1255,67 @@ system.runInterval(() => {
           }
           if (player.hasTag("test_siguiente_contrato")) {
             player.removeTag("test_siguiente_contrato");
-            const currentWeek = player.getDynamicProperty("last_contract_week") ?? 0;
-            player.setDynamicProperty("last_contract_week", currentWeek + 1);
+            const currentWeek = (player.getDynamicProperty("last_contract_week") ?? 0) + 1;
+            player.setDynamicProperty("last_contract_week", currentWeek);
+            player.setDynamicProperty("q_weekly_cnt", 0);
+            player.setDynamicProperty("q_weekly_done", false);
             checkAndUpdateWeeklyContract(player);
-            const contract = getWeeklyContractConfig(world.getDay() + 7);
+            const contract = getWeeklyContractConfig(currentWeek * 7);
             player.sendMessage(`§a[TEST ADMIN] ¡Avanzado al siguiente Contrato Mítico: "${contract.title}"!`);
           }
           if (player.hasTag("test_dar_logro_poseidon")) {
             player.removeTag("test_dar_logro_poseidon");
+            player.setDynamicProperty("custom_ach_rey_poseidon", false);
             player.setDynamicProperty("reward_rey_poseidon", false);
+            player.addTag("tag_rey_poseidon");
             grantCustomAchievement(player, "rey_poseidon", "Rey Poseidon");
-            player.sendMessage("§a[TEST ADMIN] Logro Rey Poseidón otorgado con éxito.");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s emerald_block 64");
+            player.runCommandAsync("give @s netherite_ingot 1");
+            player.runCommandAsync("give @s anvil 1");
+            givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente del Rey Poseidon§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Rey Poseidón otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_wither")) {
             player.removeTag("test_dar_logro_wither");
+            player.setDynamicProperty("custom_ach_dios_wither", false);
             player.setDynamicProperty("reward_dios_wither", false);
+            player.addTag("tag_dios_wither");
             grantCustomAchievement(player, "dios_wither", "Dios Wither");
-            player.sendMessage("§a[TEST ADMIN] Logro Dios Wither otorgado con éxito.");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s nether_star 1");
+            player.runCommandAsync("give @s emerald_block 64");
+            player.runCommandAsync("give @s netherite_ingot 1");
+            player.runCommandAsync("give @s anvil 1");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Dios Wither otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_granjero")) {
             player.removeTag("test_dar_logro_granjero");
+            player.setDynamicProperty("custom_ach_lider_granjero", false);
             player.setDynamicProperty("reward_lider_granjero", false);
-            player.setDynamicProperty("total_crops_harvested", 5000);
-            player.sendMessage("§a[TEST ADMIN] Requisitos de Líder Granjero activados.");
+            player.addTag("tag_lider_granjero");
+            grantCustomAchievement(player, "lider_granjero", "Líder Granjero");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s emerald_block 64");
+            player.runCommandAsync("give @s netherite_ingot 1");
+            player.runCommandAsync("give @s anvil 1");
+            givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§aAzada del Líder Granjero VI§r");
+            givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:6},{id:"sharpness",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§aHacha del Líder Granjero VI§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Líder Granjero otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_asesino")) {
             player.removeTag("test_dar_logro_asesino");
+            player.setDynamicProperty("custom_ach_asesino_serie", false);
             player.setDynamicProperty("reward_1000mobs", false);
-            killStreaks.set(player.id, 999);
-            processKillStreak(player);
-            player.sendMessage("§a[TEST ADMIN] Racha de 1,000 Mobs Asesino en Serie otorgada con éxito.");
+            player.addTag("tag_asesino_serie");
+            grantCustomAchievement(player, "asesino_serie", "Asesino en Serie");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s anvil 2");
+            player.runCommandAsync("give @s emerald_block 640");
+            player.runCommandAsync("give @s iron_block 640");
+            player.runCommandAsync("give @s lapis_block 256");
+            givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1},{id:"thorns",level:3}], "§6Pechera del Asesino en Serie§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Asesino en Serie otorgado con éxito!");
           }
           if (player.hasTag("test_reset_todo")) {
             player.removeTag("test_reset_todo");
@@ -1299,6 +1331,10 @@ system.runInterval(() => {
             player.setDynamicProperty("q_farm_crops_cnt", 0);
             player.setDynamicProperty("q_farm_logs_cnt", 0);
             player.setDynamicProperty("q_weekly_done", false);
+            player.setDynamicProperty("custom_ach_rey_poseidon", false);
+            player.setDynamicProperty("custom_ach_dios_wither", false);
+            player.setDynamicProperty("custom_ach_lider_granjero", false);
+            player.setDynamicProperty("custom_ach_asesino_serie", false);
             player.sendMessage("§c[TEST ADMIN] Todos los contadores y estados de prueba han sido REINICIADOS.");
           }
         } catch (e) {}
