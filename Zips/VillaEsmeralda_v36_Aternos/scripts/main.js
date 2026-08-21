@@ -255,13 +255,13 @@ const QUEST_POOLS = {
 
 const WEEKLY_CONTRACTS = [
   { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Espada Mítica Divina (Fuerza II Pasiva)", typeCheck: "contract_mobs" },
-  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Pico Mítico del Herrero (Prisa II Pasiva)", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada Mítica + Hacha Mítica (Prisa II Pasiva)", typeCheck: "contract_farm" },
-  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Míticas Dimensionales (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
-  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Mítica de la Guerra (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
-  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Mítico Submarino (Visión Nocturna + Gracia de Delfín) + Tridente Divino", typeCheck: "contract_ocean" },
-  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Mítico Intacto (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
-  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Trilogía Mítica Divina (Espada + Pico + Polainas)", typeCheck: "contract_king" }
+  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_debris" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada Mítica Divina + Hacha Mítica Divina (Prisa II Pasiva)", typeCheck: "contract_farm" },
+  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Míticas Divinas (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Mítica Divina (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
+  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Mítico Divino (Visión Nocturna + Gracia de Delfín) + Tridente Mítico Divino", typeCheck: "contract_ocean" },
+  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
+  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Set Mítico Divino (Espada + Pico + Polainas)", typeCheck: "contract_king" }
 ];
 
 function getWeeklyContractConfig(dayNumber) {
@@ -342,27 +342,27 @@ function processWeeklyContractReward(player, contract) {
     }
 
     if (contract.id === 0) { // Devorador de Titanes
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Trilogía de Combate§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
     } else if (contract.id === 1) { // El Infierno de Netherite
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico del Herrero§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     } else if (contract.id === 2) { // El Granero Imperial
-      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cAzada Mítica del Granero§r");
-      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cHacha Mítica del Granero§r");
+      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cAzada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cHacha Mítica Divina§r");
     } else if (contract.id === 3) { // La Odisea Dimensional
-      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cBotas Míticas Dimensionales§r");
+      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cBotas Míticas Divinas§r");
       player.runCommandAsync("give @s enchanted_golden_apple 8");
     } else if (contract.id === 4) { // Señor de la Guerra Total
-      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPechera Mítica de la Guerra§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica de la Guerra§r");
+      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPechera Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
     } else if (contract.id === 5) { // Buscador de Mitos Submarinos
-      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cCasco Mítico Submarino§r");
+      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cCasco Mítico Divino§r");
       givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cTridente Mítico Divino§r");
     } else if (contract.id === 6) { // Fiebre de Esmeraldas Intactas
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Intacto§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     } else if (contract.id === 7) { // La Prueba del Rey
-      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPolainas Míticas del Rey§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica del Rey§r");
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico del Rey§r");
+      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPolainas Míticas Divinas§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     }
   } catch (e) {}
 }
@@ -1393,8 +1393,8 @@ system.runInterval(() => {
       const feetName = feet?.nameTag ?? "";
 
       // --- WEAPONS / TOOLS PASSIVE BUFFS (WEEKLY CONTRACT RELICS ONLY!) ---
-      // Only Contract Relic weapons/tools (named "Mítica" or "Reliquia") grant Strength II or Haste II
-      if (mainHandName.includes("Mítica") || mainHandName.includes("Reliquia")) {
+      // Matches "Mítico", "Mítica", "Divino" or "Divina"
+      if (mainHandName.includes("Mítico") || mainHandName.includes("Mítica")) {
         if (mainHand?.typeId === "minecraft:netherite_sword") {
           player.addEffect("strength", 40, { amplifier: 1, showParticles: false });
         }
@@ -1404,19 +1404,19 @@ system.runInterval(() => {
       }
 
       // --- ARMOR PASSIVE BUFFS (WEEKLY CONTRACT RELICS ONLY!) ---
-      // ONLY Contract 4 Chestplate ("Pechera Mítica de la Guerra") grants Resistance II
-      if (chestName.includes("Mítica") && chestName.includes("Guerra")) {
+      // Pechera Mítica Divina -> Resistencia II
+      if (chestName.includes("Mítica") && (chestName.includes("Pechera") || chestName.includes("Guerra"))) {
         player.addEffect("resistance", 40, { amplifier: 1, showParticles: false });
       }
 
-      // ONLY Contract 3 Boots ("Botas Míticas Dimensionales") grant Speed II + Regeneration I
-      if (feetName.includes("Míticas") && feetName.includes("Dimensionales")) {
+      // Botas Míticas Divinas -> Velocidad II + Regeneración I
+      if (feetName.includes("Míticas") && (feetName.includes("Botas") || feetName.includes("Dimensionales"))) {
         player.addEffect("speed", 40, { amplifier: 1, showParticles: false });
         player.addEffect("regeneration", 40, { amplifier: 0, showParticles: false });
       }
 
-      // ONLY Contract 5 Helmet ("Casco Mítico Submarino") grants Night Vision + Dolphin's Grace
-      if (headName.includes("Mítico") && headName.includes("Submarino")) {
+      // Casco Mítico Divino -> Visión Nocturna + Gracia de Delfín
+      if (headName.includes("Mítico") && (headName.includes("Casco") || headName.includes("Submarino"))) {
         player.addEffect("night_vision", 300, { amplifier: 0, showParticles: false });
         player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
       }
