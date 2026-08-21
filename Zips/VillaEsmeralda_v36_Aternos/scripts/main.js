@@ -113,13 +113,44 @@ function initializeScoreboards() {
 initializeScoreboards();
 world.afterEvents.worldInitialize.subscribe(() => initializeScoreboards());
 
+function isPlayerIgnored(player) {
+  try {
+    if (!player || !player.isValid()) return true;
+    if (player.hasTag("ignorar_escribano") || player.hasTag("ignorar_sistema") || player.hasTag("ignorar_escribano_temp")) return true;
+  } catch (e) {}
+  return false;
+}
+
 function incrementScore(player, objId) {
   try {
-    if (player && player.hasTag && player.hasTag("ignorar_escribano")) return;
+    if (isPlayerIgnored(player)) return;
     let obj = world.scoreboard.getObjective(objId);
     if (!obj) obj = world.scoreboard.addObjective(objId, objId);
     if (player) {
       player.runCommandAsync("scoreboard players add @s " + objId + " 1");
+    }
+  } catch (e) {}
+}
+
+function givePreEnchantedItem(player, itemTypeId, enchantments, customName = null) {
+  try {
+    if (!player || !player.isValid()) return;
+    const item = new ItemStack(itemTypeId, 1);
+    if (customName) item.nameTag = customName;
+    const enchantComp = item.getComponent("minecraft:enchantable");
+    if (enchantComp) {
+      for (const enc of enchantments) {
+        try {
+          enchantComp.addEnchantment({
+            type: new EnchantmentType(enc.id),
+            level: enc.level
+          });
+        } catch (err) {}
+      }
+    }
+    const inv = player.getComponent("inventory")?.container;
+    if (inv) {
+      inv.addItem(item);
     }
   } catch (e) {}
 }
@@ -176,7 +207,7 @@ const QUEST_POOLS = {
   mining: [
     { id: 0, title: "Picar 150 Bloques", target: 150, desc: "150 bloques", em: 10, xp: 10 },
     { id: 1, title: "Picar 300 Bloques", target: 300, desc: "300 bloques", em: 10, xp: 10 },
-    { id: 2, title: "Picar 250 Bloques de Piedra", target: 250, desc: "250 bloques", em: 10, xp: 10 },
+    { id: 2, title: "Picar 250 Bloques de Piedra", target: 250, desc: "250 bloques", em: 10, xp: 10, typeCheck: "stone_strict" },
     { id: 3, title: "Picar 50 Minerales (Menas)", target: 50, desc: "50 minerales", em: 10, xp: 10, typeCheck: "ore_strict" },
     { id: 4, title: "Picar 1,000 Bloques (Difícil)", target: 1000, desc: "1,000 bloques", em: 30, xp: 25 },
     { id: 5, title: "Picar 100 Minerales (Difícil)", target: 100, desc: "100 minerales", em: 30, xp: 25, typeCheck: "ore_strict" },
@@ -313,39 +344,27 @@ function processWeeklyContractReward(player, contract) {
     }
 
     if (contract.id === 0) { // Devorador de Titanes
-      player.runCommandAsync("give @s netherite_sword 1");
-      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia del Guerrero VI§r");
     } else if (contract.id === 1) { // El Infierno de Netherite
-      player.runCommandAsync("give @s netherite_pickaxe 1");
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia del Herrero VI§r");
     } else if (contract.id === 2) { // El Granero Imperial
-      player.runCommandAsync("give @s netherite_hoe 1");
-      player.runCommandAsync("give @s netherite_axe 1");
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cAzada Reliquia Granjera VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cHacha Reliquia Granjera VI§r");
     } else if (contract.id === 3) { // La Odisea Dimensional
-      player.runCommandAsync("give @s netherite_boots 1");
+      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cBotas Reliquia Dimensional V§r");
       player.runCommandAsync("give @s enchanted_golden_apple 8");
-      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
     } else if (contract.id === 4) { // Señor de la Guerra Total
-      player.runCommandAsync("give @s netherite_chestplate 1");
-      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPechera Reliquia de la Guerra V§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia de la Guerra VI§r");
     } else if (contract.id === 5) { // Buscador de Mitos Submarinos
-      player.runCommandAsync("give @s netherite_helmet 1");
-      player.runCommandAsync("give @s trident 1");
-      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-      giveEnchantedBookItem(player, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cCasco Reliquia Submarino V§r");
+      givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cTridente Reliquia Divino§r");
     } else if (contract.id === 6) { // Fiebre de Esmeraldas Intactas
-      player.runCommandAsync("give @s netherite_pickaxe 1");
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"fortune",level:3},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"fortune",level:3},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia Intacto VI§r");
     } else if (contract.id === 7) { // La Prueba del Rey
-      player.runCommandAsync("give @s netherite_leggings 1");
-      player.runCommandAsync("give @s netherite_sword 1");
-      player.runCommandAsync("give @s netherite_pickaxe 1");
-      giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-      giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
-      giveEnchantedBookItem(player, [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}]);
+      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPolainas Reliquia del Rey V§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia del Rey VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia del Rey VI§r");
     }
   } catch (e) {}
 }
@@ -1213,7 +1232,74 @@ system.runInterval(() => {
             `  §7Reliquia en Juego: §e${contract.relicName} + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n\n` +
             `§8Sanción por retraso: Si empiezas 2 días tarde, será matemáticamente imposible completar a tiempo.\n`
           );
-        }
+        // --- SUITE ADMIN DE PRUEBAS INSTANTÁNEAS (/tag @s add test_...) ---
+        try {
+          if (player.hasTag("test_completar_diaria")) {
+            player.removeTag("test_completar_diaria");
+            player.setDynamicProperty("q_mine_done", true);
+            player.setDynamicProperty("q_hunt_done", true);
+            player.setDynamicProperty("q_explore_done", true);
+            player.setDynamicProperty("q_farm_done", true);
+            processQuestReward(player, "Prueba Admin Diaria", 250, 100);
+            player.sendMessage("§a[TEST ADMIN] ¡Las 4 Misiones Diarias han sido completadas al instante!");
+          }
+          if (player.hasTag("test_completar_contrato")) {
+            player.removeTag("test_completar_contrato");
+            checkAndUpdateWeeklyContract(player);
+            const contract = getWeeklyContractConfig(world.getDay());
+            processWeeklyContractReward(player, contract);
+            player.sendMessage(`§a[TEST ADMIN] ¡Contrato Semanal Mítico "${contract.title}" completado al instante!`);
+          }
+          if (player.hasTag("test_siguiente_contrato")) {
+            player.removeTag("test_siguiente_contrato");
+            const currentWeek = player.getDynamicProperty("last_contract_week") ?? 0;
+            player.setDynamicProperty("last_contract_week", currentWeek + 1);
+            checkAndUpdateWeeklyContract(player);
+            const contract = getWeeklyContractConfig(world.getDay() + 7);
+            player.sendMessage(`§a[TEST ADMIN] ¡Avanzado al siguiente Contrato Mítico: "${contract.title}"!`);
+          }
+          if (player.hasTag("test_dar_logro_poseidon")) {
+            player.removeTag("test_dar_logro_poseidon");
+            player.setDynamicProperty("reward_rey_poseidon", false);
+            grantCustomAchievement(player, "rey_poseidon", "Rey Poseidon");
+            player.sendMessage("§a[TEST ADMIN] Logro Rey Poseidón otorgado con éxito.");
+          }
+          if (player.hasTag("test_dar_logro_wither")) {
+            player.removeTag("test_dar_logro_wither");
+            player.setDynamicProperty("reward_dios_wither", false);
+            grantCustomAchievement(player, "dios_wither", "Dios Wither");
+            player.sendMessage("§a[TEST ADMIN] Logro Dios Wither otorgado con éxito.");
+          }
+          if (player.hasTag("test_dar_logro_granjero")) {
+            player.removeTag("test_dar_logro_granjero");
+            player.setDynamicProperty("reward_lider_granjero", false);
+            player.setDynamicProperty("total_crops_harvested", 5000);
+            player.sendMessage("§a[TEST ADMIN] Requisitos de Líder Granjero activados.");
+          }
+          if (player.hasTag("test_dar_logro_asesino")) {
+            player.removeTag("test_dar_logro_asesino");
+            player.setDynamicProperty("reward_1000mobs", false);
+            killStreaks.set(player.id, 999);
+            processKillStreak(player);
+            player.sendMessage("§a[TEST ADMIN] Racha de 1,000 Mobs Asesino en Serie otorgada con éxito.");
+          }
+          if (player.hasTag("test_reset_todo")) {
+            player.removeTag("test_reset_todo");
+            player.setDynamicProperty("q_mine_cnt", 0);
+            player.setDynamicProperty("q_hunt_cnt", 0);
+            player.setDynamicProperty("q_explore_cnt", 0);
+            player.setDynamicProperty("q_farm_cnt", 0);
+            player.setDynamicProperty("q_mine_done", false);
+            player.setDynamicProperty("q_hunt_done", false);
+            player.setDynamicProperty("q_explore_done", false);
+            player.setDynamicProperty("q_farm_done", false);
+            player.setDynamicProperty("q_weekly_cnt", 0);
+            player.setDynamicProperty("q_farm_crops_cnt", 0);
+            player.setDynamicProperty("q_farm_logs_cnt", 0);
+            player.setDynamicProperty("q_weekly_done", false);
+            player.sendMessage("§c[TEST ADMIN] Todos los contadores y estados de prueba han sido REINICIADOS.");
+          }
+        } catch (e) {}
       } catch (e) {}
     }
   } catch (e) {}
