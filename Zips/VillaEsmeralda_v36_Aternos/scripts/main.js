@@ -1235,6 +1235,12 @@ system.runInterval(() => {
             processQuestReward(player, "Prueba Admin Diaria", 250, 100);
             player.sendMessage("§a[TEST ADMIN] ¡Las 4 Misiones Diarias han sido completadas al instante!");
           }
+          if (player.hasTag("test_siguiente_dia")) {
+            player.removeTag("test_siguiente_dia");
+            world.getDimension("overworld").runCommandAsync("time add 24000");
+            player.setDynamicProperty("last_quest_day", -1);
+            player.sendMessage("§a[TEST ADMIN] ¡Avanzado 24 horas (1 día in-game)! Se renovaron las misiones diarias.");
+          }
           if (player.hasTag("test_completar_contrato")) {
             player.removeTag("test_completar_contrato");
             player.setDynamicProperty("last_contract_week", -1);
