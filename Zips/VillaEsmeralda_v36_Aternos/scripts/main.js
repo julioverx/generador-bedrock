@@ -344,27 +344,27 @@ function processWeeklyContractReward(player, contract) {
     }
 
     if (contract.id === 0) { // Devorador de Titanes
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia del Guerrero VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Trilogía de Combate§r");
     } else if (contract.id === 1) { // El Infierno de Netherite
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia del Herrero VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico del Herrero§r");
     } else if (contract.id === 2) { // El Granero Imperial
-      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cAzada Reliquia Granjera VI§r");
-      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cHacha Reliquia Granjera VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cAzada Mítica del Granero§r");
+      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cHacha Mítica del Granero§r");
     } else if (contract.id === 3) { // La Odisea Dimensional
-      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cBotas Reliquia Dimensional V§r");
+      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cBotas Míticas Dimensionales§r");
       player.runCommandAsync("give @s enchanted_golden_apple 8");
     } else if (contract.id === 4) { // Señor de la Guerra Total
-      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPechera Reliquia de la Guerra V§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia de la Guerra VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPechera Mítica de la Guerra§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica de la Guerra§r");
     } else if (contract.id === 5) { // Buscador de Mitos Submarinos
-      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cCasco Reliquia Submarino V§r");
-      givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cTridente Reliquia Divino§r");
+      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cCasco Mítico Submarino§r");
+      givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cTridente Mítico Divino§r");
     } else if (contract.id === 6) { // Fiebre de Esmeraldas Intactas
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"fortune",level:3},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia Intacto VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Intacto§r");
     } else if (contract.id === 7) { // La Prueba del Rey
-      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:5},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPolainas Reliquia del Rey V§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}], "§cEspada Reliquia del Rey VI§r");
-      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§cPico Reliquia del Rey VI§r");
+      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPolainas Míticas del Rey§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica del Rey§r");
+      givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico del Rey§r");
     }
   } catch (e) {}
 }
@@ -732,10 +732,11 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("xp 200L @s");
           attacker.runCommandAsync("give @s elytra 1");
           attacker.runCommandAsync("give @s firework_rocket 64");
+          attacker.runCommandAsync("give @s emerald_block 64");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
           attacker.runCommandAsync("give @s anvil 1");
-          attacker.runCommandAsync("give @s diamond_boots 1");
-          giveEnchantedBookItem(attacker, [{id:"unbreaking",level:3},{id:"mending",level:1}]);
-          giveEnchantedBookItem(attacker, [{id:"feather_falling",level:4},{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+          givePreEnchantedItem(attacker, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos Cuádruple Protección§r");
+          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Ender Dragon y recibe las §5Botas Míticas del Matadrakos §7+ §eElytra §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
       if (deadEntity.typeId === "minecraft:wither") {
@@ -748,7 +749,8 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("give @s emerald_block 64");
           attacker.runCommandAsync("give @s netherite_ingot 1");
           attacker.runCommandAsync("give @s anvil 1");
-          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda §7+ §e1 Lingote de Netherite §7+ §b200L XP!\n`);
+          givePreEnchantedItem(attacker, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither Cuádruple Protección§r");
+          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe los §5Pantalones Míticos del Dios Wither §7+ §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
       if (deadEntity.typeId === "minecraft:elder_guardian") {
@@ -757,12 +759,12 @@ world.afterEvents.entityDie.subscribe((event) => {
           grantCustomAchievement(attacker, "rey_poseidon", "Rey Poseidon");
           attacker.addTag("tag_rey_poseidon");
           attacker.runCommandAsync("xp 200L @s");
-          attacker.runCommandAsync("give @s trident 1");
           attacker.runCommandAsync("give @s emerald_block 64");
           attacker.runCommandAsync("give @s netherite_ingot 1");
           attacker.runCommandAsync("give @s anvil 1");
-          giveEnchantedBookItem(attacker, [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
-          world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente Nativo §7+ §eLibro Encantado de Tridente (Canalización I + Lealtad III) §7+ §a64 Bloques de Esmeralda!\n`);
+          givePreEnchantedItem(attacker, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente Divino Poseidón§r");
+          givePreEnchantedItem(attacker, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón Cuádruple Protección§r");
+          world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente Divino §7+ §bCasco del Rey Poseidón Mítico §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
     }
@@ -1255,13 +1257,12 @@ system.runInterval(() => {
           }
           if (player.hasTag("test_siguiente_contrato")) {
             player.removeTag("test_siguiente_contrato");
-            const currentWeek = (player.getDynamicProperty("last_contract_week") ?? 0) + 1;
-            player.setDynamicProperty("last_contract_week", currentWeek);
+            world.getDimension("overworld").runCommandAsync("time add 168000");
+            player.setDynamicProperty("last_contract_week", -1);
             player.setDynamicProperty("q_weekly_cnt", 0);
             player.setDynamicProperty("q_weekly_done", false);
-            checkAndUpdateWeeklyContract(player);
-            const contract = getWeeklyContractConfig(currentWeek * 7);
-            player.sendMessage(`§a[TEST ADMIN] ¡Avanzado al siguiente Contrato Mítico: "${contract.title}"!`);
+            const contract = getWeeklyContractConfig(world.getDay() + 7);
+            player.sendMessage(`§a[TEST ADMIN] ¡Avanzado 7 días in-game! Siguiente Contrato Mítico: "${contract.title}"`);
           }
           if (player.hasTag("test_dar_logro_poseidon")) {
             player.removeTag("test_dar_logro_poseidon");
@@ -1273,7 +1274,8 @@ system.runInterval(() => {
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
             player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente del Rey Poseidon§r");
+            givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente Divino Poseidón§r");
+            givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón Cuádruple Protección§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Rey Poseidón otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_wither")) {
@@ -1287,7 +1289,23 @@ system.runInterval(() => {
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
             player.runCommandAsync("give @s anvil 1");
+            givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither Cuádruple Protección§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Dios Wither otorgado con éxito!");
+          }
+          if (player.hasTag("test_dar_logro_matadrakos")) {
+            player.removeTag("test_dar_logro_matadrakos");
+            player.setDynamicProperty("custom_ach_matadrakos", false);
+            player.setDynamicProperty("reward_matadrakos", false);
+            player.addTag("tag_matadrakos");
+            grantCustomAchievement(player, "matadrakos", "Matadrakos");
+            player.runCommandAsync("xp 200L @s");
+            player.runCommandAsync("give @s elytra 1");
+            player.runCommandAsync("give @s firework_rocket 64");
+            player.runCommandAsync("give @s emerald_block 64");
+            player.runCommandAsync("give @s netherite_ingot 1");
+            player.runCommandAsync("give @s anvil 1");
+            givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos Cuádruple Protección§r");
+            player.sendMessage("§a[TEST ADMIN] ¡Logro Matadrakos otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_granjero")) {
             player.removeTag("test_dar_logro_granjero");
@@ -1299,8 +1317,8 @@ system.runInterval(() => {
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
             player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§aAzada del Líder Granjero VI§r");
-            givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:6},{id:"sharpness",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}], "§aHacha del Líder Granjero VI§r");
+            givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aAzada Prohibida del Líder Granjero§r");
+            givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aHacha Prohibida del Líder Granjero§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Líder Granjero otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_asesino")) {
@@ -1310,11 +1328,12 @@ system.runInterval(() => {
             player.addTag("tag_asesino_serie");
             grantCustomAchievement(player, "asesino_serie", "Asesino en Serie");
             player.runCommandAsync("xp 200L @s");
-            player.runCommandAsync("give @s anvil 2");
+            player.runCommandAsync("give @s netherite_ingot 10");
             player.runCommandAsync("give @s emerald_block 640");
             player.runCommandAsync("give @s iron_block 640");
             player.runCommandAsync("give @s lapis_block 256");
-            givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1},{id:"thorns",level:3}], "§6Pechera del Asesino en Serie§r");
+            player.runCommandAsync("give @s anvil 2");
+            givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§6Pechera del Asesino en Serie Cuádruple Protección§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Asesino en Serie otorgado con éxito!");
           }
           if (player.hasTag("test_reset_todo")) {
@@ -1333,6 +1352,7 @@ system.runInterval(() => {
             player.setDynamicProperty("q_weekly_done", false);
             player.setDynamicProperty("custom_ach_rey_poseidon", false);
             player.setDynamicProperty("custom_ach_dios_wither", false);
+            player.setDynamicProperty("custom_ach_matadrakos", false);
             player.setDynamicProperty("custom_ach_lider_granjero", false);
             player.setDynamicProperty("custom_ach_asesino_serie", false);
             player.sendMessage("§c[TEST ADMIN] Todos los contadores y estados de prueba han sido REINICIADOS.");
