@@ -254,14 +254,14 @@ const QUEST_POOLS = {
 };
 
 const WEEKLY_CONTRACTS = [
-  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Libro Filo VI + Espada Netherite", typeCheck: "contract_mobs" },
-  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Libro Eficiencia VI + Pico Netherite", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada + Hacha Netherite + Libros VI", typeCheck: "contract_farm" },
-  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Netherite + Notch Apples + Libro V", typeCheck: "contract_explore" },
-  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Netherite + Libros V y VI", typeCheck: "contract_war" },
-  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Netherite + Tridente + Libros V", typeCheck: "contract_ocean" },
-  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Netherite + Libro Eficiencia VI", typeCheck: "contract_deepslate" },
-  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Set Netherite + Trilogía de Libros VI", typeCheck: "contract_king" }
+  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Espada Mítica Divina (Fuerza II Pasiva)", typeCheck: "contract_mobs" },
+  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Pico Mítico del Herrero (Prisa II Pasiva)", typeCheck: "contract_debris" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada Mítica + Hacha Mítica (Prisa II Pasiva)", typeCheck: "contract_farm" },
+  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Míticas Dimensionales (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Mítica de la Guerra (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
+  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Mítico Submarino (Visión Nocturna + Gracia de Delfín) + Tridente Divino", typeCheck: "contract_ocean" },
+  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Mítico Intacto (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
+  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Trilogía Mítica Divina (Espada + Pico + Polainas)", typeCheck: "contract_king" }
 ];
 
 function getWeeklyContractConfig(dayNumber) {
@@ -298,7 +298,7 @@ function checkAndUpdateWeeklyContract(player) {
           `§f¡Ha comenzado una nueva Semana Mítica! Ve a donde el §a§lMinistro§r §7a revisar el nuevo desafío:\n` +
           `§6Desafío: §e"${contract.title}"\n` +
           `§7Objetivo: §f${contract.desc}\n` +
-          `§7Recompensas: §aEquipo Netherite + Libros Encantados VI/V + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n` +
+          `§7Recompensas: §a${contract.relicName} + 256 Bloques Esmeralda + 8 Netherite + 500L XP\n` +
           `§6===========================================§r\n`
         );
       } catch (e) {}
@@ -326,21 +326,19 @@ function processWeeklyContractReward(player, contract) {
       `\n§6§l===========================================§r\n` +
       `§c§l[CONTRATO MÍTICO COMPLETADO POR UN HÉROE]§r\n` +
       `§f¡${player.name} §7ha logrado lo imposible completando el Contrato Semanal: §e"${contract.title}"!§r\n` +
-      `§7Ha sido coronado como §c[Contratista Real] §7y recibe sus Reliquias Supremas!\n` +
+      `§7Ha sido coronado como §c[Contratista Real] §7y recibe sus Reliquias Míticas Supremas!\n` +
       `§6===========================================§r\n`
     );
 
-    // Give Relic Rewards (Common base rewards: Emerald Blocks, Netherite Ingots, Anvils, XP)
+    // Give Relic Rewards (Common base rewards: Emerald Blocks, Netherite Ingots, XP - NO ANVILS!)
     if (contract.id === 7) {
       player.runCommandAsync("xp 1000L @s");
       player.runCommandAsync("give @s emerald_block 512");
       player.runCommandAsync("give @s netherite_ingot 16");
-      player.runCommandAsync("give @s anvil 4");
     } else {
       player.runCommandAsync("xp 500L @s");
       player.runCommandAsync("give @s emerald_block 256");
       player.runCommandAsync("give @s netherite_ingot 8");
-      player.runCommandAsync("give @s anvil 2");
     }
 
     if (contract.id === 0) { // Devorador de Titanes
@@ -556,18 +554,12 @@ function processKillStreak(player) {
         player.addTag("tag_asesino_serie");
         grantCustomAchievement(player, "asesino_serie", "Asesino en Serie");
         player.runCommandAsync("xp 200L @s");
-        player.runCommandAsync("give @s anvil 2");
-        player.runCommandAsync("give @s netherite_chestplate 1");
+        player.runCommandAsync("give @s netherite_ingot 10");
         player.runCommandAsync("give @s emerald_block 640");
         player.runCommandAsync("give @s iron_block 640");
         player.runCommandAsync("give @s lapis_block 256");
-        giveEnchantedBookItem(player, [
-          { id: "protection", level: 4 },
-          { id: "unbreaking", level: 3 },
-          { id: "mending", level: 1 },
-          { id: "thorns", level: 3 }
-        ]);
-        world.sendMessage(`\n§6§l[RECOMPENSA DE RACHA LEGENDARIA]§r\n§f${player.name} §7ha conseguido una racha legendaria de §e1,000 BAJAS CONSECUTIVAS §7y recibe la Pechera de Netherite, Libro de Protección IV + Espinas III, 10 Stacks de Esmeralda, 10 Stacks de Hierro, 4 Stacks de Lapislázuli, Yunques y 200L XP!\n`);
+        givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§6Pechera del Asesino en Serie§r");
+        world.sendMessage(`\n§6§l[RECOMPENSA DE RACHA LEGENDARIA]§r\n§f${player.name} §7ha conseguido una racha legendaria de §e1,000 BAJAS CONSECUTIVAS §7y recibe la Pechera del Asesino en Serie, 10 Lingotes de Netherite, 10 Stacks de Esmeralda, 10 Stacks de Hierro, 4 Stacks de Lapislázuli y 200L XP!\n`);
       } else {
         // Subsequent 1000 Mob Streak in new life: Veteran Reward (1 Netherite Ingot + 200L XP)
         player.runCommandAsync("xp 200L @s");
@@ -689,16 +681,17 @@ world.afterEvents.entityDie.subscribe((event) => {
           if (!attacker.getDynamicProperty("reward_50pvp")) {
             attacker.setDynamicProperty("reward_50pvp", true);
             attacker.addTag("tag_rey_guerra");
-            world.sendMessage(`\n§6§l[RACHA PVP LEGENDARIA]§r\n§f${attacker.name} §7ha logrado una racha sangrienta de §e50 BAJAS PVP CONSECUTIVAS §7y recibe el Kit Divino de Netherite!\n`);
+            world.sendMessage(`\n§6§l[RACHA PVP LEGENDARIA]§r\n§f${attacker.name} §7ha logrado una racha sangrienta de §e50 BAJAS PVP CONSECUTIVAS §7y recibe el Kit de Netherite del Rey de la Guerra, Bloques de Diamante, Esmeralda y Lapis!\n`);
             for (const p of world.getAllPlayers()) {
               try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
             }
             attacker.runCommandAsync("xp 200L @s");
-            attacker.runCommandAsync("give @s anvil 1");
-            attacker.runCommandAsync("give @s golden_apple 16");
-            attacker.runCommandAsync("give @s netherite_chestplate 1");
+            attacker.runCommandAsync("give @s diamond_block 128");
+            attacker.runCommandAsync("give @s emerald_block 64");
+            attacker.runCommandAsync("give @s lapis_block 128");
             attacker.runCommandAsync("give @s netherite_ingot 1");
-            giveEnchantedBookItem(attacker, [{id:"protection",level:4},{id:"unbreaking",level:3},{id:"mending",level:1}]);
+            givePreEnchantedItem(attacker, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§4Espada Rey de la Guerra§r");
+            givePreEnchantedItem(attacker, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§4Casco Rey de la Guerra§r");
           } else {
             // Subsequent 50 PvP Streak in new life: Veteran Reward (1 Netherite Ingot + 200L XP)
             world.sendMessage(`\n§6§l[RACHA PVP VETERANA]§r\n§f${attacker.name} §7ha vuelto a lograr §e50 BAJAS PVP CONSECUTIVAS §7y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
@@ -734,9 +727,8 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("give @s firework_rocket 64");
           attacker.runCommandAsync("give @s emerald_block 64");
           attacker.runCommandAsync("give @s netherite_ingot 1");
-          attacker.runCommandAsync("give @s anvil 1");
-          givePreEnchantedItem(attacker, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos Cuádruple Protección§r");
-          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Ender Dragon y recibe las §5Botas Míticas del Matadrakos §7+ §eElytra §7+ §a64 Bloques de Esmeralda!\n`);
+          givePreEnchantedItem(attacker, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos§r");
+          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Ender Dragon y recibe las §5Botas del Matadrakos §7+ §eElytra §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
       if (deadEntity.typeId === "minecraft:wither") {
@@ -748,9 +740,8 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("give @s nether_star 1");
           attacker.runCommandAsync("give @s emerald_block 64");
           attacker.runCommandAsync("give @s netherite_ingot 1");
-          attacker.runCommandAsync("give @s anvil 1");
-          givePreEnchantedItem(attacker, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither Cuádruple Protección§r");
-          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe los §5Pantalones Míticos del Dios Wither §7+ §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda!\n`);
+          givePreEnchantedItem(attacker, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither§r");
+          world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe los §5Pantalones del Dios Wither §7+ §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
       if (deadEntity.typeId === "minecraft:elder_guardian") {
@@ -761,10 +752,9 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("xp 200L @s");
           attacker.runCommandAsync("give @s emerald_block 64");
           attacker.runCommandAsync("give @s netherite_ingot 1");
-          attacker.runCommandAsync("give @s anvil 1");
-          givePreEnchantedItem(attacker, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente Divino Poseidón§r");
-          givePreEnchantedItem(attacker, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón Cuádruple Protección§r");
-          world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente Divino §7+ §bCasco del Rey Poseidón Mítico §7+ §a64 Bloques de Esmeralda!\n`);
+          givePreEnchantedItem(attacker, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente de Poseidón§r");
+          givePreEnchantedItem(attacker, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón§r");
+          world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente de Poseidón §7+ §bCasco del Rey Poseidón §7+ §a64 Bloques de Esmeralda!\n`);
         }
       }
     }
@@ -952,17 +942,15 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
     if (blockCount >= 5000 && !event.player.getDynamicProperty("reward_5000bloques")) {
       event.player.setDynamicProperty("reward_5000bloques", true);
       event.player.addTag("tag_leyenda_minera");
-      world.sendMessage(`\n§6§l[LOGRO DESBLOQUEADO]§r\n§f${event.player.name} §7ha conseguido: §eLeyenda Minera §7(5000 Bloques Picados) y recibe el Kit Divino de Minería!\n`);
+      world.sendMessage(`\n§6§l[LOGRO DESBLOQUEADO]§r\n§f${event.player.name} §7ha conseguido: §eLeyenda Minera §7(5,000 Bloques Picados) y recibe el Kit Supremo de Minería!\n`);
       for (const p of world.getAllPlayers()) {
         try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
       }
       event.player.runCommandAsync("xp 200L @s");
-      event.player.runCommandAsync("give @s anvil 1");
       event.player.runCommandAsync("give @s iron_block 64");
-      event.player.runCommandAsync("give @s netherite_pickaxe 1");
-      event.player.runCommandAsync("give @s netherite_shovel 1");
       event.player.runCommandAsync("give @s netherite_ingot 1");
-      giveEnchantedBookItem(event.player, [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"fortune",level:3},{id:"mending",level:1}]);
+      givePreEnchantedItem(event.player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePico de Leyenda Minera§r");
+      givePreEnchantedItem(event.player, "minecraft:netherite_shovel", [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePala de Leyenda Minera§r");
     }
 
     // CUSTOM ACHIEVEMENTS (Blocks)
@@ -1273,9 +1261,8 @@ system.runInterval(() => {
             player.runCommandAsync("xp 200L @s");
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
-            player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente Divino Poseidón§r");
-            givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón Cuádruple Protección§r");
+            givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente de Poseidón§r");
+            givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Rey Poseidón otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_wither")) {
@@ -1288,8 +1275,7 @@ system.runInterval(() => {
             player.runCommandAsync("give @s nether_star 1");
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
-            player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither Cuádruple Protección§r");
+            givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Dios Wither otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_matadrakos")) {
@@ -1303,8 +1289,7 @@ system.runInterval(() => {
             player.runCommandAsync("give @s firework_rocket 64");
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
-            player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos Cuádruple Protección§r");
+            givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Matadrakos otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_granjero")) {
@@ -1316,9 +1301,8 @@ system.runInterval(() => {
             player.runCommandAsync("xp 200L @s");
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s netherite_ingot 1");
-            player.runCommandAsync("give @s anvil 1");
-            givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aAzada Prohibida del Líder Granjero§r");
-            givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aHacha Prohibida del Líder Granjero§r");
+            givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aAzada del Líder Granjero§r");
+            givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aHacha del Líder Granjero§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Líder Granjero otorgado con éxito!");
           }
           if (player.hasTag("test_dar_logro_mineria")) {
@@ -1327,7 +1311,6 @@ system.runInterval(() => {
             player.addTag("tag_leyenda_minera");
             grantCustomAchievement(player, "leyenda_minera", "Leyenda Minera");
             player.runCommandAsync("xp 200L @s");
-            player.runCommandAsync("give @s anvil 1");
             player.runCommandAsync("give @s iron_block 64");
             givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePico de Leyenda Minera§r");
             givePreEnchantedItem(player, "minecraft:netherite_shovel", [{id:"efficiency",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§ePala de Leyenda Minera§r");
@@ -1339,7 +1322,6 @@ system.runInterval(() => {
             player.addTag("tag_rey_guerra");
             grantCustomAchievement(player, "rey_guerra", "Rey de la Guerra");
             player.runCommandAsync("xp 200L @s");
-            player.runCommandAsync("give @s anvil 1");
             player.runCommandAsync("give @s diamond_block 128");
             player.runCommandAsync("give @s emerald_block 64");
             player.runCommandAsync("give @s lapis_block 128");
@@ -1358,8 +1340,7 @@ system.runInterval(() => {
             player.runCommandAsync("give @s emerald_block 640");
             player.runCommandAsync("give @s iron_block 640");
             player.runCommandAsync("give @s lapis_block 256");
-            player.runCommandAsync("give @s anvil 2");
-            givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§6Pechera del Asesino en Serie Cuádruple Protección§r");
+            givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§6Pechera del Asesino en Serie§r");
             player.sendMessage("§a[TEST ADMIN] ¡Logro Asesino en Serie otorgado con éxito!");
           }
           if (player.hasTag("test_reset_todo")) {
@@ -1742,20 +1723,10 @@ system.runInterval(() => {
             try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
           }
           player.runCommandAsync("xp 200L @s");
-          player.runCommandAsync("give @s anvil 1");
           player.runCommandAsync("give @s emerald_block 64");
           player.runCommandAsync("give @s netherite_ingot 1");
-          player.runCommandAsync("give @s netherite_hoe 1");
-          player.runCommandAsync("give @s netherite_axe 1");
-          
-          // Libro 1: Eficiencia VI + Irrompibilidad IV + Reparación I
-          giveEnchantedBookItem(player, [{id:"efficiency",level:6},{id:"unbreaking",level:4},{id:"mending",level:1}]);
-          // Libro 2: Filo VI + Aspecto Ígneo III + Reparación I
-          giveEnchantedBookItem(player, [{id:"sharpness",level:6},{id:"fire_aspect",level:3},{id:"mending",level:1}]);
-          // Libro 3: Fortuna III + Irrompibilidad III + Reparación I
-          giveEnchantedBookItem(player, [{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}]);
-          // Libro 4: Botín III + Aspecto Ígneo II + Reparación I
-          giveEnchantedBookItem(player, [{id:"looting",level:3},{id:"fire_aspect",level:2},{id:"mending",level:1}]);
+          givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aAzada del Líder Granjero§r");
+          givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§aHacha del Líder Granjero§r");
         }
       } catch (e) {}
     }
