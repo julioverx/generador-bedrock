@@ -843,7 +843,10 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
     const cfgM = getDailyQuestConfig(world.getDay()).mine;
 
     let countsForMine = true;
-    if (cfgM.typeCheck === "deepslate_strict") {
+    if (cfgM.typeCheck === "stone_strict") {
+      const isStoneBlock = brokenId.includes("stone") || brokenId.includes("andesite") || brokenId.includes("diorite") || brokenId.includes("granite") || brokenId.includes("tuff") || brokenId.includes("calcite") || brokenId.includes("basalt") || brokenId.includes("blackstone") || brokenId.includes("deepslate");
+      if (!isStoneBlock) countsForMine = false;
+    } else if (cfgM.typeCheck === "deepslate_strict") {
       if (!brokenId.includes("deepslate")) countsForMine = false;
     } else if (cfgM.typeCheck === "ore_strict") {
       if (!brokenId.endsWith("_ore") && brokenId !== "minecraft:ancient_debris" && !brokenId.includes("_ore")) countsForMine = false;
