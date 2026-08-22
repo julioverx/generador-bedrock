@@ -1,5 +1,4 @@
 import { world, system, ItemStack, EnchantmentType, BlockPermutation } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
 
 // ============================================================
 // VILLA ESMERALDA - ESCRIBANO REAL (Behavior Pack v3.0)
@@ -1143,88 +1142,37 @@ system.runInterval(() => {
           );
         }
 
-function openEscribanoMenu(player) {
-  try {
-    if (!player || !player.isValid()) return;
-
-    const isIgnored = player.hasTag("ignorar_escribano") || player.hasTag("ignorar_sistema");
-
-    const form = new ActionFormData();
-    form.title("§6📜 ESCRIBANO REAL DE LA VILLA");
-    form.body(
-      `§f¡Hola, §e${player.name}§f!\n\n` +
-      `§7Estado de tu contador de misiones:\n` +
-      `${isIgnored ? "§c🔴 PAUSADO (Ignorado por el Escribano)" : "§a🟢 ACTIVO (Contando misiones y estadísticas)"}\n\n` +
-      `§fIdeal para jugadores en consola (Xbox/PlayStation/Switch): Cambia tu estado sin necesidad de escribir en el chat.`
-    );
-
-    if (isIgnored) {
-      form.button("§a🟢 ACTIVAR ESCRIBANO\n§7(Reanudar conteo de misiones)");
-    } else {
-      form.button("§c🔴 PAUSAR ESCRIBANO\n§7(Pausar conteo de misiones)");
-    }
-
-    form.button("§e📜 Ver Misiones Diarias\n§7(Progreso de misiones del día)");
-    form.button("§b⚔️ Ver Contrato Semanal\n§7(Desafío Mítico Activo)");
-    form.button("§f❌ Cerrar Menú");
-
-    form.show(player).then((response) => {
-      if (response.canceled || response.selection === undefined) return;
-
-      if (response.selection === 0) {
-        if (isIgnored) {
+        // --- ACTIVAR / DESACTIVAR ESCRIBANO VIA TAGS (Ideal para botones de NPC) ---
+        if (player.hasTag("activar_escribano")) {
+          player.removeTag("activar_escribano");
           player.removeTag("ignorar_escribano");
           player.removeTag("ignorar_sistema");
           player.removeTag("ignorar_escribano_temp");
           player.sendMessage("§a[ESCRIBANO] ¡Has ACTIVADO el sistema de misiones y estadísticas!");
           try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
-        } else {
+        }
+
+        if (player.hasTag("desactivar_escribano")) {
+          player.removeTag("desactivar_escribano");
           player.addTag("ignorar_escribano");
           player.sendMessage("§c[ESCRIBANO] ¡Has PAUSADO el sistema de misiones y estadísticas!");
           try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
         }
-      } else if (response.selection === 1) {
-        player.addTag("ver_misiones");
-      } else if (response.selection === 2) {
-        player.addTag("ver_contrato");
-      }
-    }).catch(() => {});
-  } catch (e) {}
-}
 
-// Automatic NPC Interaction Listener (Right-click NPC opens menu)
-world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
-  const { player, target } = event;
-  if (!player || !target) return;
-  const targetName = target.nameTag ?? "";
-
-  if (targetName.includes("Escribano") || targetName.includes("Ministro") || target.typeId === "minecraft:npc") {
-    system.run(() => {
-      openEscribanoMenu(player);
-    });
-  }
-});
-
-        // --- MENÚ UI ESCRIBANO / TOGGLE ESCRIBANO ---
-        if (player.hasTag("abrir_menu") || player.hasTag("abrir_menu_escribano")) {
-          player.removeTag("abrir_menu");
-          player.removeTag("abrir_menu_escribano");
-          openEscribanoMenu(player);
-        }
-
-        if (player.hasTag("toggle_escribano") || player.hasTag("cambiar_escribano")) {
+        if (player.hasTag("toggle_escribano") || player.hasTag("cambiar_escribano") || player.hasTag("abrir_menu")) {
           player.removeTag("toggle_escribano");
           player.removeTag("cambiar_escribano");
+          player.removeTag("abrir_menu");
           const isIgnored = player.hasTag("ignorar_escribano") || player.hasTag("ignorar_sistema");
           if (isIgnored) {
             player.removeTag("ignorar_escribano");
             player.removeTag("ignorar_sistema");
             player.removeTag("ignorar_escribano_temp");
-            player.sendMessage("§a[ESCRIBANO] ¡Has ACTIVADO el sistema de misiones!");
+            player.sendMessage("§a[ESCRIBANO] ¡Has ACTIVADO el sistema de misiones y estadísticas!");
             try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
           } else {
             player.addTag("ignorar_escribano");
-            player.sendMessage("§c[ESCRIBANO] ¡Has PAUSADO el sistema de misiones!");
+            player.sendMessage("§c[ESCRIBANO] ¡Has PAUSADO el sistema de misiones y estadísticas!");
             try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
           }
         }
