@@ -308,6 +308,30 @@ function checkAndUpdateWeeklyContract(player) {
 
 function processWeeklyContractReward(player, contract) {
   try {
+    if (isPlayerIgnored(player)) return;
+
+    const rewardKey = `reward_contract_${contract.id}`;
+    const alreadyRewarded = player.getDynamicProperty(rewardKey) ?? false;
+
+    if (alreadyRewarded) {
+      // Repeatable "Loop" Veteran Contract Reward: 5 Netherite Ingots + 500L XP
+      player.runCommandAsync("xp 500L @s");
+      player.runCommandAsync("give @s netherite_ingot 5");
+      player.setDynamicProperty("q_weekly_done", true);
+      world.sendMessage(
+        `\n§6§l===========================================§r\n` +
+        `§c§l[RECOMPENSA VETERANA DE CONTRATO]§r\n` +
+        `§f¡${player.name} §7ha vuelto a completar el Contrato Semanal: §e"${contract.title}"!§r\n` +
+        `§7Como Héroe Veterano recibe §e5 Lingotes de Netherite §7y §b500L XP!\n` +
+        `§6===========================================§r\n`
+      );
+      for (const p of world.getAllPlayers()) {
+        try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+      }
+      return;
+    }
+
+    player.setDynamicProperty(rewardKey, true);
     player.setDynamicProperty("q_weekly_done", true);
     player.addTag("tag_contratista_real");
     grantCustomAchievement(player, "contratista_real", "Contratista Real");
@@ -498,6 +522,7 @@ function showSidebarWithTimer(objectiveId) {
  */
 function checkMilestones(player, objId) {
   try {
+    if (isPlayerIgnored(player)) return;
     const milestones = MILESTONES[objId];
     if (!milestones) return;
 
@@ -528,6 +553,7 @@ function checkMilestones(player, objId) {
  */
 function processKillStreak(player) {
   try {
+    if (isPlayerIgnored(player)) return;
     const mobs = getScore(player, "MobsKilled");
     const savedCurrent = player.getDynamicProperty("current_streak") ?? 0;
     const memoryCurrent = killStreaks.get(player.id) ?? 0;
@@ -610,6 +636,7 @@ function resetKillStreak(player, killerName) {
  */
 function grantCustomAchievement(player, id, title) {
   try {
+    if (isPlayerIgnored(player)) return;
     const propKey = `custom_ach_${id}`;
     if (player.getDynamicProperty(propKey)) return;
     
@@ -648,6 +675,9 @@ world.afterEvents.entityDie.subscribe((event) => {
     if (!deadEntity) return;
 
     const attacker = damageSource?.damagingEntity;
+
+    if (attacker && attacker.typeId === "minecraft:player" && isPlayerIgnored(attacker)) return;
+    if (deadEntity.typeId === "minecraft:player" && isPlayerIgnored(deadEntity)) return;
 
     // --- PLAYER DIED ---
     if (deadEntity.typeId === "minecraft:player") {
@@ -729,6 +759,14 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("give @s netherite_ingot 1");
           givePreEnchantedItem(attacker, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Botas del Matadrakos§r");
           world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Ender Dragon y recibe las §5Botas del Matadrakos §7+ §eElytra §7+ §a64 Bloques de Esmeralda!\n`);
+        } else {
+          // Repeatable Boss Loop: 1 Netherite Ingot + 200L XP
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
+          world.sendMessage(`\n§5§l[RECOMPENSA DE JEFE VETERANO]§r\n§f${attacker.name} §7ha vuelto a derrotar al Ender Dragon y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+          for (const p of world.getAllPlayers()) {
+            try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
         }
       }
       if (deadEntity.typeId === "minecraft:wither") {
@@ -742,6 +780,14 @@ world.afterEvents.entityDie.subscribe((event) => {
           attacker.runCommandAsync("give @s netherite_ingot 1");
           givePreEnchantedItem(attacker, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§5Pantalones del Dios Wither§r");
           world.sendMessage(`\n§5§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Wither Boss y recibe los §5Pantalones del Dios Wither §7+ §e1 Estrella del Nether Extra §7+ §a64 Bloques de Esmeralda!\n`);
+        } else {
+          // Repeatable Boss Loop: 1 Netherite Ingot + 200L XP
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
+          world.sendMessage(`\n§5§l[RECOMPENSA DE JEFE VETERANO]§r\n§f${attacker.name} §7ha vuelto a derrotar al Wither Boss y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+          for (const p of world.getAllPlayers()) {
+            try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
         }
       }
       if (deadEntity.typeId === "minecraft:elder_guardian") {
@@ -755,6 +801,14 @@ world.afterEvents.entityDie.subscribe((event) => {
           givePreEnchantedItem(attacker, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bTridente de Poseidón§r");
           givePreEnchantedItem(attacker, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§bCasco del Rey Poseidón§r");
           world.sendMessage(`\n§b§l[LOGRO DESBLOQUEADO]§r\n§f${attacker.name} §7ha derrotado al Guardián Anciano y recibe el §bTridente de Poseidón §7+ §bCasco del Rey Poseidón §7+ §a64 Bloques de Esmeralda!\n`);
+        } else {
+          // Repeatable Boss Loop: 1 Netherite Ingot + 200L XP
+          attacker.runCommandAsync("xp 200L @s");
+          attacker.runCommandAsync("give @s netherite_ingot 1");
+          world.sendMessage(`\n§b§l[RECOMPENSA DE JEFE VETERANO]§r\n§f${attacker.name} §7ha vuelto a derrotar al Guardián Anciano y recibe §e1 Lingote de Netherite §7y §b200L XP!\n`);
+          for (const p of world.getAllPlayers()) {
+            try { p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
         }
       }
     }
