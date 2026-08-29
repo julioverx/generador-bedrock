@@ -2403,3 +2403,245 @@ world.beforeEvents.itemUse.subscribe((event) => {
   } catch (e) {}
 });
 
+// ============================================================
+// PARCEL LAND CLAIMING SYSTEM (SOUL LANTERN / FAROLA DE ALMA)
+// Claims a 16x16 chunk area centered at placed Soul Lanterns.
+// Protects blocks, chests, doors & interactables against non-members.
+// ============================================================
+
+function getClaims() {
+  try {
+    const raw = world.getDynamicProperty("claimed_lands") ?? "[]";
+    return JSON.parse(raw);
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveClaims(claimsArr) {
+  try {
+    world.setDynamicProperty("claimed_lands", JSON.stringify(claimsArr));
+  } catch (e) {}
+}
+
+function getClaimAt(dimId, x, z) {
+  const claims = getClaims();
+  for (const c of claims) {
+    if (c.dimId === dimId) {
+      if (Math.abs(x - c.x) <= 8 && Math.abs(z - c.z) <= 8) {
+        return c;
+      }
+    }
+  }
+  return null;
+}
+
+function openClaimManagementMenu(player, claim) {
+  try {
+    const form = new ActionFormData();
+    form.title("🏮 GESTIÓN DE PARCELA");
+    form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicación: §7X: ${claim.x}, Y: ${claim.y}, Z: ${claim.z}\n§fMiembros Autorizados: §a${(claim.memberNames || [claim.ownerName]).join(", ")}`);
+
+    form.button("👥 Agregar Amigo a la Parcela");
+    form.button("❌ Remover Amigo");
+    form.button("🗑️ Eliminar Protección de Parcela");
+    form.button("❌ Cerrar");
+
+    form.show(player).then((res) => {
+      if (res.canceled || res.selection === undefined) return;
+
+      if (res.selection === 0) {
+        const onlinePlayers = world.getAllPlayers().filter(p => p.id !== player.id && (!claim.members || !claim.members.includes(p.id)));
+        if (onlinePlayers.length === 0) {
+          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados para agregar.");
+          return;
+        }
+        const addForm = new ActionFormData();
+        addForm.title("👥 AGREGAR AMIGO");
+        addForm.body("Selecciona el jugador al que deseas darle permisos:");
+        for (const p of onlinePlayers) {
+          addForm.button(p.name);
+        }
+        addForm.show(player).then((addRes) => {
+          if (addRes.canceled || addRes.selection === undefined) return;
+          const chosen = onlinePlayers[addRes.selection];
+          const claims = getClaims();
+          const targetClaim = claims.find(c => c.id === claim.id);
+          if (targetClaim) {
+            if (!targetClaim.members) targetClaim.members = [player.id];
+            if (!targetClaim.memberNames) targetClaim.memberNames = [player.name];
+            targetClaim.members.push(chosen.id);
+            targetClaim.memberNames.push(chosen.name);
+            saveClaims(claims);
+            player.sendMessage(`§a[PROTECCIÓN] ¡Has agregado a ${chosen.name} a tu parcela!`);
+            chosen.sendMessage(`§a[PROTECCIÓN] ¡${player.name} te ha otorgado permisos en su parcela!`);
+          }
+        });
+      } else if (res.selection === 1) {
+        const memberNames = claim.memberNames || [];
+        const memberIds = claim.members || [];
+        const membersToRemove = [];
+        for (let i = 0; i < memberIds.length; i++) {
+          if (memberIds[i] !== player.id) {
+            membersToRemove.push({ id: memberIds[i], name: memberNames[i] || "Jugador" });
+          }
+        }
+        if (membersToRemove.length === 0) {
+          player.sendMessage("§c[PROTECCIÓN] No tienes amigos agregados en esta parcela.");
+          return;
+        }
+        const remForm = new ActionFormData();
+        remForm.title("❌ REMOVER AMIGO");
+        remForm.body("Selecciona el amigo al que deseas quitarle permisos:");
+        for (const m of membersToRemove) {
+          remForm.button(m.name);
+        }
+        remForm.show(player).then((remRes) => {
+          if (remRes.canceled || remRes.selection === undefined) return;
+          const chosen = membersToRemove[remRes.selection];
+          const claims = getClaims();
+          const targetClaim = claims.find(c => c.id === claim.id);
+          if (targetClaim) {
+            targetClaim.members = targetClaim.members.filter(id => id !== chosen.id);
+            targetClaim.memberNames = targetClaim.memberNames.filter(name => name !== chosen.name);
+            saveClaims(claims);
+            player.sendMessage(`§e[PROTECCIÓN] Has removido a ${chosen.name} de tu parcela.`);
+          }
+        });
+      } else if (res.selection === 2) {
+        const claims = getClaims().filter(c => c.id !== claim.id);
+        saveClaims(claims);
+        player.sendMessage("§e[PROTECCIÓN] La protección de esta parcela ha sido eliminada.");
+      }
+    });
+  } catch (e) {}
+}
+
+world.afterEvents.playerPlaceBlock.subscribe((event) => {
+  try {
+    const { block, player } = event;
+    if (block.typeId === "minecraft:soul_lantern") {
+      const dimId = player.dimension.id;
+      const x = block.location.x;
+      const y = block.location.y;
+      const z = block.location.z;
+
+      const existing = getClaimAt(dimId, x, z);
+      if (existing) {
+        player.sendMessage(`§c[PROTECCIÓN] Este área ya está dentro de la parcela de ${existing.ownerName}.`);
+        return;
+      }
+
+      const claims = getClaims();
+      const playerClaims = claims.filter(c => c.ownerId === player.id);
+      if (playerClaims.length >= 3 && !player.hasTag("admin")) {
+        player.sendMessage("§c[PROTECCIÓN] Has alcanzado el límite máximo de 3 parcelas protegidas por jugador.");
+        return;
+      }
+
+      const newClaim = {
+        id: `${dimId}_${x}_${y}_${z}`,
+        ownerId: player.id,
+        ownerName: player.name,
+        dimId: dimId,
+        x: x,
+        y: y,
+        z: z,
+        members: [player.id],
+        memberNames: [player.name]
+      };
+
+      claims.push(newClaim);
+      saveClaims(claims);
+
+      player.sendMessage(`\n§a§l[PARCELA RECLAMADA]§r\n§f¡Has colocado tu Farola de Alma y reclamado esta parcela (16x16)!§r\n§7Nadie sin tu permiso podrá romper bloques o abrir cofres aquí.\n`);
+      try { player.playSound("random.levelup", { volume: 0.8, pitch: 1.2 }); } catch (e) {}
+    }
+  } catch (e) {}
+});
+
+world.beforeEvents.playerBreakBlock.subscribe((event) => {
+  try {
+    const { block, player } = event;
+    const dimId = player.dimension.id;
+    const x = block.location.x;
+    const y = block.location.y;
+    const z = block.location.z;
+
+    const claim = getClaimAt(dimId, x, z);
+    if (!claim) return;
+
+    if (player.hasTag("admin") || player.hasTag("op")) return;
+
+    const isOwner = claim.ownerId === player.id;
+    const isMember = claim.members && claim.members.includes(player.id);
+
+    if (block.typeId === "minecraft:soul_lantern" && x === claim.x && y === claim.y && z === claim.z) {
+      if (isOwner) {
+        system.run(() => {
+          const claims = getClaims().filter(c => c.id !== claim.id);
+          saveClaims(claims);
+          player.sendMessage("§e[PROTECCIÓN] Has retirado tu Farola de Alma. La parcela ha sido desprotegida.");
+        });
+        return;
+      } else {
+        event.cancel = true;
+        system.run(() => {
+          player.sendMessage(`§c[PROTECCIÓN] Solo ${claim.ownerName} puede retirar esta Farola de Alma.`);
+        });
+        return;
+      }
+    }
+
+    if (!isOwner && !isMember) {
+      event.cancel = true;
+      system.run(() => {
+        player.sendMessage(`§c[TERRENO PROTEGIDO] Esta propiedad pertenece a ${claim.ownerName}. No tienes permiso.`);
+      });
+    }
+  } catch (e) {}
+});
+
+world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+  try {
+    const { block, player } = event;
+    const dimId = player.dimension.id;
+    const x = block.location.x;
+    const y = block.location.y;
+    const z = block.location.z;
+
+    const claim = getClaimAt(dimId, x, z);
+    if (!claim) return;
+
+    if (player.hasTag("admin") || player.hasTag("op")) return;
+
+    const isOwner = claim.ownerId === player.id;
+    const isMember = claim.members && claim.members.includes(player.id);
+
+    if (block.typeId === "minecraft:soul_lantern" && x === claim.x && y === claim.y && z === claim.z) {
+      if (isOwner) {
+        system.run(() => {
+          openClaimManagementMenu(player, claim);
+        });
+      }
+      return;
+    }
+
+    const protectedBlocks = [
+      "chest", "trapped_chest", "barrel", "shulker_box", "undyed_shulker_box",
+      "furnace", "blast_furnace", "smoker", "hopper", "dispenser", "dropper",
+      "door", "trapdoor", "fence_gate", "anvil", "enchanting_table", "lectern", "brewing_stand"
+    ];
+
+    const blockType = block.typeId.replace("minecraft:", "");
+    const isProtectedType = protectedBlocks.some(p => blockType.includes(p));
+
+    if (isProtectedType && !isOwner && !isMember) {
+      event.cancel = true;
+      system.run(() => {
+        player.sendMessage(`§c[TERRENO PROTEGIDO] Esta propiedad pertenece a ${claim.ownerName}.`);
+      });
+    }
+  } catch (e) {}
+});
+
