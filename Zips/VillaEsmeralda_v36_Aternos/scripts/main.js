@@ -366,26 +366,26 @@ function processWeeklyContractReward(player, contract) {
     }
 
     if (contract.id === 0) { // Devorador de Titanes
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
     } else if (contract.id === 1) { // El Infierno de Netherite
       givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     } else if (contract.id === 2) { // El Granero Imperial
-      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"silk_touch",level:1},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cAzada Mítica Divina§r");
-      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"smite",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cHacha Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_hoe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cAzada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_axe", [{id:"efficiency",level:5},{id:"sharpness",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cHacha Mítica Divina§r");
     } else if (contract.id === 3) { // La Odisea Dimensional
-      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cBotas Míticas Divinas§r");
+      givePreEnchantedItem(player, "minecraft:netherite_boots", [{id:"protection",level:4},{id:"feather_falling",level:4},{id:"depth_strider",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cBotas Míticas Divinas§r");
       player.runCommandAsync("give @s enchanted_golden_apple 8");
     } else if (contract.id === 4) { // Señor de la Guerra Total
-      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPechera Mítica Divina§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_chestplate", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPechera Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
     } else if (contract.id === 5) { // Buscador de Mitos Submarinos
-      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cCasco Mítico Divino§r");
+      givePreEnchantedItem(player, "minecraft:netherite_helmet", [{id:"protection",level:4},{id:"respiration",level:3},{id:"aqua_affinity",level:1},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cCasco Mítico Divino§r");
       givePreEnchantedItem(player, "minecraft:trident", [{id:"channeling",level:1},{id:"loyalty",level:3},{id:"impaling",level:5},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cTridente Mítico Divino§r");
     } else if (contract.id === 6) { // Fiebre de Esmeraldas Intactas
       givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     } else if (contract.id === 7) { // La Prueba del Rey
-      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"fire_protection",level:4},{id:"projectile_protection",level:4},{id:"blast_protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPolainas Míticas Divinas§r");
-      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"smite",level:5},{id:"bane_of_arthropods",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
+      givePreEnchantedItem(player, "minecraft:netherite_leggings", [{id:"protection",level:4},{id:"thorns",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPolainas Míticas Divinas§r");
+      givePreEnchantedItem(player, "minecraft:netherite_sword", [{id:"sharpness",level:5},{id:"fire_aspect",level:2},{id:"looting",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cEspada Mítica Divina§r");
       givePreEnchantedItem(player, "minecraft:netherite_pickaxe", [{id:"efficiency",level:5},{id:"fortune",level:3},{id:"unbreaking",level:3},{id:"mending",level:1}], "§cPico Mítico Divino§r");
     }
   } catch (e) {}
