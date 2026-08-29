@@ -254,14 +254,14 @@ const QUEST_POOLS = {
 };
 
 const WEEKLY_CONTRACTS = [
-  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,500 Mobs Hostiles", target: 1500, relicType: "guerrero", relicName: "Espada Mítica Divina (Fuerza II Pasiva)", typeCheck: "contract_mobs" },
+  { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,000 Mobs Hostiles", target: 1000, relicType: "guerrero", relicName: "Espada Mítica Divina (Fuerza II Pasiva)", typeCheck: "contract_mobs" },
   { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 8,000 Cultivos y 8,000 Troncos", target: 16000, relicType: "agricola", relicName: "Azada Mítica Divina + Hacha Mítica Divina (Prisa II Pasiva)", typeCheck: "contract_farm" },
-  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 250,000 Bloques en el mundo", target: 250000, relicType: "armadura", relicName: "Botas Míticas Divinas (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
-  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 3,000 Mobs Hostiles / PvP en la semana", target: 3000, relicType: "guerrero", relicName: "Pechera Mítica Divina (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
-  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer 30 Arenas/Gravas Sospechosas (Toque de Seda)", target: 30, relicType: "armadura", relicName: "Casco Mítico Divino (Visión Nocturna + Gracia de Delfín) + Tridente Mítico Divino", typeCheck: "contract_ocean" },
-  { id: 6, title: "Fiebre de Esmeraldas Intactas", desc: "Picar 15,000 Bloques Profundos (Pizarra)", target: 15000, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
-  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "3 Withers + 2 Ender Dragons + 50 Ancient Debris", target: 50, relicType: "trilogia", relicName: "Set Mítico Divino (Espada + Pico + Polainas)", typeCheck: "contract_king" }
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 3,000 Cultivos y 2,000 Troncos", target: 5000, relicType: "agricola", relicName: "Azada Mítica Divina + Hacha Mítica Divina (Prisa II Pasiva)", typeCheck: "contract_farm" },
+  { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 75,000 Bloques en el mundo", target: 75000, relicType: "armadura", relicName: "Botas Míticas Divinas (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 1,800 Mobs Hostiles / PvP en la semana", target: 1800, relicType: "guerrero", relicName: "Pechera Mítica Divina (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
+  { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer / Cepillar 25 Arenas o Gravas Sospechosas", target: 25, relicType: "armadura", relicName: "Casco Mítico Divino (Visión Nocturna + Gracia de Delfín) + Tridente Mítico Divino", typeCheck: "contract_ocean" },
+  { id: 6, title: "Fiebre de Pizarra Profunda", desc: "Picar 8,000 Bloques Profundos (Deepslate)", target: 8000, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
+  { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "2 Withers + 1 Ender Dragon + 50 Ancient Debris", target: 53, relicType: "trilogia", relicName: "Set Mítico Divino (Espada + Pico + Polainas)", typeCheck: "contract_king" }
 ];
 
 function getWeeklyContractConfig(dayNumber) {
@@ -314,15 +314,15 @@ function processWeeklyContractReward(player, contract) {
     const alreadyRewarded = player.getDynamicProperty(rewardKey) ?? false;
 
     if (alreadyRewarded) {
-      // Repeatable "Loop" Veteran Contract Reward: 5 Netherite Ingots + 500L XP
+      // Repeatable "Loop" Veteran Contract Reward: 1 Netherite Ingot + 500L XP
       player.runCommandAsync("xp 500L @s");
-      player.runCommandAsync("give @s netherite_ingot 5");
+      player.runCommandAsync("give @s netherite_ingot 1");
       player.setDynamicProperty("q_weekly_done", true);
       world.sendMessage(
         `\n§6§l===========================================§r\n` +
         `§c§l[RECOMPENSA VETERANA DE CONTRATO]§r\n` +
         `§f¡${player.name} §7ha vuelto a completar el Contrato Semanal: §e"${contract.title}"!§r\n` +
-        `§7Como Héroe Veterano recibe §e5 Lingotes de Netherite §7y §b500L XP!\n` +
+        `§7Como Héroe Veterano recibe §e1 Lingote de Netherite §7y §b500L XP!\n` +
         `§6===========================================§r\n`
       );
       for (const p of world.getAllPlayers()) {
@@ -965,15 +965,15 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
         if (brokenId.includes("deepslate")) countsWeekly = true;
       } else if (contractW.typeCheck === "contract_farm") {
         if (isCrop) {
-          const curCrops = Math.min(8000, (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) + 1);
+          const curCrops = Math.min(3000, (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) + 1);
           event.player.setDynamicProperty("q_farm_crops_cnt", curCrops);
         }
         if (isLog) {
-          const curLogs = Math.min(8000, (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) + 1);
+          const curLogs = Math.min(2000, (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) + 1);
           event.player.setDynamicProperty("q_farm_logs_cnt", curLogs);
         }
-        const cDone = (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) >= 8000;
-        const lDone = (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) >= 8000;
+        const cDone = (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) >= 3000;
+        const lDone = (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0) >= 2000;
         event.player.setDynamicProperty("q_weekly_cnt", (event.player.getDynamicProperty("q_farm_crops_cnt") ?? 0) + (event.player.getDynamicProperty("q_farm_logs_cnt") ?? 0));
         if (cDone && lDone) {
           processWeeklyContractReward(event.player, contractW);
