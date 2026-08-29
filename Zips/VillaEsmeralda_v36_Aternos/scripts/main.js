@@ -1,4 +1,5 @@
 import { world, system, ItemStack, EnchantmentType, BlockPermutation } from "@minecraft/server";
+import { ActionFormData } from "@minecraft/server-ui";
 
 // ============================================================
 // VILLA ESMERALDA - ESCRIBANO REAL (Behavior Pack v3.0)
@@ -1392,32 +1393,11 @@ system.runInterval(() => {
           try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
         }
 
-        if (player.hasTag("ver_titulos") || player.hasTag("abrir_titulos")) {
+        if (player.hasTag("ver_titulos") || player.hasTag("abrir_titulos") || player.hasTag("abrir_menu_titulos")) {
           player.removeTag("ver_titulos");
           player.removeTag("abrir_titulos");
-          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
-
-          const tMatadrakos = (player.hasTag("tag_matadrakos") || player.getDynamicProperty("custom_ach_matadrakos")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tWither = (player.hasTag("tag_dios_wither") || player.getDynamicProperty("custom_ach_dios_wither")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tPoseidon = (player.hasTag("tag_rey_poseidon") || player.getDynamicProperty("custom_ach_rey_poseidon")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tContratista = (player.hasTag("tag_contratista_real") || player.getDynamicProperty("custom_ach_contratista_real")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tMinero = player.hasTag("tag_leyenda_minera") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tGranjero = player.hasTag("tag_lider_granjero") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tGuerra = player.hasTag("tag_rey_guerra") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-          const tAsesino = (player.hasTag("tag_asesino_serie") || player.getDynamicProperty("custom_ach_asesino_serie")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
-
-          player.sendMessage(
-            `§r\n§l§6=== TÍTULOS DISPONIBLES Y ESTADO ===§r\n` +
-            `§d[Matadrakos]§r: ${tMatadrakos}\n` +
-            `§5[Dios Wither]§r: ${tWither}\n` +
-            `§b[Rey Poseidon]§r: ${tPoseidon}\n` +
-            `§c[Contratista Real]§r: ${tContratista}\n` +
-            `§e[Leyenda Minera]§r: ${tMinero}\n` +
-            `§a[Líder Granjero]§r: ${tGranjero}\n` +
-            `§c[Rey de la Guerra]§r: ${tGuerra}\n` +
-            `§6[Asesino en Serie]§r: ${tAsesino}\n\n` +
-            `§7Usa los botones del NPC para equipártelo sobre la cabeza.\n`
-          );
+          player.removeTag("abrir_menu_titulos");
+          openTitleMenu(player);
         }
 
         // --- EVENTO ECLIPSE DE LUNA ROJA ---
@@ -2339,4 +2319,87 @@ system.runInterval(() => {
     }
   } catch (e) {}
 }, 20);
+
+// ============================================================
+// INTERACTIVE TITLE SELECTION MENU (CLOCK / RELOJ ITEM USE)
+// Opens a personalized HUD menu listing ONLY unlocked titles
+// ============================================================
+
+function openTitleMenu(player) {
+  try {
+    if (!player || !player.isValid()) return;
+
+    const availableTitles = [];
+
+    if (player.hasTag("tag_matadrakos") || player.getDynamicProperty("custom_ach_matadrakos")) {
+      availableTitles.push({ id: "matadrakos", name: "§d[Matadrakos]§r" });
+    }
+    if (player.hasTag("tag_dios_wither") || player.getDynamicProperty("custom_ach_dios_wither")) {
+      availableTitles.push({ id: "dios_wither", name: "§5[Dios Wither]§r" });
+    }
+    if (player.hasTag("tag_rey_poseidon") || player.getDynamicProperty("custom_ach_rey_poseidon")) {
+      availableTitles.push({ id: "rey_poseidon", name: "§b[Rey Poseidon]§r" });
+    }
+    if (player.hasTag("tag_contratista_real") || player.getDynamicProperty("custom_ach_contratista_real")) {
+      availableTitles.push({ id: "contratista_real", name: "§c[Contratista Real]§r" });
+    }
+    if (player.hasTag("tag_leyenda_minera")) {
+      availableTitles.push({ id: "leyenda_minera", name: "§e[Leyenda Minera]§r" });
+    }
+    if (player.hasTag("tag_lider_granjero")) {
+      availableTitles.push({ id: "lider_granjero", name: "§a[Líder Granjero]§r" });
+    }
+    if (player.hasTag("tag_rey_guerra")) {
+      availableTitles.push({ id: "rey_guerra", name: "§c[Rey de la Guerra]§r" });
+    }
+    if (player.hasTag("tag_asesino_serie") || player.getDynamicProperty("custom_ach_asesino_serie")) {
+      availableTitles.push({ id: "asesino_serie", name: "§6[Asesino en Serie]§r" });
+    }
+
+    const form = new ActionFormData();
+    form.title("§6🏷️ SELECTOR DE TÍTULOS");
+
+    if (availableTitles.length === 0) {
+      form.body("§cNo has desbloqueado ningún título especial todavía.\n\n§7¡Derrota Jefes o completa Contratos Semanales para conseguir títulos!");
+      form.button("§f❌ Cerrar");
+      form.show(player);
+      return;
+    }
+
+    form.body("§fSelecciona el título que deseas lucir sobre tu cabeza:");
+
+    for (const t of availableTitles) {
+      form.button(`Equipar ${t.name}`);
+    }
+    form.button("§c❌ Quitar Título Actual");
+
+    form.show(player).then((res) => {
+      if (res.canceled || res.selection === undefined) return;
+
+      if (res.selection < availableTitles.length) {
+        const selected = availableTitles[res.selection];
+        player.setDynamicProperty("active_equipped_title", selected.id);
+        player.sendMessage(`§a[ESCRIBANO] ¡Has equipado el título ${selected.name}!`);
+        try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+      } else {
+        player.setDynamicProperty("active_equipped_title", null);
+        player.sendMessage("§a[ESCRIBANO] Has quitado tu título personalizado.");
+        try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+      }
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+world.beforeEvents.itemUse.subscribe((event) => {
+  try {
+    const { itemStack, source } = event;
+    if (!source || source.typeId !== "minecraft:player") return;
+
+    if (itemStack.typeId === "minecraft:clock") {
+      system.run(() => {
+        openTitleMenu(source);
+      });
+    }
+  } catch (e) {}
+});
 
