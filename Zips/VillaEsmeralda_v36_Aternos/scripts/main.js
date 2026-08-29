@@ -2452,7 +2452,7 @@ function openMyClaimsMenu(player) {
       return;
     }
 
-    form.body(`§fTienes §a${myClaims.length}/3§f parcelas protegidas.\nSelecciona una para administrar sus amigos o eliminarla:`);
+    form.body(`§fTienes §a${myClaims.length}/12§f parcelas protegidas.\nSelecciona una para administrar sus amigos o eliminarla:`);
 
     for (let i = 0; i < myClaims.length; i++) {
       const c = myClaims[i];
@@ -2610,8 +2610,8 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
 
       const claims = getClaims();
       const playerClaims = claims.filter(c => c.ownerName === player.name);
-      if (playerClaims.length >= 3 && !player.hasTag("admin")) {
-        player.sendMessage("§c[PROTECCIÓN] Has alcanzado el límite máximo de 3 parcelas protegidas por jugador.");
+      if (playerClaims.length >= 12 && !player.hasTag("admin")) {
+        player.sendMessage("§c[PROTECCION] Has alcanzado el limite maximo de 12 parcelas protegidas por jugador.");
         return;
       }
 
