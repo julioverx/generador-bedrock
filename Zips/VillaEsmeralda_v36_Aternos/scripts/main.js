@@ -2397,61 +2397,96 @@ world.beforeEvents.itemUse.subscribe((event) => {
 
     if (itemStack.typeId === "minecraft:clock") {
       system.run(() => {
-        openTitleMenu(source);
+        openClockMainMenu(source);
       });
     }
   } catch (e) {}
 });
 
 // ============================================================
-// PARCEL LAND CLAIMING SYSTEM (SOUL LANTERN / FAROLA DE ALMA)
-// Claims a 16x16 chunk area centered at placed Soul Lanterns.
-// Protects blocks, chests, doors & interactables against non-members.
+// UNIFIED CLOCK HUD MENU (RELOJ / MINECRAFT:CLOCK)
+// Opens Main Menu -> Titles Selector or Land Claims Manager
 // ============================================================
 
-function getClaims() {
+function openClockMainMenu(player) {
   try {
-    const raw = world.getDynamicProperty("claimed_lands") ?? "[]";
-    return JSON.parse(raw);
-  } catch (e) {
-    return [];
-  }
-}
+    if (!player || !player.isValid()) return;
 
-function saveClaims(claimsArr) {
-  try {
-    world.setDynamicProperty("claimed_lands", JSON.stringify(claimsArr));
+    const form = new ActionFormData();
+    form.title("📜 MENÚ PRINCIPAL DE LA VILLA");
+    form.body(`§f¡Hola, §e${player.name}§f!\n§7Usa este menú para personalizar tu título o gestionar tus parcelas protegidas.`);
+
+    form.button("🏷️ Selector de Títulos sobre la Cabeza");
+    form.button("🏮 Gestión de Mis Parcelas Protegidas");
+    form.button("📋 Ver Mi Perfil y Estadísticas");
+    form.button("❌ Cerrar");
+
+    form.show(player).then((res) => {
+      if (res.canceled || res.selection === undefined) return;
+
+      if (res.selection === 0) {
+        openTitleMenu(player);
+      } else if (res.selection === 1) {
+        openMyClaimsMenu(player);
+      } else if (res.selection === 2) {
+        player.addTag("ver_perfil");
+      }
+    }).catch(() => {});
   } catch (e) {}
 }
 
-function getClaimAt(dimId, x, z) {
-  const claims = getClaims();
-  const bx = Math.floor(x);
-  const bz = Math.floor(z);
-  for (const c of claims) {
-    if (c.dimId === dimId) {
-      if (Math.abs(bx - Math.floor(c.x)) <= 8 && Math.abs(bz - Math.floor(c.z)) <= 8) {
-        return c;
-      }
+function openMyClaimsMenu(player) {
+  try {
+    if (!player || !player.isValid()) return;
+
+    const claims = getClaims();
+    const myClaims = claims.filter(c => c.ownerName === player.name);
+
+    const form = new ActionFormData();
+    form.title("🏮 MIS PARCELAS PROTEGIDAS");
+
+    if (myClaims.length === 0) {
+      form.body("§cNo tienes ninguna parcela protegida actualmente.\n\n§7¡Coloca una Farola de Alma (soul_lantern) en el suelo para proteger un área de 16x16!");
+      form.button("❌ Cerrar");
+      form.show(player);
+      return;
     }
-  }
-  return null;
+
+    form.body(`§fTienes §a${myClaims.length}/3§f parcelas protegidas.\nSelecciona una para administrar sus amigos o eliminarla:`);
+
+    for (let i = 0; i < myClaims.length; i++) {
+      const c = myClaims[i];
+      form.button(`📍 Parcela #${i + 1} (X: ${Math.floor(c.x)}, Z: ${Math.floor(c.z)})`);
+    }
+    form.button("⬅️ Volver");
+
+    form.show(player).then((res) => {
+      if (res.canceled || res.selection === undefined) return;
+
+      if (res.selection < myClaims.length) {
+        const selectedClaim = myClaims[res.selection];
+        openSingleClaimMenu(player, selectedClaim);
+      } else if (res.selection === myClaims.length) {
+        openClockMainMenu(player);
+      }
+    }).catch(() => {});
+  } catch (e) {}
 }
 
-function openClaimManagementMenu(player, claim) {
+function openSingleClaimMenu(player, claim) {
   try {
     if (!player || !player.isValid()) return;
 
     const membersList = (claim.members || [claim.ownerName]).join(", ");
 
     const form = new ActionFormData();
-    form.title("🏮 GESTIÓN DE PARCELA");
+    form.title(`🏮 PARCELA (X: ${Math.floor(claim.x)}, Z: ${Math.floor(claim.z)})`);
     form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicación: §7X: ${Math.floor(claim.x)}, Y: ${Math.floor(claim.y)}, Z: ${Math.floor(claim.z)}\n§fMiembros Autorizados: §a${membersList}`);
 
     form.button("👥 Agregar Amigo a la Parcela");
     form.button("❌ Remover Amigo");
-    form.button("🗑️ Eliminar Protección de Parcela");
-    form.button("❌ Cerrar");
+    form.button("🗑️ Eliminar Protección de esta Parcela");
+    form.button("⬅️ Volver a Parcelas");
 
     form.show(player).then((res) => {
       if (res.canceled || res.selection === undefined) return;
@@ -2461,7 +2496,7 @@ function openClaimManagementMenu(player, claim) {
         const onlinePlayers = world.getAllPlayers().filter(p => !currentMembers.includes(p.name));
 
         if (onlinePlayers.length === 0) {
-          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados que no estén agregados.");
+          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados para agregar.");
           return;
         }
         const addForm = new ActionFormData();
@@ -2516,9 +2551,46 @@ function openClaimManagementMenu(player, claim) {
         saveClaims(claims);
         player.sendMessage("§e[PROTECCIÓN] La protección de esta parcela ha sido eliminada.");
         try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+      } else if (res.selection === 3) {
+        openMyClaimsMenu(player);
       }
     }).catch(() => {});
   } catch (e) {}
+}
+
+// ============================================================
+// PARCEL LAND CLAIMING SYSTEM (SOUL LANTERN / FAROLA DE ALMA)
+// Claims a 16x16 chunk area centered at placed Soul Lanterns.
+// Protects blocks, chests, doors & interactables against non-members.
+// ============================================================
+
+function getClaims() {
+  try {
+    const raw = world.getDynamicProperty("claimed_lands") ?? "[]";
+    return JSON.parse(raw);
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveClaims(claimsArr) {
+  try {
+    world.setDynamicProperty("claimed_lands", JSON.stringify(claimsArr));
+  } catch (e) {}
+}
+
+function getClaimAt(dimId, x, z) {
+  const claims = getClaims();
+  const bx = Math.floor(x);
+  const bz = Math.floor(z);
+  for (const c of claims) {
+    if (c.dimId === dimId) {
+      if (Math.abs(bx - Math.floor(c.x)) <= 8 && Math.abs(bz - Math.floor(c.z)) <= 8) {
+        return c;
+      }
+    }
+  }
+  return null;
 }
 
 world.afterEvents.playerPlaceBlock.subscribe((event) => {
@@ -2556,7 +2628,7 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
       claims.push(newClaim);
       saveClaims(claims);
 
-      player.sendMessage(`\n§a§l[PARCELA RECLAMADA]§r\n§f¡Has colocado tu Farola de Alma y reclamado esta parcela (16x16)!§r\n§7Haz clic derecho en tu Farola de Alma para agregar amigos o gestionar tu parcela.\n`);
+      player.sendMessage(`\n§a§l[PARCELA RECLAMADA]§r\n§f¡Has colocado tu Farola de Alma y reclamado esta parcela (16x16)!§r\n§7Usa tu Reloj (clic derecho) para agregar amigos o gestionar tus parcelas.\n`);
       try { player.playSound("random.levelup", { volume: 0.8, pitch: 1.2 }); } catch (e) {}
     }
   } catch (e) {}
@@ -2573,7 +2645,8 @@ world.beforeEvents.playerBreakBlock.subscribe((event) => {
     const claim = getClaimAt(dimId, bx, bz);
     if (!claim) return;
 
-    if (player.hasTag("admin") || player.hasTag("op")) return;
+    const isAdmin = player.hasTag("admin") || player.hasTag("op") || player.hasTag("admin_logged");
+    if (isAdmin) return; // Admins can break anything inside any claim!
 
     const isOwner = claim.ownerName === player.name;
     const isMember = claim.members && claim.members.includes(player.name);
@@ -2582,17 +2655,21 @@ world.beforeEvents.playerBreakBlock.subscribe((event) => {
         bx === Math.floor(claim.x) &&
         by === Math.floor(claim.y) &&
         bz === Math.floor(claim.z)) {
-      if (isOwner) {
+      if (isOwner || isAdmin) {
         system.run(() => {
           const claims = getClaims().filter(c => c.id !== claim.id);
           saveClaims(claims);
-          player.sendMessage("§e[PROTECCIÓN] Has retirado tu Farola de Alma. La parcela ha sido desprotegida.");
+          if (isAdmin && !isOwner) {
+            player.sendMessage(`§e[ADMIN] Has retirado la Farola de Alma y eliminado la parcela de ${claim.ownerName}.`);
+          } else {
+            player.sendMessage("§e[PROTECCIÓN] Has retirado tu Farola de Alma. La parcela ha sido desprotegida.");
+          }
         });
         return;
       } else {
         event.cancel = true;
         system.run(() => {
-          player.sendMessage(`§c[PROTECCIÓN] Solo ${claim.ownerName} puede retirar esta Farola de Alma.`);
+          player.sendMessage(`§c[PROTECCIÓN] Solo ${claim.ownerName} (o un Administrador OP) puede retirar esta Farola de Alma.`);
         });
         return;
       }
@@ -2618,27 +2695,11 @@ world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
     const claim = getClaimAt(dimId, bx, bz);
     if (!claim) return;
 
-    if (player.hasTag("admin") || player.hasTag("op")) return;
+    const isAdmin = player.hasTag("admin") || player.hasTag("op") || player.hasTag("admin_logged");
+    if (isAdmin) return; // Admins can interact with anything inside any claim!
 
     const isOwner = claim.ownerName === player.name;
     const isMember = claim.members && claim.members.includes(player.name);
-
-    if (block.typeId === "minecraft:soul_lantern" &&
-        bx === Math.floor(claim.x) &&
-        by === Math.floor(claim.y) &&
-        bz === Math.floor(claim.z)) {
-      event.cancel = true; // Crucial: cancel default interaction so form opens smoothly!
-      if (isOwner) {
-        system.run(() => {
-          openClaimManagementMenu(player, claim);
-        });
-      } else {
-        system.run(() => {
-          player.sendMessage(`§c[PROTECCIÓN] Esta Farola de Alma pertenece a ${claim.ownerName}.`);
-        });
-      }
-      return;
-    }
 
     const protectedBlocks = [
       "chest", "trapped_chest", "barrel", "shulker_box", "undyed_shulker_box",
