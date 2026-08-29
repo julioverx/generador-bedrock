@@ -442,6 +442,18 @@ function isDoubleEventActive() {
   return false;
 }
 
+function isRedMoonEclipseActive() {
+  try {
+    if (world.getDynamicProperty("evento_luna_roja") === true) return true;
+    const currentDay = world.getDay();
+    if (currentDay > 0 && currentDay % 30 === 0) {
+      const timeOfDay = world.getTimeOfDay();
+      if (timeOfDay >= 13000 && timeOfDay <= 23000) return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
 function processQuestReward(player, questName, emeralds = 10, xpLevel = 10) {
   try {
     const mult = isDoubleEventActive() ? 2 : 1;
@@ -882,6 +894,17 @@ world.afterEvents.entityDie.subscribe((event) => {
           }
         }
 
+        // Red Moon Eclipse Bonus Loot
+        if (isRedMoonEclipseActive()) {
+          const timeOfDay = world.getTimeOfDay();
+          const isPhase2 = timeOfDay >= 18000;
+          const bonusEmeralds = isPhase2 ? 3 : 1;
+          const bonusXP = isPhase2 ? 20 : 10;
+          attacker.runCommandAsync(`give @s emerald ${bonusEmeralds}`);
+          attacker.runCommandAsync(`xp ${bonusXP} @s`);
+          try { attacker.playSound("random.orb", { volume: 0.6, pitch: 1.5 }); } catch (e) {}
+        }
+
         incrementScore(attacker, "MobsKilled");
         processKillStreak(attacker);
         checkMilestones(attacker, "MobsKilled");
@@ -1264,11 +1287,159 @@ system.runInterval(() => {
           }
         }
 
-        if (player.hasTag("desactivar_hora_doble") || player.hasTag("desactivar_doble_xp")) {
-          player.removeTag("desactivar_hora_doble");
-          player.removeTag("desactivar_doble_xp");
-          world.setDynamicProperty("evento_doble_xp", false);
-          world.sendMessage(`\n§c§l[FESTIVAL FINALIZADO]§r §7El evento de Doble XP y Esmeraldas ha concluido. ¡Gracias por participar!\n`);
+        // --- SELECTOR DE TÍTULO SOBRE LA CABEZA VIA TAGS ---
+        if (player.hasTag("equipar_titulo_matadrakos")) {
+          player.removeTag("equipar_titulo_matadrakos");
+          if (player.hasTag("tag_matadrakos") || player.getDynamicProperty("custom_ach_matadrakos")) {
+            player.setDynamicProperty("active_equipped_title", "matadrakos");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §d[Matadrakos]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has derrotado al Ender Dragon para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_wither")) {
+          player.removeTag("equipar_titulo_wither");
+          if (player.hasTag("tag_dios_wither") || player.getDynamicProperty("custom_ach_dios_wither")) {
+            player.setDynamicProperty("active_equipped_title", "dios_wither");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §5[Dios Wither]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has derrotado al Wither Boss para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_poseidon")) {
+          player.removeTag("equipar_titulo_poseidon");
+          if (player.hasTag("tag_rey_poseidon") || player.getDynamicProperty("custom_ach_rey_poseidon")) {
+            player.setDynamicProperty("active_equipped_title", "rey_poseidon");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §b[Rey Poseidon]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has derrotado al Guardián Anciano para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_contratista")) {
+          player.removeTag("equipar_titulo_contratista");
+          if (player.hasTag("tag_contratista_real") || player.getDynamicProperty("custom_ach_contratista_real")) {
+            player.setDynamicProperty("active_equipped_title", "contratista_real");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §c[Contratista Real]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has completado un Contrato Semanal Mítico para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_minero")) {
+          player.removeTag("equipar_titulo_minero");
+          if (player.hasTag("tag_leyenda_minera")) {
+            player.setDynamicProperty("active_equipped_title", "leyenda_minera");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §e[Leyenda Minera]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has picado 5,000 bloques para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_granjero")) {
+          player.removeTag("equipar_titulo_granjero");
+          if (player.hasTag("tag_lider_granjero")) {
+            player.setDynamicProperty("active_equipped_title", "lider_granjero");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §a[Líder Granjero]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has alcanzado 5,000 cosechas/talas para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_guerra")) {
+          player.removeTag("equipar_titulo_guerra");
+          if (player.hasTag("tag_rey_guerra")) {
+            player.setDynamicProperty("active_equipped_title", "rey_guerra");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §c[Rey de la Guerra]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has alcanzado la racha de 50 bajas PvP para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_asesino")) {
+          player.removeTag("equipar_titulo_asesino");
+          if (player.hasTag("tag_asesino_serie") || player.getDynamicProperty("custom_ach_asesino_serie")) {
+            player.setDynamicProperty("active_equipped_title", "asesino_serie");
+            player.sendMessage("§a[ESCRIBANO] ¡Has equipado el título: §6[Asesino en Serie]§a!");
+            try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+          } else {
+            player.sendMessage("§c[ESCRIBANO] Aún no has alcanzado la racha de 1,000 mobs para desbloquear este título.");
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("equipar_titulo_ninguno") || player.hasTag("quitar_titulo")) {
+          player.removeTag("equipar_titulo_ninguno");
+          player.removeTag("quitar_titulo");
+          player.setDynamicProperty("active_equipped_title", null);
+          player.sendMessage("§a[ESCRIBANO] Has quitado tu título personalizado.");
+          try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+        }
+
+        if (player.hasTag("ver_titulos") || player.hasTag("abrir_titulos")) {
+          player.removeTag("ver_titulos");
+          player.removeTag("abrir_titulos");
+          player.playSound("item.book.page_turn", { volume: 1.0, pitch: 1.0 });
+
+          const tMatadrakos = (player.hasTag("tag_matadrakos") || player.getDynamicProperty("custom_ach_matadrakos")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tWither = (player.hasTag("tag_dios_wither") || player.getDynamicProperty("custom_ach_dios_wither")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tPoseidon = (player.hasTag("tag_rey_poseidon") || player.getDynamicProperty("custom_ach_rey_poseidon")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tContratista = (player.hasTag("tag_contratista_real") || player.getDynamicProperty("custom_ach_contratista_real")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tMinero = player.hasTag("tag_leyenda_minera") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tGranjero = player.hasTag("tag_lider_granjero") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tGuerra = player.hasTag("tag_rey_guerra") ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+          const tAsesino = (player.hasTag("tag_asesino_serie") || player.getDynamicProperty("custom_ach_asesino_serie")) ? "§a[DESBLOQUEADO ✅]" : "§c[BLOQUEADO ❌]";
+
+          player.sendMessage(
+            `§r\n§l§6=== TÍTULOS DISPONIBLES Y ESTADO ===§r\n` +
+            `§d[Matadrakos]§r: ${tMatadrakos}\n` +
+            `§5[Dios Wither]§r: ${tWither}\n` +
+            `§b[Rey Poseidon]§r: ${tPoseidon}\n` +
+            `§c[Contratista Real]§r: ${tContratista}\n` +
+            `§e[Leyenda Minera]§r: ${tMinero}\n` +
+            `§a[Líder Granjero]§r: ${tGranjero}\n` +
+            `§c[Rey de la Guerra]§r: ${tGuerra}\n` +
+            `§6[Asesino en Serie]§r: ${tAsesino}\n\n` +
+            `§7Usa los botones del NPC para equipártelo sobre la cabeza.\n`
+          );
+        }
+
+        // --- EVENTO ECLIPSE DE LUNA ROJA ---
+        if (player.hasTag("activar_luna_roja") || player.hasTag("activar_eclipse")) {
+          player.removeTag("activar_luna_roja");
+          player.removeTag("activar_eclipse");
+          world.setDynamicProperty("evento_luna_roja", true);
+          world.sendMessage(`\n§c§l===========================================§r\n§4§l[¡ECLIPSE DE LUNA ROJA ACTIVADO!]§r\n§f¡Un Administrador ha invocado el Eclipse Nocturno! Las criaturas obtienen Fuerza y Velocidad, otorgando Doble XP y Esmeraldas.\n§c===========================================§r\n`);
+          for (const p of world.getAllPlayers()) {
+            try {
+              p.onScreenDisplay.setTitle("§c§l[LUNA ROJA EN CURSO]§r");
+              p.onScreenDisplay.setSubtitle("§4¡Furia de las Sombras!");
+              p.playSound("ambient.weather.thunder", { volume: 1.0, pitch: 0.8 });
+            } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("desactivar_luna_roja") || player.hasTag("desactivar_eclipse")) {
+          player.removeTag("desactivar_luna_roja");
+          player.removeTag("desactivar_eclipse");
+          world.setDynamicProperty("evento_luna_roja", false);
+          world.sendMessage(`\n§a§l[ECLIPSE FINALIZADO]§r §7El sol vuelve a brillar y la Luna Roja se ha disipado.\n`);
         }
 
         // --- RULES ---
@@ -1556,6 +1727,26 @@ system.runInterval(() => {
         player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
       }
 
+      // --- RED MOON ECLIPSE MOB BUFFS ---
+      if (isRedMoonEclipseActive()) {
+        const timeOfDay = world.getTimeOfDay();
+        const isPhase2 = timeOfDay >= 18000;
+        const strengthAmp = isPhase2 ? 1 : 0; // Strength II vs Strength I
+        const speedAmp = isPhase2 ? 1 : 0;    // Speed II vs Speed I
+
+        const dim = player.dimension;
+        const entities = dim.getEntities({ location: player.location, maxDistance: 40 });
+        for (const ent of entities) {
+          try {
+            if (isHostileMob(ent)) {
+              ent.addEffect("strength", 40, { amplifier: strengthAmp, showParticles: true });
+              ent.addEffect("speed", 40, { amplifier: speedAmp, showParticles: true });
+              if (isPhase2) ent.addEffect("resistance", 40, { amplifier: 0, showParticles: false });
+            }
+          } catch (e) {}
+        }
+      }
+
     } catch (e) {}
   }
 }, 20);
@@ -1647,33 +1838,37 @@ system.runInterval(() => {
         }
 
         const citizenRank = getCitizenRank(player);
+        const equippedTitle = player.getDynamicProperty("active_equipped_title");
         let rankingTitle = "";
-        
-        // 1. Asesino en Serie (1000 Mobs Streak) takes highest precedence
-        if (player.hasTag("tag_asesino_serie") && mobs >= 1000) {
-          rankingTitle = "§6[Asesino en Serie]§r ";
-        } 
-        // 2. Top #1 Leaderboard Title (Caballero Negro, Cazador Leyenda, Maestro Minero, Matadrakos) OUTRANKS static achievement tags!
-        else if (titleInfo) {
-          rankingTitle = titleInfo.title;
-        } 
-        // 3. Static Achievement Tags (if NOT Top #1 on leaderboard)
-        else if (player.hasTag("tag_contratista_real")) {
-          rankingTitle = "§c[Contratista Real]§r ";
-        } else if (player.hasTag("tag_lider_granjero")) {
-          rankingTitle = "§a[Líder Granjero]§r ";
-        } else if (player.hasTag("tag_rey_poseidon")) {
-          rankingTitle = "§b[Rey Poseidon]§r ";
-        } else if (player.hasTag("tag_dios_wither")) {
-          rankingTitle = "§5[Dios Wither]§r ";
-        } else if (player.hasTag("tag_matadrakos")) {
+
+        if (equippedTitle === "matadrakos" && (player.hasTag("tag_matadrakos") || player.getDynamicProperty("custom_ach_matadrakos"))) {
           rankingTitle = "§d[Matadrakos]§r ";
-        } else if (player.hasTag("tag_rey_guerra")) {
-          rankingTitle = "§c[Rey de la Guerra]§r ";
-        } else if (player.hasTag("tag_leyenda_minera")) {
+        } else if (equippedTitle === "dios_wither" && (player.hasTag("tag_dios_wither") || player.getDynamicProperty("custom_ach_dios_wither"))) {
+          rankingTitle = "§5[Dios Wither]§r ";
+        } else if (equippedTitle === "rey_poseidon" && (player.hasTag("tag_rey_poseidon") || player.getDynamicProperty("custom_ach_rey_poseidon"))) {
+          rankingTitle = "§b[Rey Poseidon]§r ";
+        } else if (equippedTitle === "contratista_real" && (player.hasTag("tag_contratista_real") || player.getDynamicProperty("custom_ach_contratista_real"))) {
+          rankingTitle = "§c[Contratista Real]§r ";
+        } else if (equippedTitle === "leyenda_minera" && player.hasTag("tag_leyenda_minera")) {
           rankingTitle = "§e[Leyenda Minera]§r ";
-        } else if (player.hasTag("leyenda_500")) {
-          rankingTitle = "§b[Leyenda]§r ";
+        } else if (equippedTitle === "lider_granjero" && player.hasTag("tag_lider_granjero")) {
+          rankingTitle = "§a[Líder Granjero]§r ";
+        } else if (equippedTitle === "rey_guerra" && player.hasTag("tag_rey_guerra")) {
+          rankingTitle = "§c[Rey de la Guerra]§r ";
+        } else if (equippedTitle === "asesino_serie" && (player.hasTag("tag_asesino_serie") || mobs >= 1000)) {
+          rankingTitle = "§6[Asesino en Serie]§r ";
+        } else if (!equippedTitle) {
+          // Fallback to highest unlocked title hierarchy
+          if (player.hasTag("tag_asesino_serie") && mobs >= 1000) rankingTitle = "§6[Asesino en Serie]§r ";
+          else if (titleInfo) rankingTitle = titleInfo.title;
+          else if (player.hasTag("tag_contratista_real")) rankingTitle = "§c[Contratista Real]§r ";
+          else if (player.hasTag("tag_lider_granjero")) rankingTitle = "§a[Líder Granjero]§r ";
+          else if (player.hasTag("tag_rey_poseidon")) rankingTitle = "§b[Rey Poseidon]§r ";
+          else if (player.hasTag("tag_dios_wither")) rankingTitle = "§5[Dios Wither]§r ";
+          else if (player.hasTag("tag_matadrakos")) rankingTitle = "§d[Matadrakos]§r ";
+          else if (player.hasTag("tag_rey_guerra")) rankingTitle = "§c[Rey de la Guerra]§r ";
+          else if (player.hasTag("tag_leyenda_minera")) rankingTitle = "§e[Leyenda Minera]§r ";
+          else if (player.hasTag("leyenda_500")) rankingTitle = "§b[Leyenda]§r ";
         }
 
         let tempTitle = "";
