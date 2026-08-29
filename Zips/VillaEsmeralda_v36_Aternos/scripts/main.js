@@ -2357,21 +2357,21 @@ function openTitleMenu(player) {
     }
 
     const form = new ActionFormData();
-    form.title("§6🏷️ SELECTOR DE TÍTULOS");
+    form.title("§6[SELECTOR DE TITULOS]§r");
 
     if (availableTitles.length === 0) {
-      form.body("§cNo has desbloqueado ningún título especial todavía.\n\n§7¡Derrota Jefes o completa Contratos Semanales para conseguir títulos!");
-      form.button("§f❌ Cerrar");
+      form.body("§cNo has desbloqueado ningun titulo especial todavia.\n\n§7¡Derrota Jefes o completa Contratos Semanales para conseguir titulos!");
+      form.button("§c[Cerrar]§r");
       form.show(player);
       return;
     }
 
-    form.body("§fSelecciona el título que deseas lucir sobre tu cabeza:");
+    form.body("§fSelecciona el titulo que deseas lucir sobre tu cabeza:");
 
     for (const t of availableTitles) {
       form.button(`Equipar ${t.name}`);
     }
-    form.button("§c❌ Quitar Título Actual");
+    form.button("§c[Quitar Titulo Actual]§r");
 
     form.show(player).then((res) => {
       if (res.canceled || res.selection === undefined) return;
@@ -2379,11 +2379,11 @@ function openTitleMenu(player) {
       if (res.selection < availableTitles.length) {
         const selected = availableTitles[res.selection];
         player.setDynamicProperty("active_equipped_title", selected.id);
-        player.sendMessage(`§a[ESCRIBANO] ¡Has equipado el título ${selected.name}!`);
+        player.sendMessage(`§a[ESCRIBANO] ¡Has equipado el titulo ${selected.name}!`);
         try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
       } else {
         player.setDynamicProperty("active_equipped_title", null);
-        player.sendMessage("§a[ESCRIBANO] Has quitado tu título personalizado.");
+        player.sendMessage("§a[ESCRIBANO] Has quitado tu titulo personalizado.");
         try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
       }
     }).catch(() => {});
@@ -2413,13 +2413,13 @@ function openClockMainMenu(player) {
     if (!player || !player.isValid()) return;
 
     const form = new ActionFormData();
-    form.title("📜 MENÚ PRINCIPAL DE LA VILLA");
+    form.title("§6[MENU PRINCIPAL DE LA VILLA]§r");
     form.body(`§f¡Hola, §e${player.name}§f!\n§7Usa este menú para personalizar tu título o gestionar tus parcelas protegidas.`);
 
-    form.button("🏷️ Selector de Títulos sobre la Cabeza");
-    form.button("🏮 Gestión de Mis Parcelas Protegidas");
-    form.button("📋 Ver Mi Perfil y Estadísticas");
-    form.button("❌ Cerrar");
+    form.button("§e[Titulos] §fSelector de Titulos");
+    form.button("§a[Parcelas] §fGestion de Parcelas Protegidas");
+    form.button("§b[Perfil] §fVer Estadisticas");
+    form.button("§c[Cerrar]§r");
 
     form.show(player).then((res) => {
       if (res.canceled || res.selection === undefined) return;
@@ -2443,11 +2443,11 @@ function openMyClaimsMenu(player) {
     const myClaims = claims.filter(c => c.ownerName === player.name);
 
     const form = new ActionFormData();
-    form.title("🏮 MIS PARCELAS PROTEGIDAS");
+    form.title("§6[MIS PARCELAS PROTEGIDAS]§r");
 
     if (myClaims.length === 0) {
-      form.body("§cNo tienes ninguna parcela protegida actualmente.\n\n§7¡Coloca una Farola de Alma (soul_lantern) en el suelo para proteger un área de 16x16!");
-      form.button("❌ Cerrar");
+      form.body("§cNo tienes ninguna parcela protegida actualmente.\n\n§7¡Coloca una Farola de Alma (soul_lantern) en el suelo para proteger un area de 16x16!");
+      form.button("§c[Cerrar]§r");
       form.show(player);
       return;
     }
@@ -2456,9 +2456,9 @@ function openMyClaimsMenu(player) {
 
     for (let i = 0; i < myClaims.length; i++) {
       const c = myClaims[i];
-      form.button(`📍 Parcela #${i + 1} (X: ${Math.floor(c.x)}, Z: ${Math.floor(c.z)})`);
+      form.button(`§e[Parcela #${i + 1}] §f(X: ${Math.floor(c.x)}, Z: ${Math.floor(c.z)})`);
     }
-    form.button("⬅️ Volver");
+    form.button("§7[Volver]§r");
 
     form.show(player).then((res) => {
       if (res.canceled || res.selection === undefined) return;
@@ -2480,13 +2480,13 @@ function openSingleClaimMenu(player, claim) {
     const membersList = (claim.members || [claim.ownerName]).join(", ");
 
     const form = new ActionFormData();
-    form.title(`🏮 PARCELA (X: ${Math.floor(claim.x)}, Z: ${Math.floor(claim.z)})`);
-    form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicación: §7X: ${Math.floor(claim.x)}, Y: ${Math.floor(claim.y)}, Z: ${Math.floor(claim.z)}\n§fMiembros Autorizados: §a${membersList}`);
+    form.title(`§6[PARCELA (X: ${Math.floor(claim.x)}, Z: ${Math.floor(claim.z)})]§r`);
+    form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicacion: §7X: ${Math.floor(claim.x)}, Y: ${Math.floor(claim.y)}, Z: ${Math.floor(claim.z)}\n§fMiembros Autorizados: §a${membersList}`);
 
-    form.button("👥 Agregar Amigo a la Parcela");
-    form.button("❌ Remover Amigo");
-    form.button("🗑️ Eliminar Protección de esta Parcela");
-    form.button("⬅️ Volver a Parcelas");
+    form.button("§a[+] Agregar Amigo");
+    form.button("§c[-] Remover Amigo");
+    form.button("§4[Eliminar Proteccion]");
+    form.button("§7[Volver a Parcelas]");
 
     form.show(player).then((res) => {
       if (res.canceled || res.selection === undefined) return;
@@ -2496,14 +2496,14 @@ function openSingleClaimMenu(player, claim) {
         const onlinePlayers = world.getAllPlayers().filter(p => !currentMembers.includes(p.name));
 
         if (onlinePlayers.length === 0) {
-          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados para agregar.");
+          player.sendMessage("§c[PROTECCION] No hay otros jugadores conectados para agregar.");
           return;
         }
         const addForm = new ActionFormData();
-        addForm.title("👥 AGREGAR AMIGO");
+        addForm.title("§6[AGREGAR AMIGO]§r");
         addForm.body("Selecciona el jugador al que deseas darle permisos:");
         for (const p of onlinePlayers) {
-          addForm.button(p.name);
+          addForm.button(`§a[+] §f${p.name}`);
         }
         addForm.show(player).then((addRes) => {
           if (addRes.canceled || addRes.selection === undefined) return;
@@ -2515,8 +2515,8 @@ function openSingleClaimMenu(player, claim) {
             if (!targetClaim.members.includes(chosen.name)) {
               targetClaim.members.push(chosen.name);
               saveClaims(claims);
-              player.sendMessage(`§a[PROTECCIÓN] ¡Has agregado a ${chosen.name} a tu parcela!`);
-              chosen.sendMessage(`§a[PROTECCIÓN] ¡${player.name} te ha otorgado permisos en su parcela!`);
+              player.sendMessage(`§a[PROTECCION] ¡Has agregado a ${chosen.name} a tu parcela!`);
+              chosen.sendMessage(`§a[PROTECCION] ¡${player.name} te ha otorgado permisos en su parcela!`);
               try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
             }
           }
@@ -2525,14 +2525,14 @@ function openSingleClaimMenu(player, claim) {
         const currentMembers = claim.members || [claim.ownerName];
         const membersToRemove = currentMembers.filter(m => m !== claim.ownerName);
         if (membersToRemove.length === 0) {
-          player.sendMessage("§c[PROTECCIÓN] No tienes amigos agregados en esta parcela.");
+          player.sendMessage("§c[PROTECCION] No tienes amigos agregados en esta parcela.");
           return;
         }
         const remForm = new ActionFormData();
-        remForm.title("❌ REMOVER AMIGO");
+        remForm.title("§6[REMOVER AMIGO]§r");
         remForm.body("Selecciona el amigo al que deseas quitarle permisos:");
         for (const m of membersToRemove) {
-          remForm.button(m);
+          remForm.button(`§c[-] §f${m}`);
         }
         remForm.show(player).then((remRes) => {
           if (remRes.canceled || remRes.selection === undefined) return;
