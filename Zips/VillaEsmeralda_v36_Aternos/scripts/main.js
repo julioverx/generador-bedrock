@@ -2426,9 +2426,11 @@ function saveClaims(claimsArr) {
 
 function getClaimAt(dimId, x, z) {
   const claims = getClaims();
+  const bx = Math.floor(x);
+  const bz = Math.floor(z);
   for (const c of claims) {
     if (c.dimId === dimId) {
-      if (Math.abs(x - c.x) <= 8 && Math.abs(z - c.z) <= 8) {
+      if (Math.abs(bx - Math.floor(c.x)) <= 8 && Math.abs(bz - Math.floor(c.z)) <= 8) {
         return c;
       }
     }
@@ -2438,9 +2440,13 @@ function getClaimAt(dimId, x, z) {
 
 function openClaimManagementMenu(player, claim) {
   try {
+    if (!player || !player.isValid()) return;
+
+    const membersList = (claim.members || [claim.ownerName]).join(", ");
+
     const form = new ActionFormData();
     form.title("🏮 GESTIÓN DE PARCELA");
-    form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicación: §7X: ${claim.x}, Y: ${claim.y}, Z: ${claim.z}\n§fMiembros Autorizados: §a${(claim.memberNames || [claim.ownerName]).join(", ")}`);
+    form.body(`§fPropietario: §e${claim.ownerName}\n§fUbicación: §7X: ${Math.floor(claim.x)}, Y: ${Math.floor(claim.y)}, Z: ${Math.floor(claim.z)}\n§fMiembros Autorizados: §a${membersList}`);
 
     form.button("👥 Agregar Amigo a la Parcela");
     form.button("❌ Remover Amigo");
@@ -2451,9 +2457,11 @@ function openClaimManagementMenu(player, claim) {
       if (res.canceled || res.selection === undefined) return;
 
       if (res.selection === 0) {
-        const onlinePlayers = world.getAllPlayers().filter(p => p.id !== player.id && (!claim.members || !claim.members.includes(p.id)));
+        const currentMembers = claim.members || [claim.ownerName];
+        const onlinePlayers = world.getAllPlayers().filter(p => !currentMembers.includes(p.name));
+
         if (onlinePlayers.length === 0) {
-          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados para agregar.");
+          player.sendMessage("§c[PROTECCIÓN] No hay otros jugadores conectados que no estén agregados.");
           return;
         }
         const addForm = new ActionFormData();
@@ -2468,24 +2476,19 @@ function openClaimManagementMenu(player, claim) {
           const claims = getClaims();
           const targetClaim = claims.find(c => c.id === claim.id);
           if (targetClaim) {
-            if (!targetClaim.members) targetClaim.members = [player.id];
-            if (!targetClaim.memberNames) targetClaim.memberNames = [player.name];
-            targetClaim.members.push(chosen.id);
-            targetClaim.memberNames.push(chosen.name);
-            saveClaims(claims);
-            player.sendMessage(`§a[PROTECCIÓN] ¡Has agregado a ${chosen.name} a tu parcela!`);
-            chosen.sendMessage(`§a[PROTECCIÓN] ¡${player.name} te ha otorgado permisos en su parcela!`);
+            if (!targetClaim.members) targetClaim.members = [targetClaim.ownerName];
+            if (!targetClaim.members.includes(chosen.name)) {
+              targetClaim.members.push(chosen.name);
+              saveClaims(claims);
+              player.sendMessage(`§a[PROTECCIÓN] ¡Has agregado a ${chosen.name} a tu parcela!`);
+              chosen.sendMessage(`§a[PROTECCIÓN] ¡${player.name} te ha otorgado permisos en su parcela!`);
+              try { player.playSound("random.orb", { volume: 1.0, pitch: 1.2 }); } catch (e) {}
+            }
           }
         });
       } else if (res.selection === 1) {
-        const memberNames = claim.memberNames || [];
-        const memberIds = claim.members || [];
-        const membersToRemove = [];
-        for (let i = 0; i < memberIds.length; i++) {
-          if (memberIds[i] !== player.id) {
-            membersToRemove.push({ id: memberIds[i], name: memberNames[i] || "Jugador" });
-          }
-        }
+        const currentMembers = claim.members || [claim.ownerName];
+        const membersToRemove = currentMembers.filter(m => m !== claim.ownerName);
         if (membersToRemove.length === 0) {
           player.sendMessage("§c[PROTECCIÓN] No tienes amigos agregados en esta parcela.");
           return;
@@ -2494,26 +2497,27 @@ function openClaimManagementMenu(player, claim) {
         remForm.title("❌ REMOVER AMIGO");
         remForm.body("Selecciona el amigo al que deseas quitarle permisos:");
         for (const m of membersToRemove) {
-          remForm.button(m.name);
+          remForm.button(m);
         }
         remForm.show(player).then((remRes) => {
           if (remRes.canceled || remRes.selection === undefined) return;
-          const chosen = membersToRemove[remRes.selection];
+          const chosenName = membersToRemove[remRes.selection];
           const claims = getClaims();
           const targetClaim = claims.find(c => c.id === claim.id);
           if (targetClaim) {
-            targetClaim.members = targetClaim.members.filter(id => id !== chosen.id);
-            targetClaim.memberNames = targetClaim.memberNames.filter(name => name !== chosen.name);
+            targetClaim.members = targetClaim.members.filter(m => m !== chosenName);
             saveClaims(claims);
-            player.sendMessage(`§e[PROTECCIÓN] Has removido a ${chosen.name} de tu parcela.`);
+            player.sendMessage(`§e[PROTECCIÓN] Has removido a ${chosenName} de tu parcela.`);
+            try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
           }
         });
       } else if (res.selection === 2) {
         const claims = getClaims().filter(c => c.id !== claim.id);
         saveClaims(claims);
         player.sendMessage("§e[PROTECCIÓN] La protección de esta parcela ha sido eliminada.");
+        try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
       }
-    });
+    }).catch(() => {});
   } catch (e) {}
 }
 
@@ -2522,39 +2526,37 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
     const { block, player } = event;
     if (block.typeId === "minecraft:soul_lantern") {
       const dimId = player.dimension.id;
-      const x = block.location.x;
-      const y = block.location.y;
-      const z = block.location.z;
+      const bx = Math.floor(block.location.x);
+      const by = Math.floor(block.location.y);
+      const bz = Math.floor(block.location.z);
 
-      const existing = getClaimAt(dimId, x, z);
+      const existing = getClaimAt(dimId, bx, bz);
       if (existing) {
         player.sendMessage(`§c[PROTECCIÓN] Este área ya está dentro de la parcela de ${existing.ownerName}.`);
         return;
       }
 
       const claims = getClaims();
-      const playerClaims = claims.filter(c => c.ownerId === player.id);
+      const playerClaims = claims.filter(c => c.ownerName === player.name);
       if (playerClaims.length >= 3 && !player.hasTag("admin")) {
         player.sendMessage("§c[PROTECCIÓN] Has alcanzado el límite máximo de 3 parcelas protegidas por jugador.");
         return;
       }
 
       const newClaim = {
-        id: `${dimId}_${x}_${y}_${z}`,
-        ownerId: player.id,
+        id: `${dimId}_${bx}_${by}_${bz}`,
         ownerName: player.name,
         dimId: dimId,
-        x: x,
-        y: y,
-        z: z,
-        members: [player.id],
-        memberNames: [player.name]
+        x: bx,
+        y: by,
+        z: bz,
+        members: [player.name]
       };
 
       claims.push(newClaim);
       saveClaims(claims);
 
-      player.sendMessage(`\n§a§l[PARCELA RECLAMADA]§r\n§f¡Has colocado tu Farola de Alma y reclamado esta parcela (16x16)!§r\n§7Nadie sin tu permiso podrá romper bloques o abrir cofres aquí.\n`);
+      player.sendMessage(`\n§a§l[PARCELA RECLAMADA]§r\n§f¡Has colocado tu Farola de Alma y reclamado esta parcela (16x16)!§r\n§7Haz clic derecho en tu Farola de Alma para agregar amigos o gestionar tu parcela.\n`);
       try { player.playSound("random.levelup", { volume: 0.8, pitch: 1.2 }); } catch (e) {}
     }
   } catch (e) {}
@@ -2564,19 +2566,22 @@ world.beforeEvents.playerBreakBlock.subscribe((event) => {
   try {
     const { block, player } = event;
     const dimId = player.dimension.id;
-    const x = block.location.x;
-    const y = block.location.y;
-    const z = block.location.z;
+    const bx = Math.floor(block.location.x);
+    const by = Math.floor(block.location.y);
+    const bz = Math.floor(block.location.z);
 
-    const claim = getClaimAt(dimId, x, z);
+    const claim = getClaimAt(dimId, bx, bz);
     if (!claim) return;
 
     if (player.hasTag("admin") || player.hasTag("op")) return;
 
-    const isOwner = claim.ownerId === player.id;
-    const isMember = claim.members && claim.members.includes(player.id);
+    const isOwner = claim.ownerName === player.name;
+    const isMember = claim.members && claim.members.includes(player.name);
 
-    if (block.typeId === "minecraft:soul_lantern" && x === claim.x && y === claim.y && z === claim.z) {
+    if (block.typeId === "minecraft:soul_lantern" &&
+        bx === Math.floor(claim.x) &&
+        by === Math.floor(claim.y) &&
+        bz === Math.floor(claim.z)) {
       if (isOwner) {
         system.run(() => {
           const claims = getClaims().filter(c => c.id !== claim.id);
@@ -2606,22 +2611,30 @@ world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
   try {
     const { block, player } = event;
     const dimId = player.dimension.id;
-    const x = block.location.x;
-    const y = block.location.y;
-    const z = block.location.z;
+    const bx = Math.floor(block.location.x);
+    const by = Math.floor(block.location.y);
+    const bz = Math.floor(block.location.z);
 
-    const claim = getClaimAt(dimId, x, z);
+    const claim = getClaimAt(dimId, bx, bz);
     if (!claim) return;
 
     if (player.hasTag("admin") || player.hasTag("op")) return;
 
-    const isOwner = claim.ownerId === player.id;
-    const isMember = claim.members && claim.members.includes(player.id);
+    const isOwner = claim.ownerName === player.name;
+    const isMember = claim.members && claim.members.includes(player.name);
 
-    if (block.typeId === "minecraft:soul_lantern" && x === claim.x && y === claim.y && z === claim.z) {
+    if (block.typeId === "minecraft:soul_lantern" &&
+        bx === Math.floor(claim.x) &&
+        by === Math.floor(claim.y) &&
+        bz === Math.floor(claim.z)) {
+      event.cancel = true; // Crucial: cancel default interaction so form opens smoothly!
       if (isOwner) {
         system.run(() => {
           openClaimManagementMenu(player, claim);
+        });
+      } else {
+        system.run(() => {
+          player.sendMessage(`§c[PROTECCIÓN] Esta Farola de Alma pertenece a ${claim.ownerName}.`);
         });
       }
       return;
