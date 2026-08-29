@@ -433,14 +433,29 @@ function checkAndUpdateDailyQuests(player) {
   } catch (e) {}
 }
 
+function isDoubleEventActive() {
+  try {
+    const currentDay = world.getDay();
+    if (currentDay > 0 && currentDay % 100 === 0) return true;
+    if (world.getDynamicProperty("evento_doble_xp") === true) return true;
+  } catch (e) {}
+  return false;
+}
+
 function processQuestReward(player, questName, emeralds = 10, xpLevel = 10) {
   try {
-    player.runCommandAsync(`give @s emerald ${emeralds}`);
-    player.runCommandAsync(`xp ${xpLevel}L @s`);
+    const mult = isDoubleEventActive() ? 2 : 1;
+    const finalEm = emeralds * mult;
+    const finalXp = xpLevel * mult;
+
+    player.runCommandAsync(`give @s emerald ${finalEm}`);
+    player.runCommandAsync(`xp ${finalXp}L @s`);
     const totalQuests = (player.getDynamicProperty("total_quests_completed") ?? 0) + 1;
     player.setDynamicProperty("total_quests_completed", totalQuests);
 
-    world.sendMessage(`\n§a§l[MISIÓN COMPLETADA]§r\n§f${player.name} §7completó la Misión Diaria §e${questName} §7y recibió §a${emeralds} Esmeraldas §7y §b${xpLevel} Niveles de XP!\n`);
+    const eventTag = isDoubleEventActive() ? " §6🔥 [¡FESTIVAL DOBLE ACTIVADO!]" : "";
+
+    world.sendMessage(`\n§a§l[MISIÓN COMPLETADA]§r${eventTag}\n§f${player.name} §7completó la Misión Diaria §e${questName} §7y recibió §a${finalEm} Esmeraldas §7y §b${finalXp} Niveles de XP!\n`);
 
     for (const p of world.getAllPlayers()) {
       try { p.playSound("random.levelup", { volume: 0.8, pitch: 1.2 }); } catch (e) {}
@@ -1232,6 +1247,28 @@ system.runInterval(() => {
             player.sendMessage("§c[ESCRIBANO] ¡Has PAUSADO el sistema de misiones y estadísticas!");
             try { player.playSound("random.fizz", { volume: 1.0, pitch: 1.0 }); } catch (e) {}
           }
+        }
+
+        // --- EVENTO GRAN FESTIVAL (DOBLE XP Y ESMERALDAS) ---
+        if (player.hasTag("activar_hora_doble") || player.hasTag("activar_doble_xp")) {
+          player.removeTag("activar_hora_doble");
+          player.removeTag("activar_doble_xp");
+          world.setDynamicProperty("evento_doble_xp", true);
+          world.sendMessage(`\n§6§l===========================================§r\n§e§l[¡GRAN FESTIVAL DE LA VILLA ACTIVADO!]§r\n§f¡Se ha activado el evento de §eDOBLE ESMERALDAS Y DOBLE XP §fen todas las misiones y contratos!\n§6===========================================§r\n`);
+          for (const p of world.getAllPlayers()) {
+            try {
+              p.onScreenDisplay.setTitle("§6§l[DOBLE XP & ESMERALDAS]§r");
+              p.onScreenDisplay.setSubtitle("§e¡Gran Festival Activado!");
+              p.playSound("ui.toast.challenge_complete", { volume: 1.0, pitch: 1.0 });
+            } catch (e) {}
+          }
+        }
+
+        if (player.hasTag("desactivar_hora_doble") || player.hasTag("desactivar_doble_xp")) {
+          player.removeTag("desactivar_hora_doble");
+          player.removeTag("desactivar_doble_xp");
+          world.setDynamicProperty("evento_doble_xp", false);
+          world.sendMessage(`\n§c§l[FESTIVAL FINALIZADO]§r §7El evento de Doble XP y Esmeraldas ha concluido. ¡Gracias por participar!\n`);
         }
 
         // --- RULES ---
