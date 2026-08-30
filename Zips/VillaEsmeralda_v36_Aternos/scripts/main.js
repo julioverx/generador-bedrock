@@ -445,12 +445,22 @@ function isDoubleEventActive() {
 
 function isRedMoonEclipseActive() {
   try {
-    if (world.getDynamicProperty("evento_luna_roja") === true) return true;
-    const currentDay = world.getDay();
-    if (currentDay > 0 && currentDay % 30 === 0) {
-      const timeOfDay = world.getTimeOfDay();
-      if (timeOfDay >= 13000 && timeOfDay <= 23000) return true;
+    const timeOfDay = world.getTimeOfDay();
+    const isNight = timeOfDay >= 13000 && timeOfDay <= 23000;
+
+    // DAYTIME SAFETY OVERRIDE: If sun is up, ECLIPSE MUST END IMMEDIATELY!
+    if (!isNight) {
+      if (world.getDynamicProperty("evento_luna_roja") === true) {
+        world.setDynamicProperty("evento_luna_roja", false);
+        world.sendMessage("\n§a§l[ECLIPSE FINALIZADO]§r §7El sol ha salido y la Luna Roja se ha disipado por completo.\n");
+      }
+      return false;
     }
+
+    if (world.getDynamicProperty("evento_luna_roja") === true) return true;
+
+    const currentDay = world.getDay();
+    if (currentDay > 0 && currentDay % 30 === 0) return true;
   } catch (e) {}
   return false;
 }
