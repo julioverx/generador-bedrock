@@ -1735,16 +1735,18 @@ system.runInterval(() => {
           player.onScreenDisplay.setActionBar(actionText);
         } catch (e) {}
 
-        // Vibrant Red Particle Ring & Flame Aura around player
+        // Potion-Swirl Style Particles around moving player
         try {
           const loc = player.location;
           const dim = player.dimension;
-          for (let i = 0; i < 8; i++) {
-            const angle = (i / 8) * Math.PI * 2;
-            const px = loc.x + Math.cos(angle) * 1.5;
-            const pz = loc.z + Math.sin(angle) * 1.5;
-            dim.spawnParticle("minecraft:redstone_ore_dust_particle", { x: px, y: loc.y + 0.2, z: pz });
-            dim.spawnParticle("minecraft:basic_flame_particle", { x: px, y: loc.y + 1.0, z: pz });
+          for (let i = 0; i < 5; i++) {
+            const rx = loc.x + (Math.random() - 0.5) * 1.2;
+            const ry = loc.y + Math.random() * 1.8;
+            const rz = loc.z + (Math.random() - 0.5) * 1.2;
+            dim.spawnParticle("minecraft:redstone_ore_dust_particle", { x: rx, y: ry, z: rz });
+            if (isPhase2) {
+              dim.spawnParticle("minecraft:basic_flame_particle", { x: rx, y: ry, z: rz });
+            }
           }
         } catch (e) {}
       }
@@ -1753,37 +1755,47 @@ system.runInterval(() => {
   }
 }, 20);
 
-// Mob Surge Spawner during Red Moon Eclipse (Balanced every 45 seconds / 900 ticks)
+// Dynamic Mob Surge Spawner during Red Moon Eclipse (Phase 1: 45s vs Phase 2 Furia Máxima: 15s!)
+let eclipseSurgeTimerSec = 0;
+
 system.runInterval(() => {
   try {
     if (isRedMoonEclipseActive()) {
+      eclipseSurgeTimerSec++;
       const isPhase2 = isRedMoonPhase2Active();
-      const mobTypes = ["minecraft:zombie", "minecraft:skeleton", "minecraft:creeper", "minecraft:spider"];
-      const numToSpawn = isPhase2 ? 2 : 1;
+      const targetIntervalSec = isPhase2 ? 15 : 45; // 15 seconds in Phase 2 vs 45 seconds in Phase 1!
 
-      for (const player of world.getAllPlayers()) {
-        try {
-          if (isPlayerIgnored(player)) continue;
-          const pos = player.location;
-          const dim = player.dimension;
+      if (eclipseSurgeTimerSec >= targetIntervalSec) {
+        eclipseSurgeTimerSec = 0;
+        const mobTypes = ["minecraft:zombie", "minecraft:skeleton", "minecraft:creeper", "minecraft:spider"];
+        const numToSpawn = isPhase2 ? 2 : 1;
 
-          for (let i = 0; i < numToSpawn; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const dist = 14 + Math.random() * 6; // 14 to 20 blocks away
-            const sx = Math.floor(pos.x + Math.cos(angle) * dist);
-            const sz = Math.floor(pos.z + Math.sin(angle) * dist);
-            const sy = pos.y;
+        for (const player of world.getAllPlayers()) {
+          try {
+            if (isPlayerIgnored(player)) continue;
+            const pos = player.location;
+            const dim = player.dimension;
 
-            const chosenMob = mobTypes[Math.floor(Math.random() * mobTypes.length)];
-            const spawned = dim.spawnEntity(chosenMob, { x: sx, y: sy + 1, z: sz });
-            spawned.addEffect("speed", 200, { amplifier: 3, showParticles: true });
-          }
-          player.sendMessage("§c[LUNA ROJA] §4¡Una oleada de criaturas agresivas ha emergido cerca de ti!");
-        } catch (e) {}
+            for (let i = 0; i < numToSpawn; i++) {
+              const angle = Math.random() * Math.PI * 2;
+              const dist = 12 + Math.random() * 6; // 12 to 18 blocks away
+              const sx = Math.floor(pos.x + Math.cos(angle) * dist);
+              const sz = Math.floor(pos.z + Math.sin(angle) * dist);
+              const sy = pos.y;
+
+              const chosenMob = mobTypes[Math.floor(Math.random() * mobTypes.length)];
+              const spawned = dim.spawnEntity(chosenMob, { x: sx, y: sy + 1, z: sz });
+              spawned.addEffect("speed", 200, { amplifier: 3, showParticles: true });
+            }
+            player.sendMessage(isPhase2 ? "§4[FURIA MÁXIMA] §c¡Una oleada de criaturas furiosas ha emergido de las sombras!" : "§c[LUNA ROJA] §4¡Una oleada de criaturas ha emergido cerca de ti!");
+          } catch (e) {}
+        }
       }
+    } else {
+      eclipseSurgeTimerSec = 0;
     }
   } catch (e) {}
-}, 900);
+}, 20);
 
 // Periodic Chat Status Reminder (Every 2.5 minutes / 3000 ticks)
 system.runInterval(() => {
