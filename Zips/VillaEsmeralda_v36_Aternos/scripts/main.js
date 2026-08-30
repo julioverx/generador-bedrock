@@ -455,6 +455,15 @@ function isRedMoonEclipseActive() {
   return false;
 }
 
+function isRedMoonPhase2Active() {
+  try {
+    const timeOfDay = world.getTimeOfDay();
+    return timeOfDay >= 18000 || world.getDynamicProperty("evento_luna_roja_furia") === true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function processQuestReward(player, questName, emeralds = 10, xpLevel = 10) {
   try {
     const mult = isDoubleEventActive() ? 2 : 1;
@@ -1707,29 +1716,72 @@ system.runInterval(() => {
         player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
       }
 
-      // --- RED MOON ECLIPSE MOB BUFFS ---
+      // --- RED MOON ECLIPSE MOB BUFFS & ATMOSPHERE ---
       if (isRedMoonEclipseActive()) {
-        const timeOfDay = world.getTimeOfDay();
-        const isPhase2 = timeOfDay >= 18000;
-        const strengthAmp = isPhase2 ? 1 : 0; // Strength II vs Strength I
-        const speedAmp = isPhase2 ? 1 : 0;    // Speed II vs Speed I
+        const isPhase2 = isRedMoonPhase2Active();
+        const speedAmp = isPhase2 ? 4 : 2;     // Speed V vs Speed III (Súper veloz)
+        const strengthAmp = isPhase2 ? 3 : 1;  // Strength IV vs Strength II
 
-        const dim = player.dimension;
-        const entities = dim.getEntities({ location: player.location, maxDistance: 40 });
-        for (const ent of entities) {
-          try {
-            if (isHostileMob(ent)) {
-              ent.addEffect("strength", 40, { amplifier: strengthAmp, showParticles: true });
-              ent.addEffect("speed", 40, { amplifier: speedAmp, showParticles: true });
-              if (isPhase2) ent.addEffect("resistance", 40, { amplifier: 0, showParticles: false });
-            }
-          } catch (e) {}
+        // Command Native Execution forces Minecraft C++ pathfinding engine to accelerate mobs!
+        player.runCommandAsync(`effect @e[family=monster,r=40] speed 3 ${speedAmp} true`);
+        player.runCommandAsync(`effect @e[family=monster,r=40] strength 3 ${strengthAmp} true`);
+        if (isPhase2) {
+          player.runCommandAsync(`effect @e[family=monster,r=40] resistance 3 1 true`);
         }
+
+        // Red Flame Atmosphere Particles around player
+        try {
+          const loc = player.location;
+          player.dimension.spawnParticle("minecraft:basic_flame_particle", { x: loc.x + (Math.random() * 4 - 2), y: loc.y + 1, z: loc.z + (Math.random() * 4 - 2) });
+        } catch (e) {}
       }
 
     } catch (e) {}
   }
 }, 20);
+
+// Double Mob Surge Spawner during Red Moon Eclipse (Every 12 seconds / 240 ticks)
+system.runInterval(() => {
+  try {
+    if (isRedMoonEclipseActive()) {
+      const isPhase2 = isRedMoonPhase2Active();
+      const mobTypes = ["minecraft:zombie", "minecraft:skeleton", "minecraft:creeper", "minecraft:spider"];
+      const numToSpawn = isPhase2 ? 3 : 2;
+
+      for (const player of world.getAllPlayers()) {
+        try {
+          if (isPlayerIgnored(player)) continue;
+          const pos = player.location;
+          const dim = player.dimension;
+
+          for (let i = 0; i < numToSpawn; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 12 + Math.random() * 8; // 12 to 20 blocks away
+            const sx = Math.floor(pos.x + Math.cos(angle) * dist);
+            const sz = Math.floor(pos.z + Math.sin(angle) * dist);
+            const sy = pos.y;
+
+            const chosenMob = mobTypes[Math.floor(Math.random() * mobTypes.length)];
+            const spawned = dim.spawnEntity(chosenMob, { x: sx, y: sy + 1, z: sz });
+            spawned.addEffect("speed", 200, { amplifier: 3, showParticles: true });
+          }
+          player.sendMessage("§c[LUNA ROJA] §4¡Una oleada de criaturas agresivas ha emergido cerca de ti!");
+        } catch (e) {}
+      }
+    }
+  } catch (e) {}
+}, 240);
+
+// Periodic Chat Status Reminder (Every 2.5 minutes / 3000 ticks)
+system.runInterval(() => {
+  try {
+    if (isRedMoonEclipseActive()) {
+      const isPhase2 = isRedMoonPhase2Active();
+      const statusText = isPhase2 ? "§4[ZENIT DEL ECLIPSE] ¡Furia máxima activa! Mobs con Velocidad V, Fuerza IV y Resistencia. (+3 Esmeraldas + 2x XP por baja)" : "§c[LUNA ROJA EN CURSO] ¡Mobs con Velocidad III y Fuerza II activos! (+1 Esmeralda extra por baja)";
+      world.sendMessage(`\n§c§l===========================================§r\n${statusText}\n§c===========================================§r\n`);
+    }
+  } catch (e) {}
+}, 3000);
 
 // ============================================================
 // DYNAMIC NAMETAGS SYSTEM (Every 5 seconds / 100 ticks)
