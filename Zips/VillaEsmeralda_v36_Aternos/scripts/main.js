@@ -448,7 +448,7 @@ function isRedMoonEclipseActive() {
     const timeOfDay = world.getTimeOfDay();
     const isNight = timeOfDay >= 13000 && timeOfDay <= 23000;
 
-    // DAYTIME SAFETY OVERRIDE: If sun is up, ECLIPSE MUST END IMMEDIATELY!
+    // SAFETY OVERRIDE: If sun is up, ECLIPSE ENDS IMMEDIATELY and resets manual tags!
     if (!isNight) {
       if (world.getDynamicProperty("evento_luna_roja") === true) {
         world.setDynamicProperty("evento_luna_roja", false);
@@ -457,10 +457,12 @@ function isRedMoonEclipseActive() {
       return false;
     }
 
+    // Manual activation (lasts ONLY for the current night)
     if (world.getDynamicProperty("evento_luna_roja") === true) return true;
 
+    // Automatic Calendar Activation: Day 30, 60, 90, 120... (Day 0 excluded!)
     const currentDay = world.getDay();
-    if (currentDay > 0 && currentDay % 30 === 0) return true;
+    if (currentDay >= 30 && currentDay % 30 === 0) return true;
   } catch (e) {}
   return false;
 }
