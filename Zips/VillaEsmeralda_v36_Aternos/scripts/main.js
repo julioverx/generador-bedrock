@@ -1716,7 +1716,7 @@ system.runInterval(() => {
         player.addEffect("dolphins_grace", 40, { amplifier: 1, showParticles: false });
       }
 
-      // --- RED MOON ECLIPSE MOB BUFFS & ATMOSPHERE ---
+      // --- RED MOON ECLIPSE MOB BUFFS & VISUAL ATMOSPHERE ---
       if (isRedMoonEclipseActive()) {
         const isPhase2 = isRedMoonPhase2Active();
         const speedAmp = isPhase2 ? 4 : 2;     // Speed V vs Speed III (Súper veloz)
@@ -1729,10 +1729,23 @@ system.runInterval(() => {
           player.runCommandAsync(`effect @e[family=monster,r=40] resistance 3 1 true`);
         }
 
-        // Red Flame Atmosphere Particles around player
+        // Red Actionbar Status Banner right above hotbar
+        try {
+          const actionText = isPhase2 ? "§4§l[ZENIT DE LUNA ROJA] §c¡Furia Máxima Activa! §e(+3 Em + Doble XP)" : "§c§l[ECLIPSE DE LUNA ROJA] §4¡Criaturas Veloces! §a(+1 Em Extra)";
+          player.onScreenDisplay.setActionBar(actionText);
+        } catch (e) {}
+
+        // Vibrant Red Particle Ring & Flame Aura around player
         try {
           const loc = player.location;
-          player.dimension.spawnParticle("minecraft:basic_flame_particle", { x: loc.x + (Math.random() * 4 - 2), y: loc.y + 1, z: loc.z + (Math.random() * 4 - 2) });
+          const dim = player.dimension;
+          for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const px = loc.x + Math.cos(angle) * 1.5;
+            const pz = loc.z + Math.sin(angle) * 1.5;
+            dim.spawnParticle("minecraft:redstone_ore_dust_particle", { x: px, y: loc.y + 0.2, z: pz });
+            dim.spawnParticle("minecraft:basic_flame_particle", { x: px, y: loc.y + 1.0, z: pz });
+          }
         } catch (e) {}
       }
 
@@ -1740,13 +1753,13 @@ system.runInterval(() => {
   }
 }, 20);
 
-// Double Mob Surge Spawner during Red Moon Eclipse (Every 12 seconds / 240 ticks)
+// Mob Surge Spawner during Red Moon Eclipse (Balanced every 45 seconds / 900 ticks)
 system.runInterval(() => {
   try {
     if (isRedMoonEclipseActive()) {
       const isPhase2 = isRedMoonPhase2Active();
       const mobTypes = ["minecraft:zombie", "minecraft:skeleton", "minecraft:creeper", "minecraft:spider"];
-      const numToSpawn = isPhase2 ? 3 : 2;
+      const numToSpawn = isPhase2 ? 2 : 1;
 
       for (const player of world.getAllPlayers()) {
         try {
@@ -1756,7 +1769,7 @@ system.runInterval(() => {
 
           for (let i = 0; i < numToSpawn; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const dist = 12 + Math.random() * 8; // 12 to 20 blocks away
+            const dist = 14 + Math.random() * 6; // 14 to 20 blocks away
             const sx = Math.floor(pos.x + Math.cos(angle) * dist);
             const sz = Math.floor(pos.z + Math.sin(angle) * dist);
             const sy = pos.y;
@@ -1770,7 +1783,7 @@ system.runInterval(() => {
       }
     }
   } catch (e) {}
-}, 240);
+}, 900);
 
 // Periodic Chat Status Reminder (Every 2.5 minutes / 3000 ticks)
 system.runInterval(() => {
