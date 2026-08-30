@@ -256,10 +256,10 @@ const QUEST_POOLS = {
 
 const WEEKLY_CONTRACTS = [
   { id: 0, title: "Devorador de Titanes", desc: "Eliminar 1,000 Mobs Hostiles", target: 1000, relicType: "guerrero", relicName: "Espada Mítica Divina (Fuerza II Pasiva)", typeCheck: "contract_mobs" },
-  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Ancient Debris", target: 100, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_debris" },
-  { id: 2, title: "El Granero Imperial", desc: "Cosechar 3,000 Cultivos y 2,000 Troncos", target: 5000, relicType: "agricola", relicName: "Azada Mítica Divina + Hacha Mítica Divina (Prisa II Pasiva)", typeCheck: "contract_farm" },
+  { id: 1, title: "El Infierno de Netherite", desc: "Picar 100 Escombros Ancestrales (Ancient Debris)", target: 100, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_debris" },
+  { id: 2, title: "El Granero Imperial", desc: "Cosechar 3,000 Cultivos y 2,000 Troncos de Madera", target: 5000, relicType: "agricola", relicName: "Azada Mítica Divina + Hacha Mítica Divina (Prisa II Pasiva)", typeCheck: "contract_farm" },
   { id: 3, title: "La Odisea Dimensional", desc: "Recorrer 75,000 Bloques en el mundo", target: 75000, relicType: "armadura", relicName: "Botas Míticas Divinas (Velocidad II + Regeneración I) + 8 Notch Apples", typeCheck: "contract_explore" },
-  { id: 4, title: "Señor de la Guerra Total", desc: "Lograr 1,800 Mobs Hostiles / PvP en la semana", target: 1800, relicType: "guerrero", relicName: "Pechera Mítica Divina (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
+  { id: 4, title: "Señor de la Guerra Total", desc: "Eliminar 800 Mobs Hostiles o Bajas PvP", target: 800, relicType: "guerrero", relicName: "Pechera Mítica Divina (Resistencia II) + Espada Mítica Divina", typeCheck: "contract_war" },
   { id: 5, title: "Buscador de Mitos Submarinos", desc: "Extraer / Cepillar 25 Arenas o Gravas Sospechosas", target: 25, relicType: "armadura", relicName: "Casco Mítico Divino (Visión Nocturna + Gracia de Delfín) + Tridente Mítico Divino", typeCheck: "contract_ocean" },
   { id: 6, title: "Fiebre de Pizarra Profunda", desc: "Picar 8,000 Bloques Profundos (Deepslate)", target: 8000, relicType: "herrero", relicName: "Pico Mítico Divino (Prisa II Pasiva)", typeCheck: "contract_deepslate" },
   { id: 7, title: "La Prueba del Rey (La Cumbre)", desc: "2 Withers + 1 Ender Dragon + 50 Ancient Debris", target: 53, relicType: "trilogia", relicName: "Set Mítico Divino (Espada + Pico + Polainas)", typeCheck: "contract_king" }
